@@ -58,7 +58,7 @@ void inverseLaplacianProblemTotalHeatMeasure_paramBC::parameterizedBCoffline(
     Tad_base.resize(0);
     char recomputeOffline;
 
-    if (ITHACAutilities::check_file(folderOffline + "Theta_mat.txt") && force == 0)
+    if (ITHACAutilities::check_file(folderOffline + "Theta_mat.npy") && force == 0)
     {
         do
         {
@@ -83,14 +83,14 @@ void inverseLaplacianProblemTotalHeatMeasure_paramBC::parameterizedBCoffline(
         force = 1;
     }
 
-    if (ITHACAutilities::check_file(folderOffline + "Theta_mat.txt") && force == 0)
+    if (ITHACAutilities::check_file(folderOffline + "Theta_mat.npy") && force == 0)
     {
         Info << "\nOffline already computed." << endl;
         Info << "Check that the basis used for the parameterized BC are correct (RBF, POD, etc.)\n";
-        Theta = ITHACAstream::readMatrix(folderOffline + "Theta_mat.txt");
-        Phi = ITHACAstream::readMatrix(folderOffline + "Phi_mat.txt");
-        phi = ITHACAstream::readMatrix(folderOffline + "phi_mat.txt");
-        addSol = ITHACAstream::readMatrix(folderOffline + "addSol_mat.txt");
+        Theta = ITHACAstream::readMatrix(folderOffline + "Theta_mat.npy");
+        Phi = ITHACAstream::readMatrix(folderOffline + "Phi_mat.npy");
+        phi = ITHACAstream::readMatrix(folderOffline + "phi_mat.npy");
+        addSol = ITHACAstream::readMatrix(folderOffline + "addSol_mat.npy");
         volScalarField& T(_T());
         ITHACAstream::read_fields(Tad_base, "Tad", folderOffline, 0, 1);
         ITHACAstream::read_fields(Tbasis, "T",

@@ -11,9 +11,9 @@ params = {'legend.fontsize': 'x-large',
          'ytick.labelsize':'x-large'}
 pylab.rcParams.update(params)
 
-relError_L2norm = np.loadtxt("ITHACAoutput/thermocouplesNumberTest_CG/relError_L2norm_mat.txt")
-relError_LinfNorm = np.loadtxt("ITHACAoutput/thermocouplesNumberTest_CG/relError_LinfNorm_mat.txt")
-TCplane_Y = np.loadtxt("ITHACAoutput/thermocouplesNumberTest_CG/numberTCperAxis_mat.txt")
+relError_L2norm = np.load("ITHACAoutput/thermocouplesNumberTest_CG/relError_L2norm_mat.npy")
+relError_LinfNorm = np.load("ITHACAoutput/thermocouplesNumberTest_CG/relError_LinfNorm_mat.npy")
+TCplane_Y = np.load("ITHACAoutput/thermocouplesNumberTest_CG/numberTCperAxis_mat.npy")
 
 
 f = plt.figure(5,figsize=(12,8))

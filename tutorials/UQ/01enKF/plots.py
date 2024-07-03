@@ -14,11 +14,11 @@ params = {'legend.fontsize': 'x-large',
          'ytick.labelsize':'x-large'}
 pylab.rcParams.update(params)
 
-time = np.loadtxt("./ITHACAoutput/time_mat.txt")
-X = np.loadtxt("./ITHACAoutput/X_mat.txt")
-posteriorMean = np.loadtxt("./ITHACAoutput/posteriorMean_mat.txt")
-minConfidence = np.loadtxt("./ITHACAoutput/minConfidence_mat.txt")
-maxConfidence = np.loadtxt("./ITHACAoutput/maxConfidence_mat.txt")
+time = np.load("./ITHACAoutput/time_mat.npy")
+X = np.load("./ITHACAoutput/X_mat.npy")
+posteriorMean = np.load("./ITHACAoutput/posteriorMean_mat.npy")
+minConfidence = np.load("./ITHACAoutput/minConfidence_mat.npy")
+maxConfidence = np.load("./ITHACAoutput/maxConfidence_mat.npy")
 
 
 

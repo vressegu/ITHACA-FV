@@ -67,7 +67,7 @@ class tutorial02: public laplacianProblem
             {
                 ITHACAstream::read_fields(Tfield, "T", folder);
                 mu_samples =
-                    ITHACAstream::readMatrix(folder + "/mu_samples_mat.txt");
+                    ITHACAstream::readMatrix(folder + "/mu_samples_mat.npy");
             }
             else
             {

@@ -1710,7 +1710,7 @@ void msrProblem::readMSRfields()
     ITHACAstream::read_fields(SPFields, SP, "./ITHACAoutput/Offline/");
     ITHACAstream::read_fields(TXSFields, TXS, "./ITHACAoutput/Offline/");
     mu_samples =
-        ITHACAstream::readMatrix("./ITHACAoutput/Offline/mu_samples_mat.txt");
+        ITHACAstream::readMatrix("./ITHACAoutput/Offline/mu_samples_mat.npy");
 }
 
 void msrProblem::readMSRfields(std::string& dir)

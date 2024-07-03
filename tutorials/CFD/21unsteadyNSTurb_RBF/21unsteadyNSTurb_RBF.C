@@ -129,7 +129,7 @@ int main(int argc, char* argv[])
     example.offlineSolve("./ITHACAoutput/Offline/");
     // Define velRBF
     auto mu_mat =
-        ITHACAstream::readMatrix("./ITHACAoutput/Offline/mu_samples_mat.txt");
+        ITHACAstream::readMatrix("./ITHACAoutput/Offline/mu_samples_mat.npy");
     example.velRBF = mu_mat.col(1);
     // Solve the supremizer problem
     example.solvesupremizer();

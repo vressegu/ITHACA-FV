@@ -29,8 +29,8 @@ class Net:
         self.Nnut = Nnut
         self.Epochs = Epochs
     def read(self):
-        NOffSnap = np.loadtxt("ITHACAoutput/Offline/snaps",dtype=int)
-        NOnSnap = np.loadtxt("ITHACAoutput/checkOff/snaps",dtype=int)
+        NOffSnap = np.load("ITHACAoutput/Offline/snaps",dtype=int)
+        NOnSnap = np.load("ITHACAoutput/checkOff/snaps",dtype=int)
         ## Read the coefficients train
         # U
         inp_np_train_U = np.load("ITHACAoutput/NN/coeffs/coeffL2UTrain.npy")
@@ -39,7 +39,7 @@ class Net:
         # Nut
         out_np_train = np.load("ITHACAoutput/NN/coeffs/coeffL2NutTrain.npy")
         # Read Angles from file train
-        angles_train = np.loadtxt("angOff_mat.txt")
+        angles_train = np.load("angOff_mat.npy")
         #NOffSnap = np.load("train/NOffSnap.npy")
         angles_train_np = []
         # Fill the train angles
@@ -56,7 +56,7 @@ class Net:
         # Nut
         out_np_test = np.load("ITHACAoutput/NN/coeffs/coeffL2NutTest.npy")
         # Read Angles from file test
-        angles_test = np.loadtxt("angOn_mat.txt")
+        angles_test = np.load("angOn_mat.npy")
 
         #NOnSnap = np.load("test/NOnSnap.npy")
         angles_test_np = []

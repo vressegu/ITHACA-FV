@@ -10,16 +10,16 @@ params = {'legend.fontsize': 'x-large',
          'ytick.labelsize':'x-large'}
 pylab.rcParams.update(params)
 
-singVal = np.loadtxt("../caseDir/ITHACAoutput/parameterizedBCtest_RBFparameter/singularValues_mat.txt")
-relErr_L2norm = np.loadtxt("../caseDir/ITHACAoutput/parameterizedBCtest_RBFparameter/relError_L2norm_mat.txt")
-relErr_LinfNorm = np.loadtxt("../caseDir/ITHACAoutput/parameterizedBCtest_RBFparameter/relError_LinfNorm_mat.txt")
-condNumber = np.loadtxt("../caseDir/ITHACAoutput/parameterizedBCtest_RBFparameter/condNumber_mat.txt")
+singVal = np.load("../caseDir/ITHACAoutput/parameterizedBCtest_RBFparameter/singularValues_mat.npy")
+relErr_L2norm = np.load("../caseDir/ITHACAoutput/parameterizedBCtest_RBFparameter/relError_L2norm_mat.npy")
+relErr_LinfNorm = np.load("../caseDir/ITHACAoutput/parameterizedBCtest_RBFparameter/relError_LinfNorm_mat.npy")
+condNumber = np.load("../caseDir/ITHACAoutput/parameterizedBCtest_RBFparameter/condNumber_mat.npy")
 
 singVal = singVal / singVal[0,:][None,:]
 
 xAxis = np.linspace(1, singVal.shape[0], num = singVal.shape[0])
 
-shapePar = np.loadtxt("../caseDir/ITHACAoutput/parameterizedBCtest_RBFparameter/rbfShapeParameters_mat.txt")
+shapePar = np.load("../caseDir/ITHACAoutput/parameterizedBCtest_RBFparameter/rbfShapeParameters_mat.npy")
 
 #labels=[r'$\eta = 100$', r'$\eta = 10$', r'$\eta = 1$', r'$\eta = 0.3$', r'$\eta = 0.1$', r'$\eta = 0.03$', r'$\eta = 0.01$', r'$\eta = 0.0033$', r'$\eta = 0.001$']
 #labels=[r'$\eta = 0.001$', r'$\eta = 0.004$', r'$\eta = 0.2$', r'$\eta = 0.07$', r'$\eta = 0.3$', r'$\eta = 1.33$', r'$\eta = 5.6$', r'$\eta = 23.7$', r'$\eta = 100$']

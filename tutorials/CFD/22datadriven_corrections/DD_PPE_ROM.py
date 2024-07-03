@@ -185,13 +185,13 @@ class PPE_ROM():
         coeffU = np.load(os.path.join(folder, "coeefs.npy")) #100 modes x 5001 time steps
         coeffP = np.load(os.path.join(folder, "coeefsP.npy")) #50 modes x 5001 time steps
         coeffNut = np.load(os.path.join(folder, "coeefsNut.npy"))
-        bcMat = read_txt(os.path.join(folder, "bcVelMat/bcVelMat0_mat.txt"))
-        bcVec = read_txt(os.path.join(folder, "bcVelVec/bcVelVec0_mat.txt"))
+        bcMat = np.load(os.path.join(folder, "bcVelMat/bcVelMat0_mat.npy"))
+        bcVec = np.load(os.path.join(folder, "bcVelVec/bcVelVec0_mat.npy"))
         CtTot = Ct1 + Ct2
         CtPPETot = Ct1PPE + Ct2PPE
         CtAveTot = Ct1Ave + Ct2Ave
         CtPPEAveTot = Ct1PPEAve + Ct2PPEAve
-        #nu 
+        #nu
         self.nu = 1e-4
 
         bcMat = bcMat.reshape((self.Nu_tot + self.Nsup_tot,self.Nu_tot + self.Nsup_tot))
@@ -338,7 +338,7 @@ class PPE_ROM():
             Xhat_t[:,j] = self.coeffP_ok[0:self.Np,j]
         self.tau_ex_pg = self.tau_ex_pg.T
         Xhat = Xhat_t.T
-        ## Construction of the least square problem for pressure with linear term and quadratic term w.r.t. ab 
+        ## Construction of the least square problem for pressure with linear term and quadratic term w.r.t. ab
 
         ab_hat = np.concatenate((Xhat_U, Xhat), axis=1)
         Dmat_ab = np.zeros((self.M1,self.Np+self.Nu))
@@ -559,7 +559,7 @@ class PPE_ROM():
         res0[-self.Np:] = self.D_ok@b + a.T@self.G_ok@a -self.nu*self.N_ok@a + Jterm_A[self.Nu:self.Nu+self.Np] + Jterm_B[self.Nu:self.Nu+self.Np]
         return res0
 
-    # Residual without turbulence modelling and with correction 
+    # Residual without turbulence modelling and with correction
     def residual(self,ab):
         J_A, J_B = self.correction()
         res0 = ab*0
@@ -610,7 +610,7 @@ class PPE_ROM():
         res[-self.Np:] = self.D_ok@b + a.T@self.G_ok@a -g.T@self.CtPPETot_Ok@a -self.nu*self.N_ok@a + Jterm_A[self.Nu:self.Nu+self.Np] + Jterm_B[self.Nu:self.Nu+self.Np]
         return res
 
-    # Residual with turbulence modelling and correction 
+    # Residual with turbulence modelling and correction
     def residualT(self,ab):
         J_A, J_B = self.correction()
         res = ab*0
@@ -649,7 +649,7 @@ class PPE_ROM():
         res[-Np:] = self.D_ok@b + a.T@self.G_ok@a -self.nu*self.N_ok@a
         return res
 
-    # Residual without turbulence modelling and correction 
+    # Residual without turbulence modelling and correction
     def residual_stand(self,ab):
         res = ab*0
         a = ab[0:self.Nu+self.Nsup]
@@ -789,14 +789,14 @@ class PPE_ROM():
         U_sol[11644:23288,:] = U_soly[:,0:2000]
         U_sol[23288:34932,:] = U_solz[:,0:2000]
         return U_sol
-    
+
     def Pfield(self):
         P_sol = np.zeros((11644,self.M-1))
         for j in range(self.M-1):
             for n in range(self.Np):
                 P_sol[:,j] = P_sol[:,j]+self.sol[self.Nu+self.Nsup+n,j]*self.mod_P[:,n]
         return P_sol
-    
+
     ## Define the variable epsilon_U, a measure of the error of the reduced velocity solution w.r.t. the projection
     def epsilon_U(self):
         Ufield = self.Ufield

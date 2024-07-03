@@ -89,7 +89,7 @@ void inverseLaplacianProblem_paramBC::set_gBaseFunctions()
         Info << "Exiting" << endl;
         exit(101);
         //Eigen::MatrixXd temp =
-        //    ITHACAstream::readMatrix("./ITHACAoutput/podMarquardt/gReducedBases_mat.txt");
+        //    ITHACAstream::readMatrix("./ITHACAoutput/podMarquardt/gReducedBases_mat.npy");
         //gBaseFunctions.resize(temp.cols());
         //gWeights.resize(temp.cols());
         //forAll(gBaseFunctions, baseI)
@@ -203,7 +203,7 @@ void inverseLaplacianProblem_paramBC::parameterizedBCoffline(bool force)
     Tad_base.resize(0);
     char recomputeOffline;
 
-    if (ITHACAutilities::check_file(folderOffline + "Theta_mat.txt") && force == 0)
+    if (ITHACAutilities::check_file(folderOffline + "Theta_mat.npy") && force == 0)
     {
         do
         {
@@ -228,14 +228,14 @@ void inverseLaplacianProblem_paramBC::parameterizedBCoffline(bool force)
         force = 1;
     }
 
-    if (ITHACAutilities::check_file(folderOffline + "Theta_mat.txt") && force == 0)
+    if (ITHACAutilities::check_file(folderOffline + "Theta_mat.npy") && force == 0)
     {
         volScalarField Tad(_T());
         Tad.rename("Tad");
         Info << "\nOffline already computed." << endl;
         Info << "Check that the basis used for the parameterized BC are correct (RBF, POD, etc.)\n";
-        Theta = ITHACAstream::readMatrix(folderOffline + "Theta_mat.txt");
-        addSol = ITHACAstream::readMatrix(folderOffline + "addSol_mat.txt");
+        Theta = ITHACAstream::readMatrix(folderOffline + "Theta_mat.npy");
+        addSol = ITHACAstream::readMatrix(folderOffline + "addSol_mat.npy");
         ITHACAstream::read_fields(Tad_base, Tad, folderOffline, 0, 1);
         ITHACAstream::read_fields(Tbasis, T,
                                   folderOffline);

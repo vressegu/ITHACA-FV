@@ -68,14 +68,14 @@ class tutorial18 : public SteadyNSSimple
                 auto nut = _mesh().lookupObject<volScalarField>("nut");
                 ITHACAstream::readLastFields(nutFields, nut, "./ITHACAoutput/Offline/");
                 mu_samples =
-                    ITHACAstream::readMatrix("./ITHACAoutput/Offline/mu_samples_mat.txt");
+                    ITHACAstream::readMatrix("./ITHACAoutput/Offline/mu_samples_mat.npy");
             }
             else if (offline)
             {
                 ITHACAstream::read_fields(Ufield, U, "./ITHACAoutput/Offline/");
                 ITHACAstream::read_fields(Pfield, p, "./ITHACAoutput/Offline/");
                 mu_samples =
-                    ITHACAstream::readMatrix("./ITHACAoutput/Offline/mu_samples_mat.txt");
+                    ITHACAstream::readMatrix("./ITHACAoutput/Offline/mu_samples_mat.npy");
             }
             else
             {
@@ -105,11 +105,11 @@ int main(int argc, char* argv[])
     ITHACAparameters* para = ITHACAparameters::getInstance(example._mesh(),
                              example._runTime());
     // Read the par file where the parameters are stored
-    std::ifstream exFileOff("./parsOff_mat.txt");
+    std::ifstream exFileOff("./parsOff_mat.npy");
 
     if (exFileOff)
     {
-        example.mu  = ITHACAstream::readMatrix("./parsOff_mat.txt");
+        example.mu  = ITHACAstream::readMatrix("./parsOff_mat.npy");
     }
     else
     {
@@ -118,11 +118,11 @@ int main(int argc, char* argv[])
     }
 
     Eigen::MatrixXd parOn;
-    std::ifstream exFileOn("./parsOn_mat.txt");
+    std::ifstream exFileOn("./parsOn_mat.npy");
 
     if (exFileOn)
     {
-        parOn = ITHACAstream::readMatrix("./parsOn_mat.txt");
+        parOn = ITHACAstream::readMatrix("./parsOn_mat.npy");
     }
     else
     {

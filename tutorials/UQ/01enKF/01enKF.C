@@ -45,12 +45,12 @@ int main(int argc, char* argv[])
 {
     word outputFolder = "./ITHACAoutput/";
     int Nseeds = 1000;
-    Eigen::MatrixXd A = ITHACAstream::readMatrix("A_mat.txt");
-    Eigen::MatrixXd Aw = ITHACAstream::readMatrix("Awrong_mat.txt");
-    Eigen::MatrixXd H = ITHACAstream::readMatrix("observation_mat.txt");
-    M_Assert(ITHACAstream::readMatrix("initialState_mat.txt").cols() == 1,
+    Eigen::MatrixXd A = ITHACAstream::readMatrix("A_mat.npy");
+    Eigen::MatrixXd Aw = ITHACAstream::readMatrix("Awrong_mat.npy");
+    Eigen::MatrixXd H = ITHACAstream::readMatrix("observation_mat.npy");
+    M_Assert(ITHACAstream::readMatrix("initialState_mat.npy").cols() == 1,
              "Wrong initialState input");
-    Eigen::VectorXd x0 = ITHACAstream::readMatrix("initialState_mat.txt").col(0);
+    Eigen::VectorXd x0 = ITHACAstream::readMatrix("initialState_mat.npy").col(0);
     int stateSize = A.rows();
     int obsSize = H.rows();
     std::cout <<

@@ -180,7 +180,7 @@ Eigen::MatrixXd reducedProblem::solveLinearSys(List<Eigen::MatrixXd> LinSys,
 onlineInterp::onlineInterp()
 {
     Nmu_samples =
-        ITHACAstream::readMatrix("./ITHACAoutput/Offline/mu_samples_mat.txt").cols();
+        ITHACAstream::readMatrix("./ITHACAoutput/Offline/mu_samples_mat.npy").cols();
 }
 
 Eigen::MatrixXd onlineInterp::getInterpCoeffRBF(std::vector<SPLINTER::RBFSpline>

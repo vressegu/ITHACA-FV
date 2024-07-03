@@ -172,7 +172,7 @@ int main(int argc, char* argv[])
     double sigbeta = 0.1 / 3 * betatot0;
     double sigdlam3 = 0.1 / 3 * dlam30;
     // read range to adopt as training range
-    prova.mu_range = ITHACAstream::readMatrix("./range_mat.txt");
+    prova.mu_range = ITHACAstream::readMatrix("./range_mat.npy");
     std::string dist = {"normal"};
     // sample the values using ITHACA::sampling
     prova.mu.row(0) = ITHACAsampling::samplingMC(dist, prova.mu_range(0, 0),
@@ -190,7 +190,7 @@ int main(int argc, char* argv[])
     }
     else
     {
-        mu_f = ITHACAstream::readMatrix("./ITHACAoutput/mu_off_mat.txt");
+        mu_f = ITHACAstream::readMatrix("./ITHACAoutput/mu_off_mat.npy");
     }
 
     std::string folder = {"./ITHACAoutput/FOMoutput/"};

@@ -10,13 +10,13 @@ params = {'legend.fontsize': 'x-large',
          'ytick.labelsize':'x-large'}
 pylab.rcParams.update(params)
 
-relError_L2norm = np.loadtxt("./ITHACAoutput/thermocouplesNumberTest_paramBC/relError_L2norm_mat.txt")
-relError_LinfNorm = np.loadtxt("./ITHACAoutput/thermocouplesNumberTest_paramBC/relError_LinfNorm_mat.txt")
-relError_L2norm_BF = np.loadtxt("./ITHACAoutput/thermocouplesNumberTest_paramBC_bestFit/relError_L2norm_mat.txt")
-relError_LinfNorm_BF = np.loadtxt("./ITHACAoutput/thermocouplesNumberTest_paramBC_bestFit/relError_LinfNorm_mat.txt")
-relError_L2norm_int = np.loadtxt("./ITHACAoutput/thermocouplesNumberTest_paramBC_bestInt/relError_L2norm_mat.txt")
-relError_LinfNorm_int = np.loadtxt("./ITHACAoutput/thermocouplesNumberTest_paramBC_bestInt/relError_LinfNorm_mat.txt")
-TCplane_Y = np.loadtxt("./ITHACAoutput/thermocouplesNumberTest_paramBC/numberTCperAxis_mat.txt")
+relError_L2norm = np.load("./ITHACAoutput/thermocouplesNumberTest_paramBC/relError_L2norm_mat.npy")
+relError_LinfNorm = np.load("./ITHACAoutput/thermocouplesNumberTest_paramBC/relError_LinfNorm_mat.npy")
+relError_L2norm_BF = np.load("./ITHACAoutput/thermocouplesNumberTest_paramBC_bestFit/relError_L2norm_mat.npy")
+relError_LinfNorm_BF = np.load("./ITHACAoutput/thermocouplesNumberTest_paramBC_bestFit/relError_LinfNorm_mat.npy")
+relError_L2norm_int = np.load("./ITHACAoutput/thermocouplesNumberTest_paramBC_bestInt/relError_L2norm_mat.npy")
+relError_LinfNorm_int = np.load("./ITHACAoutput/thermocouplesNumberTest_paramBC_bestInt/relError_LinfNorm_mat.npy")
+TCplane_Y = np.load("./ITHACAoutput/thermocouplesNumberTest_paramBC/numberTCperAxis_mat.npy")
 
 
 fig, axes = plt.subplots()

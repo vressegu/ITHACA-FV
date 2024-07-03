@@ -116,7 +116,7 @@ class SUP_ROM():
                           _Nsup: number of supremizer modes
                           _Np: number of pressure modes
                           _Nnut: number of eddy viscosity modes
-                          _Ru: number of singular values to retain for the construction 
+                          _Ru: number of singular values to retain for the construction
                           of the correction term.
         '''
         #Sizes
@@ -175,10 +175,10 @@ class SUP_ROM():
         coeffU = np.load(os.path.join(folder, "coeefs.npy")) #100 modes x 5001 time steps
         coeffP = np.load(os.path.join(folder, "coeefsP.npy")) #50 modes x 5001 time steps
         coeffNut = np.load(os.path.join(folder, "coeefsNut.npy"))
-        bcMat = read_txt(os.path.join(folder, "bcVelMat/bcVelMat0_mat.txt"))
-        bcVec = read_txt(os.path.join(folder, "bcVelVec/bcVelVec0_mat.txt"))
+        bcMat = np.load(os.path.join(folder, "bcVelMat/bcVelMat0_mat.npy"))
+        bcVec = np.load(os.path.join(folder, "bcVelVec/bcVelVec0_mat.npy"))
         CtTot = Ct1 + Ct2
-        #nu 
+        #nu
         self.nu = 1e-4
 
         bcMat = bcMat.reshape((self.Nu_tot + self.Nsup_tot,self.Nu_tot + self.Nsup_tot))
@@ -191,7 +191,7 @@ class SUP_ROM():
         modU = read_vec_modes(os.path.join(data_folder, 'POD'), 11644, self.Nu_tot, "U") #34932x50
         modSup = read_vec_modes(os.path.join(data_folder, 'supremizer'), 11644, self.Nsup_tot, "Usup")  #34932x50
         modP = read_p_modes(os.path.join(data_folder, 'POD'), 11644, self.Np_tot) #11644x50
-        
+
         ## Import useful data from FOM simulation
 #        self.coo = coo[:,0:2]
         self.mod_Ux = modU[0:11644,:]
@@ -308,7 +308,7 @@ class SUP_ROM():
 
         ## Truncated SVD and resolution of the least square problem for constrained data-driven correction
         O_vel = np.zeros((self.rows2,self.Nu))
-        U_vel,S_vel,VT_vel = scipy.linalg.svd(Dmat_U,full_matrices=False) #full svd 
+        U_vel,S_vel,VT_vel = scipy.linalg.svd(Dmat_U,full_matrices=False) #full svd
 
         Sigma_vel = np.diag(S_vel[0:self.Ru])
         U_vel = U_vel[:,0:self.Ru]
@@ -334,11 +334,11 @@ class SUP_ROM():
         self.Btilde = self.Omat_c[:,self.Nu:self.rows2]
         return self.Atilde, self.Btilde
 
-              
+
     def U_50modes(self):
         '''
-        Function which computes the full order velocity field retaining 50 modes, 
-        at each time step and for each node of the grid. 
+        Function which computes the full order velocity field retaining 50 modes,
+        at each time step and for each node of the grid.
         '''
         U_x50 = np.zeros((11644,self.M))
         U_y50 = np.zeros((11644,self.M))
@@ -356,11 +356,11 @@ class SUP_ROM():
             self.U_norm_50[:,i] = np.sqrt(U_x50[:,i]**2+U_y50[:,i]**2+U_z50[:,i]**2)
         return self.U_norm_50
 
-    
+
     def U_10modes(self):
         '''
-        Function which computes the full order velocity field retaining 10 modes, 
-        at each time step and for each node of the grid. 
+        Function which computes the full order velocity field retaining 10 modes,
+        at each time step and for each node of the grid.
         '''
         U_x10 = np.zeros((11644,self.M))
         U_y10 = np.zeros((11644,self.M))
@@ -378,23 +378,23 @@ class SUP_ROM():
             self.U_norm_10[:,i] = np.sqrt(U_x10[:,i]**2+U_y10[:,i]**2+U_z10[:,i]**2)
         return self.U_norm_10
 
-    
+
     def P_50modes(self):
         '''
-        Function which computes the full order pressure field retaining 50 modes, 
-        at each time step and for each node of the grid. 
+        Function which computes the full order pressure field retaining 50 modes,
+        at each time step and for each node of the grid.
         '''
         self.P_50 = np.zeros((11644,self.M))
         for i in range(self.M):
             for j in range(self.Np_tot):
                 self.P_50[:,i] = self.P_50[:,i]+self.coeffP[j,i]*self.mod_P[:,j]
         return self.P_50
-        
-        
+
+
     def P_10modes(self):
         '''
-        Function which computes the full order pressure field retaining 10 modes, 
-        at each time step and for each node of the grid. 
+        Function which computes the full order pressure field retaining 10 modes,
+        at each time step and for each node of the grid.
         '''
         self.P_10 = np.zeros((11644,self.M))
         for i in range(self.M):
@@ -521,7 +521,7 @@ class SUP_ROM():
         res0[-self.Np:] = self.P_ok@a
         return res0
 
-    # Residual without turbulence modelling and with correction 
+    # Residual without turbulence modelling and with correction
     def residual(self,ab):
         Atil, Btil = self.vel_correction()
         res0 = ab*0
@@ -568,7 +568,7 @@ class SUP_ROM():
         res[-self.Np:] = -self.P_ok@a
         return res
 
-    # Residual with turbulence modelling and correction 
+    # Residual with turbulence modelling and correction
     def residualT(self,ab):
         Atil, Btil = self.vel_correction()
         res = ab*0
@@ -605,7 +605,7 @@ class SUP_ROM():
         res[-self.Np:] = -self.P_ok@a
         return res
 
-    # Residual without turbulence modelling and correction 
+    # Residual without turbulence modelling and correction
     def residual_stand(self,ab):
         res = ab*0
         a = ab[0:self.Nu+self.Nsup]
@@ -745,14 +745,14 @@ class SUP_ROM():
         U_sol[11644:23288,:] = U_soly[:,self.M-1]
         U_sol[23288:34932,:] = U_solz[:,self.M-1]
         return U_sol
-    
+
     def Pfield(self):
         P_sol = np.zeros((11644,self.M-1))
         for j in range(self.M-1):
             for n in range(self.Np):
                 P_sol[:,j] = P_sol[:,j]+self.sol[self.Nu+self.Nsup+n,j]*self.mod_P[:,n]
         return P_sol
-    
+
     ## Define the variable epsilon_U, a measure of the error of the reduced velocity solution w.r.t. the projection
     def epsilon_U(self):
         Ufield = self.Ufield

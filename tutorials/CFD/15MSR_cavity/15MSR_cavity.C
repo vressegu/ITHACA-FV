@@ -221,8 +221,8 @@ int main(int argc, char* argv[])
     }
     else
     {
-        mu_f = ITHACAstream::readMatrix("./ITHACAoutput/mu_off_mat.txt");
-        arange = ITHACAstream::readMatrix("./ITHACAoutput/range_mat.txt");
+        mu_f = ITHACAstream::readMatrix("./ITHACAoutput/mu_off_mat.npy");
+        arange = ITHACAstream::readMatrix("./ITHACAoutput/range_mat.npy");
     }
 
     //perform the offline step

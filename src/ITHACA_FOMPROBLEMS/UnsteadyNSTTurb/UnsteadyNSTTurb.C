@@ -474,21 +474,21 @@ void UnsteadyNSTTurb::projectSUP(fileName folder, label NU, label NP,
 {
     if (ITHACAutilities::check_folder("./ITHACAoutput/Matrices/"))
     {
-        B_matrix = ITHACAstream::readMatrix("./ITHACAoutput/Matrices/B_mat.txt");
+        B_matrix = ITHACAstream::readMatrix("./ITHACAoutput/Matrices/B_mat.npy");
         C_matrix = ITHACAstream::readMatrix("./ITHACAoutput/Matrices/C", "C");
-        K_matrix = ITHACAstream::readMatrix("./ITHACAoutput/Matrices/K_mat.txt");
-        P_matrix = ITHACAstream::readMatrix("./ITHACAoutput/Matrices/P_mat.txt");
-        M_matrix = ITHACAstream::readMatrix("./ITHACAoutput/Matrices/M_mat.txt");
+        K_matrix = ITHACAstream::readMatrix("./ITHACAoutput/Matrices/K_mat.npy");
+        P_matrix = ITHACAstream::readMatrix("./ITHACAoutput/Matrices/P_mat.npy");
+        M_matrix = ITHACAstream::readMatrix("./ITHACAoutput/Matrices/M_mat.npy");
         BT_matrix =
-            ITHACAstream::readMatrix("./ITHACAoutput/Matrices/BT_matrix_mat.txt");
+            ITHACAstream::readMatrix("./ITHACAoutput/Matrices/BT_matrix_mat.npy");
         CT1_matrix = ITHACAstream::readMatrix("./ITHACAoutput/Matrices/CT1",
                                               "CT1_matrix");
         CT2_matrix = ITHACAstream::readMatrix("./ITHACAoutput/Matrices/CT2",
                                               "CT2_matrix");
         Q_matrix = ITHACAstream::readMatrix("./ITHACAoutput/Matrices/Q", "Q");
-        Y_matrix = ITHACAstream::readMatrix("./ITHACAoutput/Matrices/Y_mat.txt");
-        S_matrix = ITHACAstream::readMatrix("./ITHACAoutput/Matrices/S_mat.txt");
-        MT_matrix = ITHACAstream::readMatrix("./ITHACAoutput/Matrices/MT_mat.txt");
+        Y_matrix = ITHACAstream::readMatrix("./ITHACAoutput/Matrices/Y_mat.npy");
+        S_matrix = ITHACAstream::readMatrix("./ITHACAoutput/Matrices/S_mat.npy");
+        MT_matrix = ITHACAstream::readMatrix("./ITHACAoutput/Matrices/MT_mat.npy");
     }
     else
     {

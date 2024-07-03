@@ -42,7 +42,7 @@ If the offline solve has already been performed than read the existing snapshots
     {
         ITHACAstream::read_fields(Ufield, U, "./ITHACAoutput/Offline/");
         ITHACAstream::read_fields(Pfield, p, "./ITHACAoutput/Offline/");
-        mu_samples = ITHACAstream::readMatrix("./ITHACAoutput/Offline/mu_samples_mat.txt");
+        mu_samples = ITHACAstream::readMatrix("./ITHACAoutput/Offline/mu_samples_mat.npy");
     }
 
 else perform the offline solve where a loop over all the parameters is performed:

@@ -10,9 +10,9 @@ params = {'legend.fontsize': 'x-large',
          'ytick.labelsize':'x-large'}
 pylab.rcParams.update(params)
 
-relErr_L2norm = np.loadtxt("../caseDir/ITHACAoutput/CGtest/relError_L2norm_mat.txt")
-relErr_LinfNorm = np.loadtxt("../caseDir/ITHACAoutput/CGtest/relError_LinfNorm_mat.txt")
-J = np.loadtxt("../caseDir/costFunctionFull_mat.txt")
+relErr_L2norm = np.load("../caseDir/ITHACAoutput/CGtest/relError_L2norm_mat.npy")
+relErr_LinfNorm = np.load("../caseDir/ITHACAoutput/CGtest/relError_LinfNorm_mat.npy")
+J = np.load("../caseDir/costFunctionFull_mat.npy")
 
 iterations = np.linspace(1, len(relErr_LinfNorm), len(relErr_LinfNorm))
 iterationTicks = np.linspace(1, 100, 11)

@@ -535,11 +535,11 @@ int main(int argc, char* argv[])
     ITHACAparameters* para = ITHACAparameters::getInstance(example._mesh(),
                              example._runTime());
     // Read the files where the parameters are stored
-    std::ifstream exFileOff("./angOff_mat.txt");
+    std::ifstream exFileOff("./angOff_mat.npy");
 
     if (exFileOff)
     {
-        example.mu  = ITHACAstream::readMatrix("./angOff_mat.txt");
+        example.mu  = ITHACAstream::readMatrix("./angOff_mat.npy");
     }
     else
     {
@@ -548,11 +548,11 @@ int main(int argc, char* argv[])
     }
 
     Eigen::MatrixXd angOn;
-    std::ifstream exFileOn("./angOn_mat.txt");
+    std::ifstream exFileOn("./angOn_mat.npy");
 
     if (exFileOn)
     {
-        angOn = ITHACAstream::readMatrix("./angOn_mat.txt");
+        angOn = ITHACAstream::readMatrix("./angOn_mat.npy");
     }
     else
     {
