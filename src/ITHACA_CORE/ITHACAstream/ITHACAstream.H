@@ -666,6 +666,8 @@ void ITHACAstream::SaveDenseMatrix(MatrixType& Matrix, word folder,
                                    word MatrixName)
 {
     mkDir(folder);
+    cnpy::save(Matrix, folder + "/" + MatrixName + "_mat.npy");
+    /*
     std::ofstream out(folder + MatrixName,
                       std::ios::out | std::ios::binary | std::ios::trunc);
     typename MatrixType::Index rows = Matrix.rows(), cols = Matrix.cols();
@@ -674,12 +676,15 @@ void ITHACAstream::SaveDenseMatrix(MatrixType& Matrix, word folder,
     out.write(reinterpret_cast<char*> (Matrix.data()),
               rows * cols * sizeof(typename MatrixType::Scalar) );
     out.close();
+    */
 }
 
 template <typename MatrixType>
 void ITHACAstream::ReadDenseMatrix(MatrixType& Matrix, word folder,
                                    word MatrixName)
 {
+    cnpy::load(Matrix, folder + "/" + MatrixName + "_mat.npy");
+    /*
     std::ifstream in;
     in.open(folder + MatrixName, std::ios::in | std::ios::binary);
 
@@ -699,6 +704,7 @@ void ITHACAstream::ReadDenseMatrix(MatrixType& Matrix, word folder,
                  rows * cols * sizeof(typename MatrixType::Scalar) );
         in.close();
     }
+    */
 }
 
 
@@ -706,6 +712,8 @@ template <typename TensorType>
 void ITHACAstream::SaveDenseTensor(TensorType& Tensor, word folder,
                                    word MatrixName)
 {
+    cnpy::save(Tensor, folder + "/" + MatrixName + "_mat.npy");
+    /*
     std::ofstream out(folder + MatrixName,
                       std::ios::out | std::ios::binary | std::ios::trunc);
     typename TensorType::Dimensions dim = Tensor.dimensions();
@@ -721,12 +729,15 @@ void ITHACAstream::SaveDenseTensor(TensorType& Tensor, word folder,
     out.write(reinterpret_cast<char*> (Tensor.data()),
               tot * sizeof(typename TensorType::Scalar) );
     out.close();
+    */
 }
 
 template <typename TensorType>
 void ITHACAstream::ReadDenseTensor(TensorType& Tensor, word folder,
                                    word MatrixName)
 {
+    cnpy::load(Tensor, folder + "/" + MatrixName + "_mat.npy");
+    /*
     std::ifstream in;
     in.open(folder + MatrixName, std::ios::in | std::ios::binary);
     typename TensorType::Dimensions dim;
@@ -746,6 +757,7 @@ void ITHACAstream::ReadDenseTensor(TensorType& Tensor, word folder,
     in.read( reinterpret_cast<char*>(Tensor.data()),
              tot * sizeof(typename TensorType::Scalar) );
     in.close();
+    */
 }
 
 template <typename MatrixType>
