@@ -267,6 +267,8 @@ template<typename T>
 void exportTensor(Eigen::Tensor<T, 3> tensor, word Name,
                   word type, word folder)
 {
+    cnpy::save(tensor, folder + "/" + Name + "_mat.npy");
+    /*
     std::string message = "The extension \"" +  type +
                           "\" was not implemented. Check the list of possible extensions.";
     M_Assert(type == "python" || type == "matlab"
@@ -356,6 +358,7 @@ void exportTensor(Eigen::Tensor<T, 3> tensor, word Name,
             exportMatrix(matrixAux, Namei, "eigen", folder);
         }
     }
+    */
 }
 
 
