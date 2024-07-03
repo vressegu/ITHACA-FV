@@ -751,9 +751,9 @@ void UnsteadyNSTurb::projectSUP(fileName folder, label NU, label NP, label NSUP,
 
     if (rbfInterp == true && (!Pstream::parRun()))
     {
-        if (ITHACAutilities::check_file("./radii.txt"))
+        if (ITHACAutilities::check_file("./radii.npy"))
         {
-            radii = ITHACAstream::readMatrix("./radii.txt");
+            radii = ITHACAstream::readMatrix("./radii.npy");
             M_Assert(radii.size() == nNutModes,
                      "Thes size of the shape parameters vector must be equal to the number of eddy viscosity modes nNutModes");
         }
@@ -1238,9 +1238,9 @@ void UnsteadyNSTurb::projectPPE(fileName folder, label NU, label NP, label NSUP,
 
     if (rbfInterp == true && (!Pstream::parRun()))
     {
-        if (ITHACAutilities::check_file("./radii.txt"))
+        if (ITHACAutilities::check_file("./radii.npy"))
         {
-            radii = ITHACAstream::readMatrix("./radii.txt");
+            radii = ITHACAstream::readMatrix("./radii.npy");
             M_Assert(radii.size() ==  nNutModes,
                      "Thes size of the shape parameters vector must be equal to the number of eddy viscosity modes nNutModes");
         }
