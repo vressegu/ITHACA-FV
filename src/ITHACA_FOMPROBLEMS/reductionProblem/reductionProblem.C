@@ -242,6 +242,16 @@ void reductionProblem::project()
 void reductionProblem::writeMu(List<scalar> mu_now)
 {
     mkDir("./ITHACAoutput/Parameters");
+    Eigen::MatrixXd vectorMu(mu_now.size(),1);
+    for (label i = 0; i < mu_now.size(); i++)
+    {
+        vectorMu(i,0)= mu_now[i];
+    }
+    ITHACAstream::exportMatrix(vectorMu,
+                  "par", "python",
+                  "./ITHACAoutput/Parameters");
+
+    /*
     std::ofstream ofs;
     ofs.open ("./ITHACAoutput/Parameters/par",
               std::ofstream::out | std::ofstream::app);
@@ -251,6 +261,7 @@ void reductionProblem::writeMu(List<scalar> mu_now)
     }
     ofs << "\n";
     ofs.close();
+    */
 }
 
 void reductionProblem::liftSolve()
