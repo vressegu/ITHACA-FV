@@ -284,7 +284,7 @@ void exportFields(PtrList<GeometricField<Type, PatchField, GeoMesh>>&
                   word folder, word fieldname);
 
 //--------------------------------------------------------------------------
-/// Read a two dimensional matrix from a txt file in Eigen format
+/// Read a two dimensional matrix from a npy file
 /* One has to provide the complete filename with the absolute or relative path */
 ///
 /// @param[in]  filename  The filename of the matrix.
