@@ -412,7 +412,23 @@ Eigen::MatrixXd readMatrix(word filename)
     M_Assert(infile.good() != 0, message.c_str()
             );
 
-    /*
+    Eigen::MatrixXd result;
+    cnpy::load(result,filename);
+
+    return result;
+}
+Eigen::MatrixXd readMatrixTxt(word filename)
+{
+    int cols = 0, rows = 0;
+    double buff[MAXBUFSIZE];
+    // Read numbers from file into buffer.
+    std::ifstream infile;
+    infile.open(filename.c_str());
+    std::string message = "The matrix file \"" +  filename +
+                          "\" does not exist. Check the existence of the file or the way it is named.";
+    M_Assert(infile.good() != 0, message.c_str()
+            );
+
     while (! infile.eof())
     {
         string line;
@@ -450,7 +466,6 @@ Eigen::MatrixXd readMatrix(word filename)
             result(i, j) = buff[ cols * i + j ];
         }
     }
-    */
 
     Eigen::MatrixXd result;
     cnpy::load(result,filename);

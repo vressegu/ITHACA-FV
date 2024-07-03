@@ -294,6 +294,16 @@ void exportFields(PtrList<GeometricField<Type, PatchField, GeoMesh>>&
 Eigen::MatrixXd readMatrix(word filename);
 
 //--------------------------------------------------------------------------
+/// Read a two dimensional matrix from a txt file in Eigen format
+/* One has to provide the complete filename with the absolute or relative path */
+///
+/// @param[in]  filename  The filename of the matrix.
+///
+/// @return     The Eigen::MatrixXd that contains the imported matrix.
+///
+Eigen::MatrixXd readMatrixTxt(word filename);
+
+//--------------------------------------------------------------------------
 /// Read a three dimensional matrix from a txt file in Eigen format
 /* One has to provide the folder containing the matrix files and the filename of the
  the matrix. Since it is stored as a List of matrices each matrix must be stored in a
