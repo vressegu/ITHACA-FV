@@ -56,6 +56,8 @@ void exportMatrix(Eigen::Matrix < T, -1, dim > & matrix,
                   word Name, word type,
                   word folder)
 {
+    cnpy::save(matrix, folder + "/" + Name + "_mat.npy");
+    /*
     std::string message = "The extension \"" +  type +
                           "\" was not implemented. Check the list of possible extensions.";
     M_Assert(type == "python" || type == "matlab"
@@ -144,6 +146,7 @@ void exportMatrix(Eigen::Matrix < T, -1, dim > & matrix,
 
         ofs.close();
     }
+    */
 }
 
 template void exportMatrix(Eigen::Matrix < double, -1,
@@ -409,6 +412,7 @@ Eigen::MatrixXd readMatrix(word filename)
     M_Assert(infile.good() != 0, message.c_str()
             );
 
+    /*
     while (! infile.eof())
     {
         string line;
@@ -446,6 +450,10 @@ Eigen::MatrixXd readMatrix(word filename)
             result(i, j) = buff[ cols * i + j ];
         }
     }
+    */
+
+    Eigen::MatrixXd result;
+    cnpy::load(result,filename);
 
     return result;
 }
