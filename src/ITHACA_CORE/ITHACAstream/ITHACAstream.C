@@ -470,9 +470,6 @@ Eigen::MatrixXd readMatrixTxt(word filename)
         }
     }
 
-    Eigen::MatrixXd result;
-    cnpy::load(result,filename);
-
     return result;
 }
 
