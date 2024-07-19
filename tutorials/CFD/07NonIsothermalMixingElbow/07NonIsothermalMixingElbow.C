@@ -54,7 +54,6 @@ class tutorial07: public unsteadyNST
         {
             Vector<double> inl(0, 0, 0);
             List<scalar> mu_now(1);
-            Info << "here" << endl;
 
             if (offline)
             {
