@@ -72,7 +72,7 @@ unsteadyNST::unsteadyNST(int argc, char* argv[])
 // * * * * * * * * * * * * * * * Member Functions  * * * * * * * * * * * * * //
 #include "fvCFD.H"
 
-void unsteadyNST::truthSolve(List<scalar> mu_now)
+void unsteadyNST::truthSolve(List<scalar> mu_now, fileName folder)
 
 {
     Time& runTime = _runTime();
@@ -147,7 +147,28 @@ void unsteadyNST::truthSolve(List<scalar> mu_now)
             counter++;
             nextWrite += writeEvery;
             writeMu(mu_now);
+
+            // --- Fill in the mu_samples with parameters (time, mu) to be used for the PODI sample points
+            mu_samples.conservativeResize(mu_samples.rows() + 1, mu_now.size() + 1);
+            mu_samples(mu_samples.rows() - 1, 0) = atof(runTime.timeName().c_str());
+
+            for (label i = 0; i < mu_now.size(); i++)
+            {
+                mu_samples(mu_samples.rows() - 1, i + 1) = mu_now[i];
+            }
         }
+    }
+
+    // Resize to Unitary if not initialized by user (i.e. non-parametric problem)
+    if (mu.cols() == 0)
+    {
+        mu.resize(1, 1);
+    }
+
+    if (mu_samples.rows() == counter * mu.cols())
+    {
+        ITHACAstream::exportMatrix(mu_samples, "mu_samples", "eigen",
+                                   folder);
     }
 }
 
