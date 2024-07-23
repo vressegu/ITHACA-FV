@@ -168,7 +168,8 @@ class unsteadyNST: public unsteadyNS
         void liftSolveT();
 
         /// Perform a truthsolve
-        void truthSolve(List<scalar> mu_now);
+        void truthSolve(List<scalar> mu_now,
+                        fileName folder = "./ITHACAoutput/Offline/");
 
         //--------------------------------------------------------------------------
         /// Function to check if the solution must be exported.
