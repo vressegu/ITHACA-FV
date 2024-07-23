@@ -555,9 +555,9 @@ void ReducedUnsteadyNSTurbIntrusive::reconstruct(bool exportFields,
     }
 
     int counter = 0;
-    int nextWrite = 0;
     int counter2 = 1;
     int exportEveryIndex = round(exportEvery / storeEvery);
+    int nextWrite = exportEveryIndex;
     volScalarField nutAveNow("nutAveNow", nutModes[0] * 0);
     List < Eigen::MatrixXd> CoeffU;
     List < Eigen::MatrixXd> CoeffP;

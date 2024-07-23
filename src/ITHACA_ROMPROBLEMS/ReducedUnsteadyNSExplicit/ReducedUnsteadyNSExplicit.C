@@ -319,7 +319,6 @@ void ReducedUnsteadyNSExplicit::reconstruct(bool exportFields, fileName folder)
     }
 
     int counter = 0;
-    int nextwrite = 0;
     List < Eigen::MatrixXd> CoeffU;
     List < Eigen::MatrixXd> CoeffP;
     List <double> tValues;
@@ -327,6 +326,7 @@ void ReducedUnsteadyNSExplicit::reconstruct(bool exportFields, fileName folder)
     CoeffP.resize(0);
     tValues.resize(0);
     int exportEveryIndex = round(exportEvery / storeEvery);
+    int nextWrite = exportEveryIndex;
 
     for (label i = 0; i < online_solution.size(); i++)
     {
