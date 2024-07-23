@@ -56,6 +56,7 @@ void exportMatrix(Eigen::Matrix < T, -1, dim > & matrix,
                   word Name, word type,
                   word folder)
 {
+    mkDir(folder);
     cnpy::save(matrix, folder + "/" + Name + "_mat.npy");
     /*
     std::string message = "The extension \"" +  type +
@@ -176,6 +177,8 @@ template void exportMatrix(Eigen::Matrix < float, -1,
 void exportMatrix(List <Eigen::MatrixXd>& matrix, word Name,
                   word type, word folder)
 {
+    //cnpy::save(matrix, folder + "/" + Name + "_mat.npy");
+
     std::string message = "The extension \"" +  type +
                           "\" was not implemented. Check the list of possible extensions.";
     M_Assert(type == "python" || type == "matlab"
@@ -267,6 +270,12 @@ template<typename T>
 void exportTensor(Eigen::Tensor<T, 3> tensor, word Name,
                   word type, word folder)
 {
+
+    Info << endl;
+    Info << "fair enough" << endl;
+    Info << endl;
+
+
     cnpy::save(tensor, folder + "/" + Name + "_mat.npy");
     /*
     std::string message = "The extension \"" +  type +
@@ -399,6 +408,11 @@ List<Eigen::MatrixXd> readMatrix(word folder, word mat_name)
         Eigen::MatrixXd temp = readMatrix(matname);
         result.append(temp);
     }
+
+    /*
+    List <Eigen::MatrixXd> result;
+    cnpy::load(result,folder + "/" + mat_name + "_mat.npy");
+    */
 
     return result;
 }
@@ -740,7 +754,7 @@ void read_last_fields(
             ),
             field.mesh()
         );
-        #else 
+        #else
         auto tfld =
             autoPtr<GeometricField<Type, PatchField, GeoMesh>>::New
             (
@@ -814,7 +828,7 @@ void readLastFields(
     {
         read_last_fields(Lfield, field, casename + name(par) + "/");
         par++;
-    } 
+    }
 }
 
 int numberOfFiles(word folder, word MatrixName, word ext)
