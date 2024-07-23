@@ -365,7 +365,7 @@ void reducedUnsteadyNST::reconstruct_sup(fileName folder, int printevery)
     mkDir(folder);
     ITHACAutilities::createSymLink(folder);
     int counter = 0;
-    int nextwrite = 0;
+    int nextwrite = printevery;
     int counter2 = 1;
 
     for (int i = 0; i < online_solution.size(); i++)
@@ -407,7 +407,7 @@ void reducedUnsteadyNST::reconstruct_supt(fileName folder, int printevery)
     mkDir(folder);
     ITHACAutilities::createSymLink(folder);
     int counter = 0;
-    int nextwrite = 0;
+    int nextwrite = printevery;
     int counter2 = 1;
 
     for (int i = 0; i < online_solutiont.size(); i++)

@@ -570,7 +570,7 @@ void ReducedUnsteadyBB::reconstruct_sup(fileName folder, int printevery)
     }
 
     int counter = 0;
-    int nextwrite = 0;
+    int nextwrite = printevery;
     int counter2 = 1 + TREC.size();
 
     for (int i = 0; i < online_solutiont.cols(); i++)
