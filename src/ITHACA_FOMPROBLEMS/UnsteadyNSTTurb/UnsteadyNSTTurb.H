@@ -110,11 +110,69 @@ class UnsteadyNSTTurb: public unsteadyNST
         /// Number of nut field modes
         label Nphi_nut;
 
+        /// List of for eddy viscosity time-averaged fields
+        PtrList<volScalarField> nutAve;
+
         /// Create a Rbf splines for interpolation
-        std::vector<SPLINTER::DataTable*> SAMPLES;
+        std::vector<SPLINTER::DataTable*> samples;
 
         /// Create a SAMPLES for interpolation
         std::vector<SPLINTER::RBFSpline*> rbfsplines;
+
+
+        /// Turbulent viscosity term
+        Eigen::MatrixXd btMatrix;
+
+        /// Time-parameter combined matrix
+        Eigen::MatrixXd z;
+
+        /// Turbulent viscosity tensor
+        Eigen::Tensor<double, 3 > ct1Tensor;
+
+        /// Turbulent average viscosity tensor for the splitting approach
+        Eigen::Tensor<double, 3 > ct1AveTensor;
+
+        /// Turbulent viscosity tensor in the PPE equation
+        Eigen::Tensor<double, 3 > ct1PPETensor;
+
+        /// Turbulent average viscosity tensor for the splitting approach in the PPE equation
+        Eigen::Tensor<double, 3 > ct1PPEAveTensor;
+
+        /// Turbulent viscosity tensor
+        Eigen::Tensor<double, 3 > ct2Tensor;
+
+        /// Turbulent average viscosity tensor for the splitting approach
+        Eigen::Tensor<double, 3 > ct2AveTensor;
+
+        /// Turbulent viscosity tensor in the PPE equation
+        Eigen::Tensor<double, 3 > ct2PPETensor;
+
+        /// Turbulent average viscosity tensor for the splitting approach in the PPE equation
+        Eigen::Tensor<double, 3 > ct2PPEAveTensor;
+
+        /// Turbulent total viscosity tensor
+        Eigen::Tensor<double, 3 > cTotalTensor;
+
+        /// Turbulent total average viscosity tensor for the splitting approach
+        Eigen::Tensor<double, 3 > cTotalAveTensor;
+
+        /// Turbulent total viscosity tensor in the PPE equation
+        Eigen::Tensor<double, 3 > cTotalPPETensor;
+
+        /// Turbulent total average viscosity tensor for the splitting approach in the PPE equation
+        Eigen::Tensor<double, 3 > cTotalPPEAveTensor;
+
+        /// Total B Matrix
+        Eigen::MatrixXd bTotalMatrix;
+
+        /// The matrix of L2 projection coefficients for the eddy viscosity
+        Eigen::MatrixXd coeffL2;
+
+        /// Velocity coefficients for RBF interpolation
+        Eigen::MatrixXd velRBF;
+
+        /// RBF shape parameters vector
+        Eigen::VectorXd radii;
 
         /// Number of viscoisty modes used for the projection
         label Nnutmodes;
@@ -143,6 +201,12 @@ class UnsteadyNSTTurb: public unsteadyNST
         Eigen::MatrixXd B_total_matrix;
         ///@}
 
+        /// RBF functions radius
+        double e = 1;
+
+        /// Interpolation independent variable choice
+        label interChoice = 1;
+
         /// Eddy viscosity field
         autoPtr<volScalarField> _nut;
 
@@ -157,6 +221,15 @@ class UnsteadyNSTTurb: public unsteadyNST
 
         /// Turbulent thermal diffusivity
         autoPtr<volScalarField> _alphat;
+
+        /// Face velocity field
+        autoPtr<surfaceVectorField> _Uf;
+
+        /// Pressure reference cell
+        label _pRefCell;
+
+        /// Pressure reference value
+        scalar _pRefValue;
 
         /// @brief      BT added matrix for the turbulence treatement
         ///
@@ -208,7 +281,7 @@ class UnsteadyNSTTurb: public unsteadyNST
         /// to construct mu_interp matrix which is written out in the Offline folder, also for par file in
         /// the Parameters folder.
         ///
-        void truthSolve(List<scalar> mu_now);
+        void truthSolve(List<scalar> mu_now, std::string& offlinepath );
 
         /// Function to check if the solution must be exported.
         ///

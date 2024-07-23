@@ -44,103 +44,183 @@ UnsteadyNSTTurb::UnsteadyNSTTurb() {};
 // Construct from zero
 UnsteadyNSTTurb::UnsteadyNSTTurb(int argc, char* argv[])
 {
-#include "setRootCase.H"
+    _args = autoPtr<argList>
+            (
+                new argList(argc, argv)
+            );
+
+    if (!_args->checkRootCase())
+    {
+        Foam::FatalError.exit();
+    }
+
+    argList& args = _args();
 #include "createTime.H"
 #include "createMesh.H"
-    _piso = autoPtr<pisoControl>
-            (
-                new pisoControl
-                (
-                    mesh
-                )
-            );
-#pragma GCC diagnostic push
-#pragma GCC diagnostic ignored "-Wunused-variable"
+    _pimple = autoPtr<pimpleControl>
+              (
+                  new pimpleControl
+                  (
+                      mesh
+                  )
+              );
 #include "createFields.H"
+#include "createUfIfPresent.H"
 #include "createFvOptions.H"
-#pragma GCC diagnostic pop
+    ITHACAdict = new IOdictionary
+    (
+        IOobject
+        (
+            "ITHACAdict",
+            runTime.system(),
+            mesh,
+            IOobject::MUST_READ,
+            IOobject::NO_WRITE
+        )
+    );
+    tolerance = ITHACAdict->lookupOrDefault<scalar>("tolerance", 1e-5);
+    maxIter = ITHACAdict->lookupOrDefault<scalar>("maxIter", 1000);
+    bcMethod = ITHACAdict->lookupOrDefault<word>("bcMethod", "lift");
+    timeDerivativeSchemeOrder =
+        ITHACAdict->lookupOrDefault<word>("timeDerivativeSchemeOrder", "second");
+    M_Assert(bcMethod == "lift" || bcMethod == "penalty",
+             "The BC method must be set to lift or penalty in ITHACAdict");
+    M_Assert(timeDerivativeSchemeOrder == "first"
+             || timeDerivativeSchemeOrder == "second",
+             "The time derivative approximation must be set to either first or second order scheme in ITHACAdict");
+    para = ITHACAparameters::getInstance(mesh, runTime);
+    offline = ITHACAutilities::check_off();
+    podex = ITHACAutilities::check_pod();
     supex = ITHACAutilities::check_sup();
+    /// Number of velocity modes to be calculated
+    NUmodesOut = para->ITHACAdict->lookupOrDefault<label>("NmodesUout", 15);
+    /// Number of temperature modes to be calculated
+    NTmodesOut = para->ITHACAdict->lookupOrDefault<label>("NmodesTout", 15);
+    /// Number of pressure modes to be calculated
+    NPmodesOut = para->ITHACAdict->lookupOrDefault<label>("NmodesPout", 15);
+    /// Number of nut modes to be calculated
+    NNutModesOut = para->ITHACAdict->lookupOrDefault<label>("NmodesNutOut", 15);
+    /// Number of velocity modes used for the projection
+    NUmodes = para->ITHACAdict->lookupOrDefault<label>("NmodesUproj", 10);
+    /// Number of temperature modes used for the projection
+    NTmodes = para->ITHACAdict->lookupOrDefault<label>("NmodesTproj", 10);
+    /// Number of supremizers modes used for the projection
+    NSUPmodes = para->ITHACAdict->lookupOrDefault<label>("NmodesSUPproj", 10);
+    /// Number of pressure modes used for the projection
+    NPmodes = para->ITHACAdict->lookupOrDefault<label>("NmodesPproj", 10);
+    /// Number of nut modes used for the projection
+    NNutModes = para->ITHACAdict->lookupOrDefault<label>("NmodesNutProj", 0);
 }
 
 // * * * * * * * * * * * * * * * Member Functions  * * * * * * * * * * * * * //
 
-void UnsteadyNSTTurb::truthSolve(List<scalar> mu_now)
+void UnsteadyNSTTurb::truthSolve(List<scalar> mu_now, std::string& offlinepath)
 {
     Time& runTime = _runTime();
     surfaceScalarField& phi = _phi();
     fvMesh& mesh = _mesh();
 #include "initContinuityErrs.H"
     fv::options& fvOptions = _fvOptions();
-    pisoControl& piso = _piso();
-    volScalarField p = _p();
-    volVectorField U = _U();
-    volScalarField T = _T();
-    volScalarField _nut(turbulence->nut());
+    pimpleControl& pimple = _pimple();
+    volScalarField& p = _p();
+    volVectorField& U = _U();
+    volScalarField& T = _T();
+    volScalarField& nut = _nut();
     dimensionedScalar nu = _nu();
     dimensionedScalar Pr = _Pr();
     dimensionedScalar Prt = _Prt();
     volScalarField alphat = _alphat();
     singlePhaseTransportModel& laminarTransport = _laminarTransport();
-    //dimensionedScalar alphaEff = _alphaEff();
     IOMRFZoneList& MRF = _MRF();
     instantList Times = runTime.times();
+    label& pRefCell = _pRefCell;
+    scalar& pRefValue = _pRefValue;
+
+    mesh.setFluxRequired(p.name());
+
     runTime.setEndTime(finalTime);
-    // Perform a TruthSolve
-    bool WRITE;
     runTime.setTime(Times[1], 1);
     runTime.setDeltaT(timeStep);
-    nextWrite = startTime;
-    // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
-    turbulence->validate();
+    nextWrite = startTime + writeEvery;
 
-    // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
+    label nsnapshots = 0;
 
     // Start the time loop
     while (runTime.run())
     {
-#include "CourantNo.H"
-        runTime.setEndTime(finalTime);
-        runTime++;
-        Info << "Time = " << runTime.timeName() << nl << endl;
-        // --- Pressure-velocity PIMPLE corrector loop
-        {
-#include "UEqn.H"
+        #include "readTimeControls.H"
+        #include "CourantNo.H"
+        #include "setDeltaT.H"
 
-            // --- Pressure corrector loop
-            while (piso.correct())
-            {
-#include "pEqn.H"
-            }
-        }
+        ++runTime;
+
+        Info << "Time = " << runTime.timeName() << nl << endl;
+
+        // --- Pressure-velocity PIMPLE corrector loop
+        while (pimple.loop())
         {
-#include "TEqn.H"
+            #include "UEqn.H"
+            // --- Pressure corrector loop
+            while (pimple.correct())
+            {
+                #include "pEqn.H"
+            }
+            #include "TEqn.H"
             //TEqn.solve();
+            if (pimple.turbCorr())
+            {
+                laminarTransport.correct();
+                turbulence->correct();
+            }
+
         }
-        volScalarField _nut(turbulence->nut());
-        laminarTransport.correct();
-        turbulence->correct();
+
         Info << "ExecutionTime = " << runTime.elapsedCpuTime() << " s"
              << "  ClockTime = " << runTime.elapsedClockTime() << " s"
              << nl << endl;
-        WRITE = checkWrite(runTime);
 
-        if (WRITE)
+        if (checkWrite(runTime))
         {
-            ITHACAstream::exportSolution(U, name(counter), "./ITHACAoutput/Offline/");
-            ITHACAstream::exportSolution(p, name(counter), "./ITHACAoutput/Offline/");
-            ITHACAstream::exportSolution(_nut, name(counter), "./ITHACAoutput/Offline/");
-            ITHACAstream::exportSolution(T, name(counter), "./ITHACAoutput/Offline/");
-            ITHACAstream::exportSolution(alphat, name(counter), "./ITHACAoutput/Offline/");
-            std::ofstream of("./ITHACAoutput/Offline/" + name(counter) + "/" +
+            nsnapshots += 1;
+            // Produces error when uncommented
+            // volScalarField nut = turbulence->nut().ref();
+            nut = turbulence->nut();
+
+            ITHACAstream::exportSolution(U, name(counter), offlinepath);
+            ITHACAstream::exportSolution(p, name(counter), offlinepath);
+            ITHACAstream::exportSolution(nut, name(counter), offlinepath);
+            ITHACAstream::exportSolution(T, name(counter), offlinepath);
+            ITHACAstream::exportSolution(alphat, name(counter), offlinepath);
+            std::ofstream of(offlinepath + name(counter) + "/" +
                              runTime.timeName());
-            Ufield.append(U.clone());
-            Pfield.append(p.clone());
-            nutFields.append(_nut.clone());
-            Tfield.append(T.clone());
+            Ufield.append(tmp<volVectorField>(U));
+            Pfield.append(tmp<volScalarField>(p));
+            nutFields.append(tmp<volScalarField>(nut));
+            Tfield.append(tmp<volScalarField>(T));
             counter++;
             nextWrite += writeEvery;
             writeMu(mu_now);
+            // --- Fill in the mu_samples with parameters (time, mu) to be used for the PODI sample points
+            mu_samples.conservativeResize(mu_samples.rows() + 1, mu_now.size() + 1);
+            mu_samples(mu_samples.rows() - 1, 0) = atof(runTime.timeName().c_str());
+
+            for (label i = 0; i < mu_now.size(); i++)
+            {
+                mu_samples(mu_samples.rows() - 1, i + 1) = mu_now[i];
+            }
         }
+    }
+
+    // Resize to Unitary if not initialized by user (i.e. non-parametric problem)
+    if (mu.cols() == 0)
+    {
+        mu.resize(1, 1);
+    }
+
+    if (mu_samples.rows() == nsnapshots * mu.cols())
+    {
+        ITHACAstream::exportMatrix(mu_samples, "mu_samples", "eigen",
+                                   offlinepath);
     }
 }
 
@@ -527,19 +607,19 @@ void UnsteadyNSTTurb::projectSUP(fileName folder, label NU, label NP,
     Eigen::MatrixXd Ncoeff = ITHACAutilities::getCoeffs(nutFields, nuTmodes);
     ITHACAstream::exportMatrix(Ncoeff, "Ncoeff", "python",
                                "./ITHACAoutput/Matrices/");
-    SAMPLES.resize(Nnutmodes);
+    samples.resize(Nnutmodes);
     rbfsplines.resize(Nnutmodes);
 
     for (label i = 0; i < Nnutmodes; i++)
     {
-        SAMPLES[i] = new SPLINTER::DataTable(1, 1);
+        samples[i] = new SPLINTER::DataTable(1, 1);
 
         for (label j = 0; j < Ncoeff.cols(); j++)
         {
-            SAMPLES[i]->addSample(mu.row(j), Ncoeff(i, j));
+            samples[i]->addSample(mu.row(j), Ncoeff(i, j));
         }
 
-        rbfsplines[i] = new SPLINTER::RBFSpline(*SAMPLES[i],
+        rbfsplines[i] = new SPLINTER::RBFSpline(*samples[i],
                                                 SPLINTER::RadialBasisFunctionType::GAUSSIAN);
         std::cout << "Constructing RadialBasisFunction for mode " << i + 1 << std::endl;
     }

@@ -146,6 +146,9 @@ class unsteadyNST: public unsteadyNS
         /// Mesh
         mutable autoPtr<fvMesh> _mesh;
 
+        /// Number of temperature modes to be calculated
+        label NTmodesOut;
+
         /// Number of temperature modes used for the projection
         label NTmodes;
 
