@@ -376,8 +376,8 @@ void ReducedSteadyNSTurb::reconstruct(bool exportFields, fileName folder,
         ITHACAutilities::createSymLink(folder);
     }
 
-    int counter = printevery;
-    int nextWrite = 0;
+    int counter = 0;
+    int nextWrite = printevery;
     List <Eigen::MatrixXd> CoeffU;
     List <Eigen::MatrixXd> CoeffP;
     List <Eigen::MatrixXd> CoeffNut;

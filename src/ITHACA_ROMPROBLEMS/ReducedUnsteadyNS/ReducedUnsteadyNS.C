@@ -847,7 +847,7 @@ void reducedUnsteadyNS::reconstruct(bool exportFields, fileName folder)
     CoeffP.resize(0);
     tValues.resize(0);
     int exportEveryIndex = round(exportEvery / storeEvery);
-    int nextWrite = exportEveryIndex;
+    int nextwrite = exportEveryIndex;
 
     for (int i = 0; i < online_solution.size(); i++)
     {

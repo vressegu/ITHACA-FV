@@ -255,8 +255,8 @@ void reducedSteadyNS::reconstruct(bool exportFields, fileName folder,
         ITHACAutilities::createSymLink(folder);
     }
 
-    int counter = printevery;
-    int nextwrite = 0;
+    int counter = 0;
+    int nextwrite = printevery;
     List <Eigen::MatrixXd> CoeffU;
     List <Eigen::MatrixXd> CoeffP;
     CoeffU.resize(0);
