@@ -11687,11 +11687,13 @@ boundaryField
     }
     sides
     {
-        type            zeroGradient;
+        type            nutkWallFunction;
+	value uniform 0;
     }
     cylinder1
     {
-        type            zeroGradient;
+        type            nutkWallFunction;
+	value uniform 0;
     }
 }
 
