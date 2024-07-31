@@ -119,7 +119,7 @@ void exportMatrix(Eigen::Matrix < T, -1, dim > & matrix,
     {
         const static Eigen::IOFormat CSVFormat(6, false, ", ", "\n");
         std::ofstream ofs;
-        ofs.precision(20);
+        ofs.precision(10);
         ofs.open (folder + "/" + Name + "_mat.txt");
 
         for (int i = 0; i < matrix.rows(); i++)
