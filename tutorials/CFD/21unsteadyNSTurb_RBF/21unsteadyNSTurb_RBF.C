@@ -164,7 +164,7 @@ int main(int argc, char* argv[])
     pod_rbf.nu = 1e-05;
     pod_rbf.tauU.resize(1, 1);
     pod_rbf.tstart = 0;
-    pod_rbf.finalTime = 10.1;
+    pod_rbf.finalTime = 5;
     pod_rbf.dt = 0.005;
     pod_rbf.storeEvery = 0.005;
     pod_rbf.exportEvery = 0.1;
