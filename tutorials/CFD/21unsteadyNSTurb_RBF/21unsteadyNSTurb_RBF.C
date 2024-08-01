@@ -205,7 +205,7 @@ int main(int argc, char* argv[])
     /// Set the number of parameters
     example2.Pnumber = 1;
     /// Set samples
-    example2.Tnumber = 2;
+    example2.Tnumber = 1;
     /// Set the parameters infos
     example2.setParameters();
     // Set the parameter ranges
