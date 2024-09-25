@@ -87,7 +87,6 @@ SourceFiles
 /// Namespace for input-output manipulation
 namespace ITHACAstream
 {
-
 //--------------------------------------------------------------------------
 /// @brief      Export an Fv Matrix to folder together with its source term
 ///
@@ -531,6 +530,16 @@ template<typename T>
 void load(List<Eigen::SparseMatrix<T>>& MatrixList, word folder,
           word MatrixName);
 
+//--------------------------------------------------------------------------
+/// Exporter des matrice vecttor et tensor en txt et pny
+///
+/// @param[in]  Eigen      Matrice vector ou tensor aexport
+/// @param[in]  word       Chemin du dépot des fichiers
+///
+///
+void exportTxtCpy(Eigen::MatrixXd Matrice,word matriceChemin);
+void exportTxtCpy(Eigen::VectorXd Matrice,word matriceChemin);
+void exportTxtCpy(Eigen::Tensor<double,3>& Tensor,word tensorChemin);
 };
 
 namespace Foam
@@ -814,6 +823,8 @@ void ITHACAstream::ReadDenseMatrixList(List<MatrixType>& m, word folder,
         m.append(A);
     }
 }
+
+
 
 
 

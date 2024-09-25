@@ -44,6 +44,7 @@ template<typename Type>
 void exportFvMatrix(fvMatrix<Type>& Matrix, word folder,
                     word MatrixName)
 {
+    std::cout << "Hello" << std::endl;
     Eigen::SparseMatrix<double> A;
     Eigen::VectorXd b;
     Foam2Eigen::fvMatrix2Eigen(Matrix, A, b);
@@ -1139,4 +1140,21 @@ template void save(const List<Eigen::SparseMatrix<double>>& MatrixList,
 template void load(List<Eigen::SparseMatrix<double>>& MatrixList, word folder,
                    word MatrixName);
 
+
+void exportTxtCpy(Eigen::MatrixXd Matrice,word matriceChemin)
+{
+    exportMatrix(Matrice, matriceChemin, "eigen", "./ITHACAoutput/Matrices/Texte/");
+    cnpy::save(Matrice,"./ITHACAoutput/Matrices/Cpny/" + matriceChemin + ".npy");
+}
+void exportTxtCpy(Eigen::VectorXd Vector,word matriceChemin)
+{
+    exportMatrix(Vector, matriceChemin, "eigen", "./ITHACAoutput/Matrices/Texte/");
+    cnpy::save(Vector,"./ITHACAoutput/Matrices/Cpny/" + matriceChemin + ".npy");
+}
+
+void exportTxtCpy(Eigen::Tensor<double,3>& Tensor,word tensorChemin)
+{
+    exportTensor(Tensor, tensorChemin, "eigen", "./ITHACAoutput/Matrices/Texte/");
+    cnpy::save(Tensor,"./ITHACAoutput/Matrices/Cpny/" + tensorChemin + ".npy");
+}
 }
