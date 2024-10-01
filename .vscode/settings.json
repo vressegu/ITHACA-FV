@@ -2,6 +2,7 @@
     "files.associations": {
         "StreamTest.C": "cpp",
         "ITHACAstream.C": "cpp",
-        "ITHACAstreamTemplates.C": "cpp"
+        "ITHACAstreamTemplates.C": "cpp",
+        "cnpy.C": "cpp"
     }
 }

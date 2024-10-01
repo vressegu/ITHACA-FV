@@ -58,7 +58,10 @@ void exportMatrix(Eigen::Matrix < T, -1, dim > & matrix,
                   word folder)
 {
     mkDir(folder);
-    cnpy::save(matrix, folder + "/" + Name + "_mat.npy");
+    if (type == "cnpy")
+    {
+        cnpy::save(Matrix,"./ITHACAoutput/Matrices/Cpny/"+ Name + ".npy");
+    }
     /*
     std::string message = "The extension \"" +  type +
                           "\" was not implemented. Check the list of possible extensions.";
@@ -118,7 +121,7 @@ void exportMatrix(Eigen::Matrix < T, -1, dim > & matrix,
 
         str << "];" << endl;
     }
-
+    */
     if (type == "eigen")
     {
         const static Eigen::IOFormat CSVFormat(6, false, ", ", "\n");
@@ -145,10 +148,38 @@ void exportMatrix(Eigen::Matrix < T, -1, dim > & matrix,
                 ofs << std::endl;
             }
         }
-
         ofs.close();
     }
-    */
+    else
+    {
+        cnpy::save(Matrix,"./ITHACAoutput/Matrices/Cpny/" + Name + ".npy");
+        
+        const static Eigen::IOFormat CSVFormat(6, false, ", ", "\n");
+        std::ofstream ofs;
+        ofs.precision(20);
+        ofs.open (folder + "/" + Name + "_mat.txt");
+
+        for (int i = 0; i < matrix.rows(); i++)
+        {
+            for (int j = 0; j < matrix.cols(); j++)
+            {
+                if (j == 0)
+                {
+                    ofs << matrix(i, j);
+                }
+                else
+                {
+                    ofs << " " << matrix(i, j);
+                }
+            }
+
+            if (i != (matrix.rows() - 1))
+            {
+                ofs << std::endl;
+            }
+        }
+        ofs.close();
+    }
 }
 
 template void exportMatrix(Eigen::Matrix < double, -1,
@@ -269,7 +300,7 @@ void exportVector(Eigen::VectorXd& vector,
 
 template<typename T>
 void exportTensor(Eigen::Tensor<T, 3> tensor, word Name,
-                  word type, word folder)
+                  word type = "", word folder)
 {
 
     Info << endl;
@@ -1141,20 +1172,17 @@ template void load(List<Eigen::SparseMatrix<double>>& MatrixList, word folder,
                    word MatrixName);
 
 
-void exportTxtCpy(Eigen::MatrixXd Matrice,word matriceChemin)
+void exportTxtCpy(Eigen::MatrixXd Matrix,word matrixRoad, word type = "")
 {
-    exportMatrix(Matrice, matriceChemin, "eigen", "./ITHACAoutput/Matrices/Texte/");
-    cnpy::save(Matrice,"./ITHACAoutput/Matrices/Cpny/" + matriceChemin + ".npy");
+    exportMatrix(Matrix, matrixRoad, type, "./ITHACAoutput/Matrices/Txt");
 }
-void exportTxtCpy(Eigen::VectorXd Vector,word matriceChemin)
+void exportTxtCpy(Eigen::VectorXd Vector,word matrixRoad,word type = "")
 {
-    exportMatrix(Vector, matriceChemin, "eigen", "./ITHACAoutput/Matrices/Texte/");
-    cnpy::save(Vector,"./ITHACAoutput/Matrices/Cpny/" + matriceChemin + ".npy");
+    exportMatrix(Vector, matrixRoad, type, "./ITHACAoutput/Matrices/Txt");
 }
 
-void exportTxtCpy(Eigen::Tensor<double,3>& Tensor,word tensorChemin)
+void exportTxtCpy(Eigen::Tensor<double,3>& Tensor,word tensorRoad,word type = "")
 {
-    exportTensor(Tensor, tensorChemin, "eigen", "./ITHACAoutput/Matrices/Texte/");
-    cnpy::save(Tensor,"./ITHACAoutput/Matrices/Cpny/" + tensorChemin + ".npy");
+    exportTensor(Tensor, tensorRoad, type, "./ITHACAoutput/Matrices/Txt");
 }
 }

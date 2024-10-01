@@ -537,9 +537,9 @@ void load(List<Eigen::SparseMatrix<T>>& MatrixList, word folder,
 /// @param[in]  word       Chemin du dépot des fichiers
 ///
 ///
-void exportTxtCpy(Eigen::MatrixXd Matrice,word matriceChemin);
-void exportTxtCpy(Eigen::VectorXd Matrice,word matriceChemin);
-void exportTxtCpy(Eigen::Tensor<double,3>& Tensor,word tensorChemin);
+void exportTxtCpy(Eigen::MatrixXd Matrix,word matrixRoad);
+void exportTxtCpy(Eigen::VectorXd Vector,word matrixRoad);
+void exportTxtCpy(Eigen::Tensor<double,3>& Tensor,word tensorRoad);
 };
 
 namespace Foam
