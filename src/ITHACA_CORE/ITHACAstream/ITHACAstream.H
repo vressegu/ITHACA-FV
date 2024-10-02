@@ -113,7 +113,7 @@ void exportFvMatrix(fvMatrix<Type>& Matrix, word folder,
 ///
 template<typename T, int dim>
 void exportMatrix(Eigen::Matrix < T, -1, dim > & matrix, word Name,
-                  word type = "python", word folder = "./Matrices");
+                  word type = "", word folder = "");
 
 //--------------------------------------------------------------------------
 /// Export the reduced matrices in numpy (type=python), matlab (type=matlab) and txt (type=eigen) format
@@ -127,7 +127,7 @@ void exportMatrix(Eigen::Matrix < T, -1, dim > & matrix, word Name,
 /// @param[in] folder    Directory in which the file is saved.
 ///
 void exportMatrix(List <Eigen::MatrixXd>& matrix, word Name,
-                  word type = "python", word folder = "./Matrices");
+                  word type = "", word folder = "");
 
 //--------------------------------------------------------------------------
 /// Export the reduced tensor in numpy (tipo=python), matlab (tipo=matlab) and txt (tipo=eigen) format
@@ -142,7 +142,7 @@ void exportMatrix(List <Eigen::MatrixXd>& matrix, word Name,
 ///
 template<typename T>
 void exportTensor(Eigen::Tensor<T, 3 > tensor, word Name,
-                  word type = "python", word folder = "./Matrices");
+                  word type = "", word folder = "");
 
 
 //----------------------------------------------------------------------
@@ -537,9 +537,9 @@ void load(List<Eigen::SparseMatrix<T>>& MatrixList, word folder,
 /// @param[in]  word       Chemin du dépot des fichiers
 ///
 ///
-void exportTxtCpy(Eigen::MatrixXd Matrix,word matrixRoad);
-void exportTxtCpy(Eigen::VectorXd Vector,word matrixRoad);
-void exportTxtCpy(Eigen::Tensor<double,3>& Tensor,word tensorRoad);
+void exportTxtCpy(Eigen::MatrixXd Matrix,word matrixRoad,word type = "");
+void exportTxtCpy(Eigen::VectorXd Vector,word matrixRoad, word type = "");
+void exportTxtCpy(Eigen::Tensor<double,3>& Tensor,word tensorRoad, word type = "");
 };
 
 namespace Foam
