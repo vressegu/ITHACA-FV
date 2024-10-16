@@ -87,6 +87,9 @@ SourceFiles
 /// Namespace for input-output manipulation
 namespace ITHACAstream
 {
+
+const word roadTxtFile = "./ITHACAoutput/Matrices/Txt";
+const word roadCnpyFile = "./ITHACAoutput/Matrices/Cnpy";
 //--------------------------------------------------------------------------
 /// @brief      Export an Fv Matrix to folder together with its source term
 ///

@@ -57,7 +57,8 @@ void exportMatrix(Eigen::Matrix < T, -1, dim > & matrix,
                   word Name, word type,
                   word folder)
 {
-    mkDir(folder);
+
+    mkDir(roadTxtFile);
     if (type == "cnpy")
     {
         cnpy::save(matrix,"./ITHACAoutput/Matrices/Cpny/"+ Name + ".npy");
@@ -127,7 +128,7 @@ void exportMatrix(Eigen::Matrix < T, -1, dim > & matrix,
         const static Eigen::IOFormat CSVFormat(6, false, ", ", "\n");
         std::ofstream ofs;
         ofs.precision(20);
-        ofs.open (folder + "/" + Name + "_mat.txt");
+        ofs.open (roadTxtFile + "/" + Name + "_mat.txt");
 
         for (int i = 0; i < matrix.rows(); i++)
         {
@@ -157,7 +158,7 @@ void exportMatrix(Eigen::Matrix < T, -1, dim > & matrix,
         const static Eigen::IOFormat CSVFormat(6, false, ", ", "\n");
         std::ofstream ofs;
         ofs.precision(20);
-        ofs.open (folder + "/" + Name + "_mat.txt");
+        ofs.open (roadTxtFile + "/" + Name + "_mat.txt");
 
         for (int i = 0; i < matrix.rows(); i++)
         {
@@ -307,8 +308,10 @@ void exportTensor(Eigen::Tensor<T, 3> tensor, word Name,
     Info << "fair enough" << endl;
     Info << endl;
 
-
-    cnpy::save(tensor, folder + "/" + Name + "_mat.npy");
+    if (type == "cnpy")
+    {
+        cnpy::save(tensor, "./ITHACAoutput/Matrices/Cpny/" + Name + ".npy");
+    }
     /*
     std::string message = "The extension \"" +  type +
                           "\" was not implemented. Check the list of possible extensions.";
@@ -389,7 +392,7 @@ void exportTensor(Eigen::Tensor<T, 3> tensor, word Name,
 
             str << "];" << endl;
         }
-    }
+    }*/
     else if (type == "eigen")
     {
         for (int i = 0; i < tensor.dimension(0); i++)
@@ -399,7 +402,17 @@ void exportTensor(Eigen::Tensor<T, 3> tensor, word Name,
             exportMatrix(matrixAux, Namei, "eigen", folder);
         }
     }
-    */
+    else
+    {
+        cnpy::save(tensor, "./ITHACAoutput/Matrices/Cpny/" + Name + ".npy");
+        for (int i = 0; i < tensor.dimension(0); i++)
+        {
+            Eigen::Matrix < T, -1, -1 > matrixAux = Eigen::SliceFromTensor(tensor, 0, i);
+            word Namei = Name + name(i);
+            exportMatrix(matrixAux, Namei, "eigen", folder);
+        }
+    }
+    
 }
 
 
