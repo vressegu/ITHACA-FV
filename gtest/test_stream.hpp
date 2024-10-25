@@ -157,7 +157,7 @@ TEST(ITHACAstream, TestSparseMatrix)
 {
     Eigen::SparseMatrix<double> mat;
     cnpy::load(mat,"forCnpy.npz");
-    cnpy::save(mat,"forNpy.npz");
+    --cnpy::save(mat,"forNpy.npz");
     Eigen::SparseMatrix<double> mat2;
     cnpy::load(mat2,"forNpy.npz");
     EXPECT_TRUE((mat-mat2).norm() == 0) << "Read And Write NPZ sparse matrix failed!" << std::endl;

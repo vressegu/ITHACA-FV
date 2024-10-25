@@ -540,9 +540,9 @@ void load(List<Eigen::SparseMatrix<T>>& MatrixList, word folder,
 /// @param[in]  word       Chemin du dépot des fichiers
 ///
 ///
-void exportTxtCpy(Eigen::MatrixXd Matrix,word matrixRoad,word type = "");
-void exportTxtCpy(Eigen::VectorXd Vector,word matrixRoad, word type = "");
-void exportTxtCpy(Eigen::Tensor<double,3>& Tensor,word tensorRoad, word type = "");
+void exportToFile(Eigen::MatrixXd Matrix,word matrixRoad,word type = "");
+void exportToFile(Eigen::VectorXd Vector,word matrixRoad, word type = "");
+void exportToFile(Eigen::Tensor<double,3>& Tensor,word tensorRoad, word type = "");
 };
 
 namespace Foam

@@ -128,7 +128,16 @@ void exportMatrix(Eigen::Matrix < T, -1, dim > & matrix,
         const static Eigen::IOFormat CSVFormat(6, false, ", ", "\n");
         std::ofstream ofs;
         ofs.precision(20);
-        ofs.open (roadTxtFile + "/" + Name + "_mat.txt");
+        if(folder=="")
+        {
+            ofs.open (roadTxtFile + "/" + Name + ".txt");
+        }
+        else
+        {
+            ofs.open (folder + "/" + Name + ".txt");
+        }
+        
+       
 
         for (int i = 0; i < matrix.rows(); i++)
         {
@@ -158,7 +167,15 @@ void exportMatrix(Eigen::Matrix < T, -1, dim > & matrix,
         const static Eigen::IOFormat CSVFormat(6, false, ", ", "\n");
         std::ofstream ofs;
         ofs.precision(20);
-        ofs.open (roadTxtFile + "/" + Name + "_mat.txt");
+
+        if(folder=="")
+        {
+            ofs.open (roadTxtFile + "/" + Name + ".txt");
+        }
+        else
+        {
+            ofs.open (folder + "/" + Name + ".txt");
+        }
 
         for (int i = 0; i < matrix.rows(); i++)
         {
@@ -1185,16 +1202,17 @@ template void load(List<Eigen::SparseMatrix<double>>& MatrixList, word folder,
                    word MatrixName);
 
 
-void exportTxtCpy(Eigen::MatrixXd Matrix,word matrixRoad, word type)
+void exportToFile(Eigen::MatrixXd Matrix,word matrixRoad, word type)
 {
     exportMatrix(Matrix, matrixRoad, type, "./ITHACAoutput/Matrices/Txt");
 }
-void exportTxtCpy(Eigen::VectorXd Vector,word matrixRoad,word type)
+
+void exportToFile(Eigen::VectorXd Vector,word matrixRoad,word type)
 {
     exportMatrix(Vector, matrixRoad, type, "./ITHACAoutput/Matrices/Txt");
 }
 
-void exportTxtCpy(Eigen::Tensor<double,3>& Tensor,word tensorRoad,word type)
+void exportToFile(Eigen::Tensor<double,3>& Tensor,word tensorRoad,word type)
 {
     exportTensor(Tensor, tensorRoad, type, "./ITHACAoutput/Matrices/Txt");
 }

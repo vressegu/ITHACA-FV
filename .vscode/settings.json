@@ -73,6 +73,9 @@
         "typeindex": "c",
         "typeinfo": "c",
         "valarray": "c",
-        "variant": "c"
+        "variant": "c",
+        "ITHACAstream.C": "cpp",
+        "03steadyNS.C": "cpp",
+        "ITHACADMD.C": "cpp"
     }
 }
