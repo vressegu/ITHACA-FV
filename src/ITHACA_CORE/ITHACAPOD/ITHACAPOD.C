@@ -406,6 +406,12 @@ void getModesMemoryEfficient(
             GeometricField<Type, PatchField, GeoMesh> snapI = 
                 ITHACAstream::readFieldByIndex(templateField, snapshotsPath, i);
 
+            // Substract mean field if provided
+            if (meanField)
+            {
+                snapI -= *meanField;
+            }
+
             // Store boundary field data for snapshot i
             List<Eigen::VectorXd> snapIBC = Foam2Eigen::field2EigenBC(snapI);
             for (label k = 0; k < NBC; k++)
@@ -418,6 +424,12 @@ void getModesMemoryEfficient(
             {
                 GeometricField<Type, PatchField, GeoMesh> snapJ = 
                     ITHACAstream::readFieldByIndex(templateField, snapshotsPath, j);
+
+                // Subtract mean field if provided
+                if (meanField)
+                {
+                    snapJ -= *meanField;
+                }
 
                 // Calculate correlation using specified norm
                 if (PODnorm == "L2")
