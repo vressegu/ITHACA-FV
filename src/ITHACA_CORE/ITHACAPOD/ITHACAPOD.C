@@ -334,7 +334,8 @@ void getModesMemoryEfficient(
     bool supex,
     bool sup,
     label nmodes,
-    bool correctBC)
+    bool correctBC,
+    autoPtr<GeometricField<Type, PatchField, GeoMesh>> meanField)
 {
     // Get parameters instance for POD settings
     ITHACAparameters* para(ITHACAparameters::getInstance());
@@ -609,7 +610,8 @@ template void getModesMemoryEfficient<scalar, fvPatchField, volMesh>
     bool,
     bool,
     label,
-    bool
+    bool,
+    autoPtr<GeometricField<scalar, fvPatchField, volMesh>>
 );
 
 
@@ -623,7 +625,8 @@ template void getModesMemoryEfficient<vector, fvPatchField, volMesh>
     bool,
     bool,
     label,
-    bool
+    bool,
+    autoPtr<GeometricField<vector, fvPatchField, volMesh>>
 );
 
 

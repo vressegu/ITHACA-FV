@@ -384,7 +384,8 @@ static void getModesMemoryEfficient(
     bool supex = false,
     bool sup = false,
     label nmodes = 0,
-    bool correctBC = true);
+    bool correctBC = true,
+    autoPtr<GeometricField<Type, PatchField, GeoMesh>> meanField = NULL);
 
 //------------------------------------------------------------------------------
 /// @brief      Helper function to compute inner product value for different field types
