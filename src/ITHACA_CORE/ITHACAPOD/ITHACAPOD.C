@@ -506,12 +506,12 @@ void getModesMemoryEfficient(
         // Construct POD modes
         modes.resize(nmodes);
         
-        for (label i = 0; i < nmodes; i++)
-        {
-            // Read first snapshot to get boundary conditions
-            GeometricField<Type, PatchField, GeoMesh> firstSnap = 
-                ITHACAstream::readFieldByIndex(templateField, snapshotsPath, 0);
+        // Read first snapshot to get boundary conditions
+        GeometricField<Type, PatchField, GeoMesh> firstSnap = 
+            ITHACAstream::readFieldByIndex(templateField, snapshotsPath, 0);
                 
+        for (label i = 0; i < nmodes; i++)
+        {                
             // Initialize mode with proper dimensions and boundary conditions
             GeometricField<Type, PatchField, GeoMesh> modeI
             (
