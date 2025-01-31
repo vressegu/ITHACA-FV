@@ -59,9 +59,18 @@ void exportMatrix(Eigen::Matrix < T, -1, dim > & matrix,
 {
 
     mkDir(roadTxtFile);
+    
     if (type == "cnpy")
     {
-        cnpy::save(matrix,"./ITHACAoutput/Matrices/Cpny/"+ Name + ".npy");
+        if(folder=="")
+        {
+            cnpy::save(matrix,"./ITHACAoutput/Matrices/Cpny/"+ Name + ".npy");
+        }
+        else 
+        {
+            cnpy::save(matrix,folder + "/"+ Name + ".npy");
+        }
+
     }
     /*
     std::string message = "The extension \"" +  type +
@@ -123,7 +132,7 @@ void exportMatrix(Eigen::Matrix < T, -1, dim > & matrix,
         str << "];" << endl;
     }
     */
-    if (type == "eigen")
+    else if (type == "eigen")
     {
         const static Eigen::IOFormat CSVFormat(6, false, ", ", "\n");
         std::ofstream ofs;
@@ -1202,18 +1211,18 @@ template void load(List<Eigen::SparseMatrix<double>>& MatrixList, word folder,
                    word MatrixName);
 
 
-void exportToFile(Eigen::MatrixXd Matrix,word matrixRoad, word type)
+void exportToFile(Eigen::MatrixXd Matrix,word matrixRoad, word type, word folder)
 {
-    exportMatrix(Matrix, matrixRoad, type, "./ITHACAoutput/Matrices/Txt");
+    exportMatrix(Matrix, matrixRoad, type, folder);
+}
+0
+void exportToFile(Eigen::VectorXd Vector,word matrixRoad,word type,word folder)
+{
+    exportMatrix(Vector, matrixRoad, type, folder);
 }
 
-void exportToFile(Eigen::VectorXd Vector,word matrixRoad,word type)
+void exportToFile(Eigen::Tensor<double,3>& Tensor,word tensorRoad,word type,word folder)
 {
-    exportMatrix(Vector, matrixRoad, type, "./ITHACAoutput/Matrices/Txt");
-}
-
-void exportToFile(Eigen::Tensor<double,3>& Tensor,word tensorRoad,word type)
-{
-    exportTensor(Tensor, tensorRoad, type, "./ITHACAoutput/Matrices/Txt");
+    exportTensor(Tensor, tensorRoad, type, folder );
 }
 }
