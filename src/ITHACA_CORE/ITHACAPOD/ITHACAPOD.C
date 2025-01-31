@@ -612,7 +612,7 @@ void getModesMemoryEfficient(
     }
 }
 
-template void getModesMemoryEfficient<scalar, fvPatchField, volMesh>
+template void getModesMemoryEfficient
 (
     GeometricField<scalar, fvPatchField, volMesh>&,
     word,
@@ -627,7 +627,7 @@ template void getModesMemoryEfficient<scalar, fvPatchField, volMesh>
 );
 
 
-template void getModesMemoryEfficient<vector, fvPatchField, volMesh>
+template void getModesMemoryEfficient
 (
     GeometricField<vector, fvPatchField, volMesh>&,
     word,
