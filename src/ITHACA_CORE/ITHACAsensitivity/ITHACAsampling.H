@@ -39,10 +39,9 @@
 #include "fvCFD.H"
 #include "ITHACAstream.H"
 
-class ITHACAsampling
+namespace ITHACAsampling
 {
-    public:
-
+  
         //Methods
         ///-------------------------------------------------------------------------------------------
         /// method to sample with MC inverse transform according to the parameter distribution
@@ -50,13 +49,11 @@ class ITHACAsampling
         /// lowerE and upperE are the extremes of the desired range, values outside of it are rejected
         /// distpara1 and distpara2 are the parameters of the distibution, in case of distribution with
         /// only 1 parameter only the value in distpara1 is used
-        static Eigen::VectorXd samplingMC(std::string pdftype, double& lowerE,
+        Eigen::VectorXd samplingMC(std::string pdftype, double& lowerE,
                                           double& upperE, double& distpara1, double& distpara2, label& Npoints);
 
-    private:
-
         /// vector containing the name of the distribution managed in this class
-        static std::vector<std::string> distributions;
+        extern std::vector<std::string> distributions;
 
 };
 
