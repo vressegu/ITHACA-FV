@@ -378,11 +378,11 @@ Eigen::MatrixXd ReducedUnsteadyBB::solveOnline_sup(Eigen::MatrixXd& temp_now_BC,
     }
 
     // Save the current solution
-    ITHACAstream::exportMatrix(online_solutiont, "red_coeff", "python",
+    ITHACAstream::exportToFile(online_solutiont, "red_coeff", "python",
                                "./ITHACAoutput/red_coeff/" + name(NParaSet) + "/");
-    ITHACAstream::exportMatrix(online_solutiont, "red_coeff", "matlab",
+    ITHACAstream::exportToFile(online_solutiont, "red_coeff", "matlab",
                                "./ITHACAoutput/red_coeff/" + name(NParaSet)  + "/");
-    ITHACAstream::exportMatrix(online_solutiont, "red_coeff", "eigen",
+    ITHACAstream::exportToFile(online_solutiont, "red_coeff", "eigen",
                                "./ITHACAoutput/red_coeff/" + name(NParaSet)  + "/");
     return online_solutiont;
 }
@@ -547,13 +547,13 @@ Eigen::MatrixXd ReducedUnsteadyBB::solveOnline_PPE(Eigen::MatrixXd&
     }
 
     // Save the current solution
-    ITHACAstream::exportMatrix(online_solutiont, "red_coeff", "python",
+    ITHACAstream::exportToFile(online_solutiont, "red_coeff", "python",
                                "./ITHACAoutput/red_coeff/" + name(NParaSet) + "/");
-    ITHACAstream::exportMatrix(online_solutiont, "red_coeff", "python",
+    ITHACAstream::exportToFile(online_solutiont, "red_coeff", "python",
                                ".");
-    ITHACAstream::exportMatrix(online_solutiont, "red_coeff", "matlab",
+    ITHACAstream::exportToFile(online_solutiont, "red_coeff", "matlab",
                                "./ITHACAoutput/red_coeff/" + name(NParaSet)  + "/");
-    ITHACAstream::exportMatrix(online_solutiont, "red_coeff", "eigen",
+    ITHACAstream::exportToFile(online_solutiont, "red_coeff", "eigen",
                                "./ITHACAoutput/red_coeff/" + name(NParaSet)  + "/");
     return online_solutiont;
 }

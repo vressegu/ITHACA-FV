@@ -290,11 +290,9 @@ List <Eigen::MatrixXd> UnsteadyNSTTurb::turbulenceTerm1(label NUmodes,
     }
 
     // Export the matrix
-    ITHACAstream::exportMatrix(CT1_matrix, "CT1_matrix", "python",
-                               "./ITHACAoutput/Matrices/");
-    ITHACAstream::exportMatrix(CT1_matrix, "CT1_matrix", "matlab",
-                               "./ITHACAoutput/Matrices/");
-    ITHACAstream::exportMatrix(CT1_matrix, "CT1_matrix", "eigen",
+    ITHACAstream::exportToFile(CT1_matrix, "CT1_matrix", "python");
+    ITHACAstream::exportToFile(CT1_matrix, "CT1_matrix", "matlab");
+    ITHACAstream::exportToFile(CT1_matrix, "CT1_matrix", "eigen",
                                "./ITHACAoutput/Matrices/CT1");
     return CT1_matrix;
 }
@@ -355,11 +353,9 @@ List <Eigen::MatrixXd> UnsteadyNSTTurb::turbulenceTerm2(label NUmodes,
     }
 
     // Export the matrix
-    ITHACAstream::exportMatrix(CT2_matrix, "CT2_matrix", "python",
-                               "./ITHACAoutput/Matrices/");
-    ITHACAstream::exportMatrix(CT2_matrix, "CT2_matrix", "matlab",
-                               "./ITHACAoutput/Matrices/");
-    ITHACAstream::exportMatrix(CT2_matrix, "CT2_matrix", "eigen",
+    ITHACAstream::exportToFile(CT2_matrix, "CT2_matrix", "python");
+    ITHACAstream::exportToFile(CT2_matrix, "CT2_matrix", "matlab");
+    ITHACAstream::exportToFile(CT2_matrix, "CT2_matrix", "eigen",
                                "./ITHACAoutput/Matrices/CT2");
     return CT2_matrix;
 }
@@ -407,12 +403,9 @@ Eigen::MatrixXd UnsteadyNSTTurb::BTturbulence(label NUmodes, label NSUPmodes)
     }
 
     // Export the matrix
-    ITHACAstream::exportMatrix(BT_matrix, "BT_matrix", "python",
-                               "./ITHACAoutput/Matrices/");
-    ITHACAstream::exportMatrix(BT_matrix, "BT_matrix", "matlab",
-                               "./ITHACAoutput/Matrices/");
-    ITHACAstream::exportMatrix(BT_matrix, "BT_matrix", "eigen",
-                               "./ITHACAoutput/Matrices/");
+    ITHACAstream::exportToFile(BT_matrix, "BT_matrix", "python");
+    ITHACAstream::exportToFile(BT_matrix, "BT_matrix", "matlab");
+    ITHACAstream::exportToFile(BT_matrix, "BT_matrix", "eigen");
     return BT_matrix;
 }
 
@@ -463,11 +456,9 @@ List <Eigen::MatrixXd> UnsteadyNSTTurb::temperatureTurbulenceTerm(
     }
 
     // Export the matrix
-    ITHACAstream::exportMatrix(S_matrix, "S_matrix", "python",
-                               "./ITHACAoutput/Matrices/");
-    ITHACAstream::exportMatrix(S_matrix, "S_matrix", "matlab",
-                               "./ITHACAoutput/Matrices/");
-    ITHACAstream::exportMatrix(S_matrix, "S_matrix", "eigen",
+    ITHACAstream::exportToFile(S_matrix, "S_matrix", "python");
+    ITHACAstream::exportToFile(S_matrix, "S_matrix", "matlab");
+    ITHACAstream::exportToFile(S_matrix, "S_matrix", "eigen",
                                "./ITHACAoutput/Matrices/S");
     return S_matrix;
 }
@@ -477,21 +468,21 @@ void UnsteadyNSTTurb::projectSUP(fileName folder, label NU, label NP,
 {
     if (ITHACAutilities::check_folder("./ITHACAoutput/Matrices/"))
     {
-        B_matrix = ITHACAstream::readMatrix("./ITHACAoutput/Matrices/B_mat.txt");
-        C_matrix = ITHACAstream::readMatrix("./ITHACAoutput/Matrices/C", "C");
-        K_matrix = ITHACAstream::readMatrix("./ITHACAoutput/Matrices/K_mat.txt");
-        P_matrix = ITHACAstream::readMatrix("./ITHACAoutput/Matrices/P_mat.txt");
-        M_matrix = ITHACAstream::readMatrix("./ITHACAoutput/Matrices/M_mat.txt");
+        B_matrix = ITHACAstream::readMatrix("./ITHACAoutput/Matrices/Txt/B_mat.txt");
+        C_matrix = ITHACAstream::readMatrix("./ITHACAoutput/Matrices/Txt/C", "C");
+        K_matrix = ITHACAstream::readMatrix("./ITHACAoutput/Matrices/Txt/K_mat.txt");
+        P_matrix = ITHACAstream::readMatrix("./ITHACAoutput/Matrices/Txt/P_mat.txt");
+        M_matrix = ITHACAstream::readMatrix("./ITHACAoutput/Matrices/Txt/M_mat.txt");
         BT_matrix =
-            ITHACAstream::readMatrix("./ITHACAoutput/Matrices/BT_matrix_mat.txt");
-        CT1_matrix = ITHACAstream::readMatrix("./ITHACAoutput/Matrices/CT1",
+            ITHACAstream::readMatrix("./ITHACAoutput/Matrices/Txt/BT_matrix_mat.txt");
+        CT1_matrix = ITHACAstream::readMatrix("./ITHACAoutput/Matrices/Txt/CT1",
                                               "CT1_matrix");
-        CT2_matrix = ITHACAstream::readMatrix("./ITHACAoutput/Matrices/CT2",
+        CT2_matrix = ITHACAstream::readMatrix("./ITHACAoutput/Matrices/Txt/CT2",
                                               "CT2_matrix");
-        Q_matrix = ITHACAstream::readMatrix("./ITHACAoutput/Matrices/Q", "Q");
-        Y_matrix = ITHACAstream::readMatrix("./ITHACAoutput/Matrices/Y_mat.txt");
-        S_matrix = ITHACAstream::readMatrix("./ITHACAoutput/Matrices/S_mat.txt");
-        MT_matrix = ITHACAstream::readMatrix("./ITHACAoutput/Matrices/MT_mat.txt");
+        Q_matrix = ITHACAstream::readMatrix("./ITHACAoutput/Matrices/Txt/Q", "Q");
+        Y_matrix = ITHACAstream::readMatrix("./ITHACAoutput/Matrices/Txt/Y_mat.txt");
+        S_matrix = ITHACAstream::readMatrix("./ITHACAoutput/Matrices/Txt/S_mat.txt");
+        MT_matrix = ITHACAstream::readMatrix("./ITHACAoutput/Matrices/Txt/MT_mat.txt");
     }
     else
     {
@@ -528,8 +519,7 @@ void UnsteadyNSTTurb::projectSUP(fileName folder, label NU, label NP,
     Nnutmodes = Nnut;
     // Get the coeffs for interpolation (the orthonormal one is used because basis are orthogonal)
     Eigen::MatrixXd Ncoeff = ITHACAutilities::getCoeffs(nutFields, nuTmodes);
-    ITHACAstream::exportMatrix(Ncoeff, "Ncoeff", "python",
-                               "./ITHACAoutput/Matrices/");
+    ITHACAstream::exportToFile(Ncoeff, "Ncoeff", "python");
     SAMPLES.resize(Nnutmodes);
     rbfsplines.resize(Nnutmodes);
 

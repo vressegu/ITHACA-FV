@@ -94,7 +94,7 @@ void laplacianProblem::truthSolve(List<scalar> mu_now, word folder)
 
     if (mu_samples.rows() == mu.cols())
     {
-        ITHACAstream::exportMatrix(mu_samples, "mu_samples", "eigen",
+        ITHACAstream::exportToFile(mu_samples, "mu_samples", "eigen",
                                    folder);
     }
 }
@@ -137,16 +137,13 @@ void laplacianProblem::project(label Nmodes)
     }
 
     /// Export the A matrices
-    ITHACAstream::exportMatrix(A_matrices, "A", "python",
-                               "./ITHACAoutput/Matrices/");
-    ITHACAstream::exportMatrix(A_matrices, "A", "matlab",
-                               "./ITHACAoutput/Matrices/");
-    ITHACAstream::exportMatrix(A_matrices, "A", "eigen",
-                               "./ITHACAoutput/Matrices/A_matrices");
+    ITHACAstream::exportToFile(A_matrices, "A", "python");
+    ITHACAstream::exportToFile(A_matrices, "A", "matlab");
+    ITHACAstream::exportToFile(A_matrices, "A", "eigen");
     /// Export the source term
-    ITHACAstream::exportMatrix(source, "S", "python", "./ITHACAoutput/Matrices/");
-    ITHACAstream::exportMatrix(source, "S", "matlab", "./ITHACAoutput/Matrices/");
-    ITHACAstream::exportMatrix(source, "S", "eigen", "./ITHACAoutput/Matrices/");
+    ITHACAstream::exportToFile(source, "S", "python");
+    ITHACAstream::exportToFile(source, "S", "matlab");
+    ITHACAstream::exportToFile(source, "S", "eigen");
 }
 
 

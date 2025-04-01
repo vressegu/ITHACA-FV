@@ -184,8 +184,7 @@ void ITHACADMD<Type, PatchField, GeoMesh>::exportEigs(word exportFolder)
 {
     Eigen::MatrixXcd eigs = eigenValues;
     mkDir(exportFolder);
-    std::string path = exportFolder + "/eigs.npy";
-    cnpy::save(eigs, path);
+    ITHACAstream::exportToFile(eigs,"eigs","cnpy",exportFolder);
     return;
 }
 

@@ -60,7 +60,7 @@ class tutorial03 : public steadyNS
                 ITHACAstream::read_fields(Ufield, U, "./ITHACAoutput/Offline/");
                 ITHACAstream::read_fields(Pfield, p, "./ITHACAoutput/Offline/");
                 mu_samples =
-                    ITHACAstream::readMatrix("./ITHACAoutput/Offline/mu_samples_mat.txt");
+                    ITHACAstream::readMatrix("./ITHACAoutput/Offline/Txt/mu_samples_mat.txt");
             }
             else
             {
@@ -244,11 +244,11 @@ void online_stage(tutorial03& example)
     }
 
     // Save the online solution
-    ITHACAstream::exportMatrix(reduced.online_solution, "red_coeff", "python",
+    ITHACAstream::exportToFile(reduced.online_solution, "red_coeff", "python",
                                "./ITHACAoutput/red_coeff");
-    ITHACAstream::exportMatrix(reduced.online_solution, "red_coeff", "matlab",
+    ITHACAstream::exportToFile(reduced.online_solution, "red_coeff", "matlab",
                                "./ITHACAoutput/red_coeff");
-    ITHACAstream::exportMatrix(reduced.online_solution, "red_coeff", "eigen",
+    ITHACAstream::exportToFile(reduced.online_solution, "red_coeff", "eigen",
                                "./ITHACAoutput/red_coeff");
     // Reconstruct and export the solution
     reduced.reconstruct(true, "./ITHACAoutput/Reconstruction/");

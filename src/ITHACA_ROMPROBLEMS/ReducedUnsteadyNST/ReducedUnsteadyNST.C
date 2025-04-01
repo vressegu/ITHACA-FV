@@ -349,13 +349,13 @@ void reducedUnsteadyNST::solveOnline_sup(Eigen::MatrixXd& vel_now,
     }
 
     // Save the solution
-    ITHACAstream::exportMatrix(online_solution, "red_coeff", "python",
+    ITHACAstream::exportToFile(online_solution, "red_coeff", "python",
                                "./ITHACAoutput/red_coeff");
-    ITHACAstream::exportMatrix(online_solution, "red_coeff", "matlab",
+    ITHACAstream::exportToFile(online_solution, "red_coeff", "matlab",
                                "./ITHACAoutput/red_coeff");
-    ITHACAstream::exportMatrix(online_solutiont, "red_coeff", "python",
+    ITHACAstream::exportToFile(online_solutiont, "red_coeff", "python",
                                "./ITHACAoutput/red_coeff_t");
-    ITHACAstream::exportMatrix(online_solutiont, "red_coeff", "matlab",
+    ITHACAstream::exportToFile(online_solutiont, "red_coeff", "matlab",
                                "./ITHACAoutput/red_coeff_t");
     count_online_solve += 1;
 }

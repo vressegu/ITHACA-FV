@@ -390,9 +390,9 @@ void ReducedUnsteadyNSTurbIntrusive::solveOnline(Eigen::MatrixXd vel)
     }
 
     // Save the solution
-    ITHACAstream::exportMatrix(online_solution, "red_coeff", "python",
+    ITHACAstream::exportToFile(online_solution, "red_coeff", "python",
                                "./ITHACAoutput/red_coeff");
-    ITHACAstream::exportMatrix(online_solution, "red_coeff", "matlab",
+    ITHACAstream::exportToFile(online_solution, "red_coeff", "matlab",
                                "./ITHACAoutput/red_coeff");
     count_online_solve += 1;
 }
@@ -538,9 +538,9 @@ void ReducedUnsteadyNSTurbIntrusive::solveOnlinePPE(Eigen::MatrixXd vel)
     }
 
     // Save the solution
-    ITHACAstream::exportMatrix(online_solution, "red_coeff", "python",
+    ITHACAstream::exportToFile(online_solution, "red_coeff", "python",
                                "./ITHACAoutput/red_coeff");
-    ITHACAstream::exportMatrix(online_solution, "red_coeff", "matlab",
+    ITHACAstream::exportToFile(online_solution, "red_coeff", "matlab",
                                "./ITHACAoutput/red_coeff");
     count_online_solve += 1;
 }
@@ -731,20 +731,20 @@ void ReducedUnsteadyNSTurbIntrusive::reconstructLiftAndDrag(
     // Export the matrices
     if (para->exportPython)
     {
-        ITHACAstream::exportMatrix(fTau, "fTau", "python", folder);
-        ITHACAstream::exportMatrix(fN, "fN", "python", folder);
+        ITHACAstream::exportToFile(fTau, "fTau", "python", folder);
+        ITHACAstream::exportToFile(fN, "fN", "python", folder);
     }
 
     if (para->exportMatlab)
     {
-        ITHACAstream::exportMatrix(fTau, "fTau", "matlab", folder);
-        ITHACAstream::exportMatrix(fN, "fN", "matlab", folder);
+        ITHACAstream::exportToFile(fTau, "fTau", "matlab", folder);
+        ITHACAstream::exportToFile(fN, "fN", "matlab", folder);
     }
 
     if (para->exportTxt)
     {
-        ITHACAstream::exportMatrix(fTau, "fTau", "eigen", folder);
-        ITHACAstream::exportMatrix(fN, "fN", "eigen", folder);
+        ITHACAstream::exportToFile(fTau, "fTau", "eigen", folder);
+        ITHACAstream::exportToFile(fN, "fN", "eigen", folder);
     }
 }
 

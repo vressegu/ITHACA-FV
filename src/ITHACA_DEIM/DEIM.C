@@ -111,14 +111,13 @@ DEIM<T>::DEIM (PtrList<T> & s, label MaxModes, word FunctionName,
         }
 
         MatrixOnline = U * ((P.transpose() * U).fullPivLu().inverse());
-        mkDir(Folder);
-        cnpy::save(MatrixOnline, Folder + "/MatrixOnline.npy");
+        ITHACAstream::exportToFile(MatrixOnline,"MatrixOnline","cnpy",Folder);
         magicPoints().write();
         xyz().write();
     }
     else
     {
-        cnpy::load(MatrixOnline, Folder + "/MatrixOnline.npy");
+        ITHACAstream::importNpy(MatrixOnline,"MatrixOnline", Folder);
     }
 }
 
@@ -336,9 +335,8 @@ DEIM<T>::DEIM (PtrList<T> & s, label MaxModesA, label MaxModesB,
         }
 
         mkDir(FolderM + "/lhs");
-        mkDir(FolderM + "/rhs");
         ITHACAstream::save(MatrixOnlineA, FolderM, "/lhs/MatrixOnlineA");
-        cnpy::save(MatrixOnlineB, FolderM + "/rhs/MatrixOnlineB.npy");
+        ITHACAstream::exportToFile(MatrixOnline,"MatrixOnlineB","cnpy",FolderM+"/rhs/");
         magicPointsArow().write();
         magicPointsAcol().write();
         magicPointsB().write();
@@ -349,7 +347,7 @@ DEIM<T>::DEIM (PtrList<T> & s, label MaxModesA, label MaxModesB,
     else
     {
         ITHACAstream::load(MatrixOnlineA, FolderM, "/lhs/MatrixOnlineA");
-        cnpy::load(MatrixOnlineB, FolderM + "/rhs/MatrixOnlineB.npy");
+        ITHACAstream::importNpy(MatrixOnlineB, "MatrixOnlineB", FolderM + "/rhs/");
     }
 }
 

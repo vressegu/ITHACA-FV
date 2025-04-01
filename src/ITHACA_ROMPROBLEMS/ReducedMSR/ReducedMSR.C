@@ -680,13 +680,13 @@ void reducedMSR::solveOnline(Eigen::MatrixXd vel_now, Eigen::MatrixXd temp_now,
     online_solution_C[0].col(0).segment(pos_c, Nphi_const) = newton_object_t.sp_c;
     pos_c += Nphi_const;
     online_solution_C[0].col(0).segment(pos_c, Nphi_const) = newton_object_t.txs_c;
-    ITHACAstream::exportMatrix(online_solution_fd, "red_coeff_fd", "matlab",
+    ITHACAstream::exportToFile(online_solution_fd, "red_coeff_fd", "matlab",
                                "./ITHACAoutput/red_coeff_fd");
-    ITHACAstream::exportMatrix(online_solution_n, "red_coeff_n", "matlab",
+    ITHACAstream::exportToFile(online_solution_n, "red_coeff_n", "matlab",
                                "./ITHACAoutput/red_coeff_n");
-    ITHACAstream::exportMatrix(online_solution_t, "red_coeff_t", "matlab",
+    ITHACAstream::exportToFile(online_solution_t, "red_coeff_t", "matlab",
                                "./ITHACAoutput/red_coeff_t");
-    ITHACAstream::exportMatrix(online_solution_C, "red_coeff_C", "matlab",
+    ITHACAstream::exportToFile(online_solution_C, "red_coeff_C", "matlab",
                                "./ITHACAoutput/red_coeff_C");
     count_online_solve += 1;
 }

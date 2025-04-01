@@ -420,9 +420,9 @@ void reducedUnsteadyNS::solveOnline_sup(Eigen::MatrixXd vel,
     }
 
     // Export the solution
-    ITHACAstream::exportMatrix(online_solution, "red_coeff", "python",
+    ITHACAstream::exportToFile(online_solution, "red_coeff", "python",
                                "./ITHACAoutput/red_coeff");
-    ITHACAstream::exportMatrix(online_solution, "red_coeff", "matlab",
+    ITHACAstream::exportToFile(online_solution, "red_coeff", "matlab",
                                "./ITHACAoutput/red_coeff");
 }
 
@@ -581,9 +581,9 @@ void reducedUnsteadyNS::solveOnline_PPE(Eigen::MatrixXd vel,
     }
 
     // Export the solution
-    ITHACAstream::exportMatrix(online_solution, "red_coeff", "python",
+    ITHACAstream::exportToFile(online_solution, "red_coeff", "python",
                                "./ITHACAoutput/red_coeff");
-    ITHACAstream::exportMatrix(online_solution, "red_coeff", "matlab",
+    ITHACAstream::exportToFile(online_solution, "red_coeff", "matlab",
                                "./ITHACAoutput/red_coeff");
 }
 

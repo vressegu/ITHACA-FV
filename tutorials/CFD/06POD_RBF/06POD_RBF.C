@@ -252,16 +252,14 @@ int main(int argc, char* argv[])
     }
 
     // Save the matrix of interpolated eddy viscosity coefficients
-    ITHACAstream::exportMatrix(rbfCoeff, "rbfCoeff", "python",
-                               "./ITHACAoutput/Matrices/");
-    ITHACAstream::exportMatrix(rbfCoeff, "rbfCoeff", "matlab",
-                               "./ITHACAoutput/Matrices/");
+    ITHACAstream::exportToFile(rbfCoeff, "rbfCoeff", "python");
+    ITHACAstream::exportToFile(rbfCoeff, "rbfCoeff", "matlab");
     // Save the online solution
-    ITHACAstream::exportMatrix(pod_rbf.online_solution, "red_coeff", "python",
+    ITHACAstream::exportToFile(pod_rbf.online_solution, "red_coeff", "python",
                                "./ITHACAoutput/red_coeff");
-    ITHACAstream::exportMatrix(pod_rbf.online_solution, "red_coeff", "matlab",
+    ITHACAstream::exportToFile(pod_rbf.online_solution, "red_coeff", "matlab",
                                "./ITHACAoutput/red_coeff");
-    ITHACAstream::exportMatrix(pod_rbf.online_solution, "red_coeff", "eigen",
+    ITHACAstream::exportToFile(pod_rbf.online_solution, "red_coeff", "eigen",
                                "./ITHACAoutput/red_coeff");
     pod_rbf.rbfCoeffMat = rbfCoeff;
     // Reconstruct and export the solution
@@ -289,11 +287,11 @@ int main(int argc, char* argv[])
     }
 
     // Save the online solution
-    ITHACAstream::exportMatrix(pod_normal.online_solution, "red_coeffnew", "python",
+    ITHACAstream::exportToFile(pod_normal.online_solution, "red_coeffnew", "python",
                                "./ITHACAoutput/red_coeffnew");
-    ITHACAstream::exportMatrix(pod_normal.online_solution, "red_coeffnew", "matlab",
+    ITHACAstream::exportToFile(pod_normal.online_solution, "red_coeffnew", "matlab",
                                "./ITHACAoutput/red_coeffnew");
-    ITHACAstream::exportMatrix(pod_normal.online_solution, "red_coeffnew", "eigen",
+    ITHACAstream::exportToFile(pod_normal.online_solution, "red_coeffnew", "eigen",
                                "./ITHACAoutput/red_coeffnew");
     // Reconstruct and export the solution
     pod_normal.reconstruct(true, "./ITHACAoutput/Lam_Rec/");
@@ -309,11 +307,11 @@ int main(int argc, char* argv[])
                                 pod_rbf.pRecFields);
     Eigen::MatrixXd errFrobNut =  ITHACAutilities::errorFrobRel(example.nutFields,
                                   pod_rbf.nutRecFields);
-    ITHACAstream::exportMatrix(errFrobU, "errFrobU", "matlab",
+    ITHACAstream::exportToFile(errFrobU, "errFrobU", "matlab",
                                "./ITHACAoutput/ErrorsFrob/");
-    ITHACAstream::exportMatrix(errFrobP, "errFrobP", "matlab",
+    ITHACAstream::exportToFile(errFrobP, "errFrobP", "matlab",
                                "./ITHACAoutput/ErrorsFrob/");
-    ITHACAstream::exportMatrix(errFrobNut, "errFrobNut", "matlab",
+    ITHACAstream::exportToFile(errFrobNut, "errFrobNut", "matlab",
                                "./ITHACAoutput/ErrorsFrob/");
     Eigen::MatrixXd errL2U = ITHACAutilities::errorL2Rel(example.Ufield,
                              pod_rbf.uRecFields);
@@ -321,11 +319,11 @@ int main(int argc, char* argv[])
                               pod_rbf.pRecFields);
     Eigen::MatrixXd errL2Nut =  ITHACAutilities::errorL2Rel(example.nutFields,
                                 pod_rbf.nutRecFields);
-    ITHACAstream::exportMatrix(errL2U, "errL2U", "matlab",
+    ITHACAstream::exportToFile(errL2U, "errL2U", "matlab",
                                "./ITHACAoutput/ErrorsL2/");
-    ITHACAstream::exportMatrix(errL2P, "errL2P", "matlab",
+    ITHACAstream::exportToFile(errL2P, "errL2P", "matlab",
                                "./ITHACAoutput/ErrorsL2/");
-    ITHACAstream::exportMatrix(errL2Nut, "errL2Nut", "matlab",
+    ITHACAstream::exportToFile(errL2Nut, "errL2Nut", "matlab",
                                "./ITHACAoutput/ErrorsL2/");
     exit(0);
 }

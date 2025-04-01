@@ -663,9 +663,9 @@ void ReducedUnsteadyNSTurb::solveOnlineSUP(Eigen::MatrixXd vel)
     }
 
     // Save the solution
-    ITHACAstream::exportMatrix(online_solution, "red_coeff", "python",
+    ITHACAstream::exportToFile(online_solution, "red_coeff", "python",
                                "./ITHACAoutput/red_coeff");
-    ITHACAstream::exportMatrix(online_solution, "red_coeff", "matlab",
+    ITHACAstream::exportToFile(online_solution, "red_coeff", "matlab",
                                "./ITHACAoutput/red_coeff");
     count_online_solve += 1;
 }
@@ -864,9 +864,9 @@ void ReducedUnsteadyNSTurb::solveOnlineSUPAve(Eigen::MatrixXd vel)
     }
 
     // Save the solution
-    ITHACAstream::exportMatrix(online_solution, "red_coeff", "python",
+    ITHACAstream::exportToFile(online_solution, "red_coeff", "python",
                                "./ITHACAoutput/red_coeff");
-    ITHACAstream::exportMatrix(online_solution, "red_coeff", "matlab",
+    ITHACAstream::exportToFile(online_solution, "red_coeff", "matlab",
                                "./ITHACAoutput/red_coeff");
     count_online_solve += 1;
 }
@@ -1056,9 +1056,9 @@ void ReducedUnsteadyNSTurb::solveOnlinePPE(Eigen::MatrixXd vel)
     }
 
     // Save the solution
-    ITHACAstream::exportMatrix(online_solution, "red_coeff", "python",
+    ITHACAstream::exportToFile(online_solution, "red_coeff", "python",
                                "./ITHACAoutput/red_coeff");
-    ITHACAstream::exportMatrix(online_solution, "red_coeff", "matlab",
+    ITHACAstream::exportToFile(online_solution, "red_coeff", "matlab",
                                "./ITHACAoutput/red_coeff");
     count_online_solve += 1;
 }
@@ -1257,9 +1257,9 @@ void ReducedUnsteadyNSTurb::solveOnlinePPEAve(Eigen::MatrixXd vel)
     }
 
     // Save the solution
-    ITHACAstream::exportMatrix(online_solution, "red_coeff", "python",
+    ITHACAstream::exportToFile(online_solution, "red_coeff", "python",
                                "./ITHACAoutput/red_coeff");
-    ITHACAstream::exportMatrix(online_solution, "red_coeff", "matlab",
+    ITHACAstream::exportToFile(online_solution, "red_coeff", "matlab",
                                "./ITHACAoutput/red_coeff");
     count_online_solve += 1;
 }

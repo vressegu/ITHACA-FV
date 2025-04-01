@@ -132,7 +132,7 @@ void SteadyNSTurbIntrusive::truthSolve(List<scalar> mu_now)
 
     if (mu_samples.rows() == mu.cols())
     {
-        ITHACAstream::exportMatrix(mu_samples, "mu_samples", "eigen",
+        ITHACAstream::exportToFile(mu_samples, "mu_samples", "eigen",
                                    "./ITHACAoutput/Offline");
     }
 }
@@ -312,42 +312,34 @@ void SteadyNSTurbIntrusive::project(fileName folder, label nModes)
     // Export the matrices
     if (para->exportPython)
     {
-        ITHACAstream::exportMatrix(bMatrix, "b", "python", "./ITHACAoutput/Matrices/");
-        ITHACAstream::exportMatrix(kMatrix, "k", "python", "./ITHACAoutput/Matrices/");
-        ITHACAstream::exportMatrix(btMatrix, "bt", "python",
-                                   "./ITHACAoutput/Matrices/");
-        ITHACAstream::exportTensor(convTensor, "c", "python",
-                                   "./ITHACAoutput/Matrices/");
-        ITHACAstream::exportTensor(ct1Tensor, "ct1", "python",
-                                   "./ITHACAoutput/Matrices/");
-        ITHACAstream::exportTensor(ct2Tensor, "ct2", "python",
-                                   "./ITHACAoutput/Matrices/");
+        ITHACAstream::exportToFile(bMatrix, "b", "python");
+        ITHACAstream::exportToFile(kMatrix, "k", "python");
+        ITHACAstream::exportToFile(btMatrix, "bt", "python");
+        ITHACAstream::exportToFile(convTensor, "c", "python");
+        ITHACAstream::exportToFile(ct1Tensor, "ct1", "python");
+        ITHACAstream::exportToFile(ct2Tensor, "ct2", "python");
     }
 
     if (para->exportMatlab)
     {
-        ITHACAstream::exportMatrix(bMatrix, "b", "matlab", "./ITHACAoutput/Matrices/");
-        ITHACAstream::exportMatrix(kMatrix, "k", "matlab", "./ITHACAoutput/Matrices/");
-        ITHACAstream::exportMatrix(btMatrix, "bt", "matlab",
-                                   "./ITHACAoutput/Matrices/");
-        ITHACAstream::exportTensor(convTensor, "c", "matlab",
-                                   "./ITHACAoutput/Matrices/");
-        ITHACAstream::exportTensor(ct1Tensor, "ct1", "matlab",
-                                   "./ITHACAoutput/Matrices/");
-        ITHACAstream::exportTensor(ct2Tensor, "ct2", "matlab",
-                                   "./ITHACAoutput/Matrices/");
+        ITHACAstream::exportToFile(bMatrix, "b", "matlab");
+        ITHACAstream::exportToFile(kMatrix, "k", "matlab");
+        ITHACAstream::exportToFile(btMatrix, "bt", "matlab");
+        ITHACAstream::exportToFile(convTensor, "c", "matlab");
+        ITHACAstream::exportToFile(ct1Tensor, "ct1", "matlab");
+        ITHACAstream::exportToFile(ct2Tensor, "ct2", "matlab");
     }
 
     if (para->exportTxt)
     {
-        ITHACAstream::exportMatrix(bMatrix, "b", "eigen", "./ITHACAoutput/Matrices/");
-        ITHACAstream::exportMatrix(kMatrix, "k", "eigen", "./ITHACAoutput/Matrices/");
-        ITHACAstream::exportMatrix(btMatrix, "bt", "eigen", "./ITHACAoutput/Matrices/");
-        ITHACAstream::exportTensor(convTensor, "c", "eigen",
+        ITHACAstream::exportToFile(bMatrix, "b", "eigen");
+        ITHACAstream::exportToFile(kMatrix, "k", "eigen");
+        ITHACAstream::exportToFile(btMatrix, "bt", "eigen");
+        ITHACAstream::exportToFile(convTensor, "c", "eigen",
                                    "./ITHACAoutput/Matrices/c");
-        ITHACAstream::exportTensor(ct1Tensor, "ct1_", "eigen",
+        ITHACAstream::exportToFile(ct1Tensor, "ct1_", "eigen",
                                    "./ITHACAoutput/Matrices/ct1");
-        ITHACAstream::exportTensor(ct2Tensor, "ct2_", "eigen",
+        ITHACAstream::exportToFile(ct2Tensor, "ct2_", "eigen",
                                    "./ITHACAoutput/Matrices/ct2");
     }
 
@@ -455,7 +447,7 @@ List< Eigen::MatrixXd > SteadyNSTurbIntrusive::bcVelocityVec(label nModes)
         }
     }
 
-    ITHACAstream::exportMatrix(bcVelVec, "bcVelVec", "eigen",
+    ITHACAstream::exportToFile(bcVelVec, "bcVelVec", "eigen",
                                "./ITHACAoutput/Matrices/bcVelVec");
     return bcVelVec;
 }
@@ -486,7 +478,7 @@ List< Eigen::MatrixXd > SteadyNSTurbIntrusive::bcVelocityMat(label nModes)
         }
     }
 
-    ITHACAstream::exportMatrix(bcVelMat, "bcVelMat", "eigen",
+    ITHACAstream::exportToFile(bcVelMat, "bcVelMat", "eigen",
                                "./ITHACAoutput/Matrices/bcVelMat");
     return bcVelMat;
 }

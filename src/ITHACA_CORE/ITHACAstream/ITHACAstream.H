@@ -531,16 +531,19 @@ void load(List<Eigen::SparseMatrix<T>> & MatrixList, word folder,
 /// @param[in]  type optional export type cnpy, python, matlab, text, default cnpy
 /// @param[in]  folder optional file path
 ///
-void exportToFile(Eigen::MatrixXd& Matrix,word matrixRoad,word type = "cnpy", word folder = defaultFolder);
+template<typename T, int dim>
+    void exportToFile(Eigen::Matrix < T, -1, dim > & matrix,word matrixRoad,word type = "cnpy", word folder = defaultFolder);
 void exportToFile(Eigen::VectorXd& Vector,word matrixRoad, word type = "cnpy", word folder = defaultFolder);
+void exportToFile(Eigen::VectorXi& Vector,word matrixRoad, word type = "cnpy", word folder = defaultFolder);
 void exportToFile(Eigen::Tensor<double,3>& Tensor,word tensorRoad, word type = "cnpy", word folder = defaultFolder);
 void exportToFile(List <Eigen::MatrixXd>& Matrix,word matrixRoad,word type = "cnpy", word folder = defaultFolder);
+void exportToFile(Eigen::SparseMatrix<double>& Matrix, word name, word folder = defaultFolder);
 
 //--------------------------------------------------------------------------
 /// Import matrix from npy file 
 ///
-/// @param[out]  Matrix imported matrix
-/// @param[in]  matrixName file name (without extension)
+/// @param[out]  data matrix to import
+/// @param[in]  objectName file name (without extension)
 /// @param[in]  folder optional file path
 ///
 /// @return     true if file was found, false otherwise

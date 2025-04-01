@@ -208,12 +208,10 @@ void inverseLaplacianProblem::readThermocouples()
 {
     if (!thermocouplesRead)
     {
-        word fileName = "./thermocouplesCellsID";
-
-        if (ITHACAutilities::check_file(fileName + "_mat.txt"))
+        if (ITHACAutilities::check_file("./Txt/thermocouplesCellsID_mat.txt"))
         {
             Info << "Reading thermocouples cells from file" << endl;
-            Eigen::MatrixXi TCmatrix = ITHACAstream::readMatrix(fileName + "_mat.txt").cast
+            Eigen::MatrixXi TCmatrix = ITHACAstream::readMatrix("./Txt/thermocouplesCellsID_mat.txt").cast
                                        <int> ();
             thermocouplesCellID = Foam2Eigen::EigenMatrix2List(TCmatrix);
         }
@@ -239,7 +237,7 @@ void inverseLaplacianProblem::readThermocouples()
                                          "thermocouplesField,");
             Eigen::MatrixXi thermocouplesCellID_eigen = Foam2Eigen::List2EigenMatrix(
                     thermocouplesCellID);
-            ITHACAstream::exportMatrix(thermocouplesCellID_eigen, fileName,
+            ITHACAstream::exportToFile(thermocouplesCellID_eigen, "thermocouplesCellsID",
                                        "eigen", "./");
         }
 

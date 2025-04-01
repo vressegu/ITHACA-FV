@@ -236,8 +236,8 @@ void inverseLaplacianProblem_paramBC::parameterizedBCoffline(bool force)
         Tad.rename("Tad");
         Info << "\nOffline already computed." << endl;
         Info << "Check that the basis used for the parameterized BC are correct (RBF, POD, etc.)\n";
-        Theta = ITHACAstream::readMatrix(folderOffline + "Theta_mat.txt");
-        addSol = ITHACAstream::readMatrix(folderOffline + "addSol_mat.txt");
+        Theta = ITHACAstream::readMatrix(folderOffline + "Txt/Theta_mat.txt");
+        addSol = ITHACAstream::readMatrix(folderOffline + "Txt/addSol_mat.txt");
         ITHACAstream::read_fields(Tad_base, Tad, folderOffline, 0, 1);
         ITHACAstream::read_fields(Tbasis, T,
                                   folderOffline);
@@ -260,7 +260,7 @@ void inverseLaplacianProblem_paramBC::parameterizedBCoffline(bool force)
              metaData.shapeParameter << ' ';
         fout.close();
         solveAdditional();
-        ITHACAstream::exportMatrix(addSol, "addSol", "eigen", folderOffline);
+        ITHACAstream::exportToFile(addSol, "addSol", "eigen", folderOffline);
         M_Assert(Tmeas.size() > 0, "Initialize Tmeas");
         M_Assert(gWeights.size() > 0, "Initialize gWeights");
         Theta.resize(Tmeas.size(), gWeights.size());
@@ -288,7 +288,7 @@ void inverseLaplacianProblem_paramBC::parameterizedBCoffline(bool force)
         }
 
         ITHACAstream::exportFields(Tbasis, folderOffline, "T");
-        ITHACAstream::exportMatrix(Theta, "Theta", "eigen", folderOffline);
+        ITHACAstream::exportToFile(Theta, "Theta", "eigen", folderOffline);
         Info << "\nOffline part ENDED\n" << endl;
     }
 
@@ -303,7 +303,7 @@ void inverseLaplacianProblem_paramBC::parameterizedBCoffline(bool force)
         Info << "Condition number = " << conditionNumber << endl;
     }
 
-    ITHACAstream::exportMatrix(singularValues, "singularValues", "eigen",
+    ITHACAstream::exportToFile(singularValues, "singularValues", "eigen",
                                folderOffline);
     offlineReady = 1;
 }

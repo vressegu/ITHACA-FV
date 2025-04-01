@@ -302,7 +302,7 @@ void SteadyNSSimple::truthSolve2(List<scalar> mu_now, word Folder)
 
     if (mu_samples.rows() == mu.cols())
     {
-        ITHACAstream::exportMatrix(mu_samples, "mu_samples", "eigen",
+        ITHACAstream::exportToFile(mu_samples, "mu_samples", "eigen",
                                    Folder);
     }
 }

@@ -419,9 +419,9 @@ List< Eigen::MatrixXd > unsteadyNST::convective_term_temperature(label NUmodes,
     }
 
     // Export the matrix
-    ITHACAstream::exportMatrix(Q_matrix, "Q", "python", "./ITHACAoutput/Matrices/");
-    ITHACAstream::exportMatrix(Q_matrix, "Q", "matlab", "./ITHACAoutput/Matrices/");
-    ITHACAstream::exportMatrix(Q_matrix, "Q", "eigen", "./ITHACAoutput/Matrices/Q");
+    ITHACAstream::exportToFile(Q_matrix, "Q", "python");
+    ITHACAstream::exportToFile(Q_matrix, "Q", "matlab");
+    ITHACAstream::exportToFile(Q_matrix, "Q", "eigen", "./ITHACAoutput/Matrices/Q");
     return Q_matrix;
 }
 

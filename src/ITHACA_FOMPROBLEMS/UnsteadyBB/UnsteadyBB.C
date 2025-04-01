@@ -684,8 +684,7 @@ void UnsteadyBB::projectPPE(fileName folder, label NU, label NP, label NT,
             B_matrix = diffusive_term(NUmodes, NPrghmodes, NSUPmodes);;
         }
 
-        ITHACAstream::exportMatrix(B_matrix, "B_matrix", "eigen",
-                                   "./ITHACAoutput/Matrices/");
+        ITHACAstream::exportToFile(B_matrix, "B_matrix", "eigen");
         word C_str = "C_" + name(liftfield.size()) + "_" + name(NUmodes) + "_" + name(
                          NSUPmodes) + "_t";
 
@@ -1024,9 +1023,9 @@ List<Eigen::MatrixXd> UnsteadyBB::convective_term_temperature(label NUmodes,
     if (Pstream::master())
     {
         // Export the matrix
-        ITHACAstream::exportMatrix(Q_matrix, "Q", "python", "./ITHACAoutput/Matrices/");
-        ITHACAstream::exportMatrix(Q_matrix, "Q", "matlab", "./ITHACAoutput/Matrices/");
-        ITHACAstream::exportMatrix(Q_matrix, "Q", "eigen", "./ITHACAoutput/Matrices/Q");
+        ITHACAstream::exportToFile(Q_matrix, "Q", "python");
+        ITHACAstream::exportToFile(Q_matrix, "Q", "matlab");
+        ITHACAstream::exportToFile(Q_matrix, "Q", "eigen", "./ITHACAoutput/Matrices/Q");
     }
 
     return Q_matrix;

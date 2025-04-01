@@ -128,7 +128,7 @@ void steadyNS::truthSolve(List<scalar> mu_now)
 
     if (mu_samples.rows() == mu.cols())
     {
-        ITHACAstream::exportMatrix(mu_samples, "mu_samples", "eigen",
+        ITHACAstream::exportToFile(mu_samples, "mu_samples", "eigen",
                                    "./ITHACAoutput/Offline");
     }
 }
@@ -498,58 +498,52 @@ void steadyNS::projectPPE(fileName folder, label NU, label NP, label NSUP)
     // Export the matrices
     if (para->exportPython)
     {
-        ITHACAstream::exportMatrix(B_matrix, "B", "python", "./ITHACAoutput/Matrices/");
-        ITHACAstream::exportMatrix(K_matrix, "K", "python", "./ITHACAoutput/Matrices/");
-        ITHACAstream::exportMatrix(D_matrix, "D", "python", "./ITHACAoutput/Matrices/");
-        ITHACAstream::exportMatrix(M_matrix, "M", "python", "./ITHACAoutput/Matrices/");
-        ITHACAstream::exportMatrix(BC3_matrix, "BC3", "python",
-                                   "./ITHACAoutput/Matrices/");
-        ITHACAstream::exportMatrix(BC4_matrix, "BC4", "python",
-                                   "./ITHACAoutput/Matrices/");
-        ITHACAstream::exportTensor(C_tensor, "C", "python", "./ITHACAoutput/Matrices/");
-        ITHACAstream::exportTensor(gTensor, "G", "python", "./ITHACAoutput/Matrices/");
+        ITHACAstream::exportToFile(B_matrix, "B", "python");
+        ITHACAstream::exportToFile(K_matrix, "K", "python");
+        ITHACAstream::exportToFile(D_matrix, "D", "python");
+        ITHACAstream::exportToFile(M_matrix, "M", "python");
+        ITHACAstream::exportToFile(BC3_matrix, "BC3", "python");
+        ITHACAstream::exportToFile(BC4_matrix, "BC4", "python");
+        ITHACAstream::exportToFile(C_tensor, "C", "python");
+        ITHACAstream::exportToFile(gTensor, "G", "python");
     }
 
     if (para->exportMatlab)
     {
-        ITHACAstream::exportMatrix(B_matrix, "B", "matlab", "./ITHACAoutput/Matrices/");
-        ITHACAstream::exportMatrix(K_matrix, "K", "matlab", "./ITHACAoutput/Matrices/");
-        ITHACAstream::exportMatrix(D_matrix, "D", "matlab", "./ITHACAoutput/Matrices/");
-        ITHACAstream::exportMatrix(M_matrix, "M", "matlab", "./ITHACAoutput/Matrices/");
-        ITHACAstream::exportMatrix(BC3_matrix, "BC3", "matlab",
-                                   "./ITHACAoutput/Matrices/");
-        ITHACAstream::exportMatrix(BC4_matrix, "BC4", "matlab",
-                                   "./ITHACAoutput/Matrices/");
-        ITHACAstream::exportTensor(C_tensor, "C", "matlab", "./ITHACAoutput/Matrices/");
-        ITHACAstream::exportTensor(gTensor, "G", "matlab", "./ITHACAoutput/Matrices/");
+        ITHACAstream::exportToFile(B_matrix, "B", "matlab");
+        ITHACAstream::exportToFile(K_matrix, "K", "matlab");
+        ITHACAstream::exportToFile(D_matrix, "D", "matlab");
+        ITHACAstream::exportToFile(M_matrix, "M", "matlab");
+        ITHACAstream::exportToFile(BC3_matrix, "BC3", "matlab");
+        ITHACAstream::exportToFile(BC4_matrix, "BC4", "matlab");
+        ITHACAstream::exportToFile(C_tensor, "C", "matlab");
+        ITHACAstream::exportToFile(gTensor, "G", "matlab");
     }
 
     if (para->exportTxt)
     {
-        ITHACAstream::exportMatrix(B_matrix, "B", "eigen", "./ITHACAoutput/Matrices/");
-        ITHACAstream::exportMatrix(K_matrix, "K", "eigen", "./ITHACAoutput/Matrices/");
-        ITHACAstream::exportMatrix(D_matrix, "D", "eigen", "./ITHACAoutput/Matrices/");
-        ITHACAstream::exportMatrix(M_matrix, "M", "eigen", "./ITHACAoutput/Matrices/");
-        ITHACAstream::exportMatrix(BC3_matrix, "BC3", "eigen",
-                                   "./ITHACAoutput/Matrices/");
-        ITHACAstream::exportMatrix(BC4_matrix, "BC4", "eigen",
-                                   "./ITHACAoutput/Matrices/");
-        ITHACAstream::exportTensor(C_tensor, "C", "eigen",
+        ITHACAstream::exportToFile(B_matrix, "B", "eigen");
+        ITHACAstream::exportToFile(K_matrix, "K", "eigen");
+        ITHACAstream::exportToFile(D_matrix, "D", "eigen");
+        ITHACAstream::exportToFile(M_matrix, "M", "eigen");
+        ITHACAstream::exportToFile(BC3_matrix, "BC3", "eigen");
+        ITHACAstream::exportToFile(BC4_matrix, "BC4", "eigen");
+        ITHACAstream::exportToFile(C_tensor, "C", "eigen",
                                    "./ITHACAoutput/Matrices/C");
-        ITHACAstream::exportTensor(gTensor, "G", "eigen",
+        ITHACAstream::exportToFile(gTensor, "G", "eigen",
                                    "./ITHACAoutput/Matrices/G");
     }
 
     if (para->exportNpy)
     {
-        cnpy::save(B_matrix, "./ITHACAoutput/Matrices/B.npy");
-        cnpy::save(K_matrix, "./ITHACAoutput/Matrices/K.npy");
-        cnpy::save(D_matrix, "./ITHACAoutput/Matrices/D.npy");
-        cnpy::save(M_matrix, "./ITHACAoutput/Matrices/M.npy");
-        cnpy::save(BC3_matrix, "./ITHACAoutput/Matrices/BC3.npy");
-        cnpy::save(BC4_matrix, "./ITHACAoutput/Matrices/BC4.npy");
-        cnpy::save(C_tensor, "./ITHACAoutput/Matrices/C.npy");
-        cnpy::save(gTensor, "./ITHACAoutput/Matrices/G.npy");
+        ITHACAstream::exportToFile(B_matrix, "B");
+        ITHACAstream::exportToFile(K_matrix, "K");
+        ITHACAstream::exportToFile(D_matrix, "D");
+        ITHACAstream::exportToFile(M_matrix, "M");
+        ITHACAstream::exportToFile(BC3_matrix, "BC3");
+        ITHACAstream::exportToFile(BC4_matrix, "BC4");
+        ITHACAstream::exportToFile(BC4_matrix, "BC4");
+        ITHACAstream::exportToFile(gTensor, "G");
     }
 }
 
@@ -670,39 +664,39 @@ void steadyNS::projectSUP(fileName folder, label NU, label NP, label NSUP)
     // Export the matrices
     if (para->exportPython)
     {
-        ITHACAstream::exportMatrix(B_matrix, "B", "python", "./ITHACAoutput/Matrices/");
-        ITHACAstream::exportMatrix(K_matrix, "K", "python", "./ITHACAoutput/Matrices/");
-        ITHACAstream::exportMatrix(P_matrix, "P", "python", "./ITHACAoutput/Matrices/");
-        ITHACAstream::exportMatrix(M_matrix, "M", "python", "./ITHACAoutput/Matrices/");
-        ITHACAstream::exportTensor(C_tensor, "C", "python", "./ITHACAoutput/Matrices/");
+        ITHACAstream::exportToFile(B_matrix, "B", "python");
+        ITHACAstream::exportToFile(K_matrix, "K", "python");
+        ITHACAstream::exportToFile(P_matrix, "P", "python");
+        ITHACAstream::exportToFile(M_matrix, "M", "python");
+        ITHACAstream::exportToFile(C_tensor, "C", "python");
     }
 
     if (para->exportMatlab)
     {
-        ITHACAstream::exportMatrix(B_matrix, "B", "matlab", "./ITHACAoutput/Matrices/");
-        ITHACAstream::exportMatrix(K_matrix, "K", "matlab", "./ITHACAoutput/Matrices/");
-        ITHACAstream::exportMatrix(P_matrix, "P", "matlab", "./ITHACAoutput/Matrices/");
-        ITHACAstream::exportMatrix(M_matrix, "M", "matlab", "./ITHACAoutput/Matrices/");
-        ITHACAstream::exportTensor(C_tensor, "C", "python", "./ITHACAoutput/Matrices/");
+        ITHACAstream::exportToFile(B_matrix, "B", "matlab");
+        ITHACAstream::exportToFile(K_matrix, "K", "matlab");
+        ITHACAstream::exportToFile(P_matrix, "P", "matlab");
+        ITHACAstream::exportToFile(M_matrix, "M", "matlab");
+        ITHACAstream::exportToFile(C_tensor, "C", "matlab");
     }
 
     if (para->exportTxt)
     {
-        ITHACAstream::exportMatrix(B_matrix, "B", "eigen", "./ITHACAoutput/Matrices/");
-        ITHACAstream::exportMatrix(K_matrix, "K", "eigen", "./ITHACAoutput/Matrices/");
-        ITHACAstream::exportMatrix(P_matrix, "P", "eigen", "./ITHACAoutput/Matrices/");
-        ITHACAstream::exportMatrix(M_matrix, "M", "eigen", "./ITHACAoutput/Matrices/");
-        ITHACAstream::exportTensor(C_tensor, "C", "python",
+        ITHACAstream::exportToFile(B_matrix, "B", "eigen");
+        ITHACAstream::exportToFile(K_matrix, "K", "eigen");
+        ITHACAstream::exportToFile(P_matrix, "P", "eigen");
+        ITHACAstream::exportToFile(M_matrix, "M", "eigen");
+        ITHACAstream::exportToFile(C_tensor, "C", "eigen",
                                    "./ITHACAoutput/Matrices/C");
     }
 
     if (para->exportNpy)
     {
-        cnpy::save(B_matrix, "./ITHACAoutput/Matrices/B.npy");
-        cnpy::save(K_matrix, "./ITHACAoutput/Matrices/K.npy");
-        cnpy::save(P_matrix, "./ITHACAoutput/Matrices/P.npy");
-        cnpy::save(M_matrix, "./ITHACAoutput/Matrices/M.npy");
-        cnpy::save(C_tensor, "./ITHACAoutput/Matrices/C.npy");
+        ITHACAstream::exportToFile(B_matrix, "B");
+        ITHACAstream::exportToFile(K_matrix, "K");
+        ITHACAstream::exportToFile(P_matrix, "P");
+        ITHACAstream::exportToFile(M_matrix, "M");
+        ITHACAstream::exportToFile(C_tensor, "C");
     }
 }
 
@@ -1007,9 +1001,9 @@ List <Eigen::MatrixXd> steadyNS::convective_term(label NUmodes, label NPmodes,
     if (Pstream::master())
     {
         // Export the matrix
-        ITHACAstream::exportMatrix(C_matrix, "C", "python", "./ITHACAoutput/Matrices/");
-        ITHACAstream::exportMatrix(C_matrix, "C", "matlab", "./ITHACAoutput/Matrices/");
-        ITHACAstream::exportMatrix(C_matrix, "C", "eigen", "./ITHACAoutput/Matrices/C");
+        ITHACAstream::exportToFile(C_matrix, "C", "python");
+        ITHACAstream::exportToFile(C_matrix, "C", "matlab");
+        ITHACAstream::exportToFile(C_matrix, "C", "eigen", "./ITHACAoutput/Matrices/C");
         return C_matrix;
     }
 }
@@ -1158,9 +1152,9 @@ List <Eigen::MatrixXd> steadyNS::div_momentum(label NUmodes, label NPmodes)
     if (Pstream::master())
     {
         // Export the matrix
-        ITHACAstream::exportMatrix(G_matrix, "G", "python", "./ITHACAoutput/Matrices/");
-        ITHACAstream::exportMatrix(G_matrix, "G", "matlab", "./ITHACAoutput/Matrices/");
-        ITHACAstream::exportMatrix(G_matrix, "G", "eigen", "./ITHACAoutput/Matrices/G");
+        ITHACAstream::exportToFile(G_matrix, "G", "python");
+        ITHACAstream::exportToFile(G_matrix, "G", "matlab");
+        ITHACAstream::exportToFile(G_matrix, "G", "eigen", "./ITHACAoutput/Matrices/G");
     }
 
     return G_matrix;
@@ -1505,7 +1499,7 @@ List<Eigen::MatrixXd> steadyNS::bcVelocityVec(label NUmodes,
 
     if (Pstream::master())
     {
-        ITHACAstream::exportMatrix(bcVelVec, "bcVelVec", "eigen",
+        ITHACAstream::exportToFile(bcVelVec, "bcVelVec", "eigen",
                                    "./ITHACAoutput/Matrices/bcVelVec");
     }
 
@@ -1547,7 +1541,7 @@ List<Eigen::MatrixXd> steadyNS::bcVelocityMat(label NUmodes,
 
     if (Pstream::master())
     {
-        ITHACAstream::exportMatrix(bcVelMat, "bcVelMat", "eigen",
+        ITHACAstream::exportToFile(bcVelMat, "bcVelMat", "eigen",
                                    "./ITHACAoutput/Matrices/bcVelMat");
     }
 
@@ -2152,23 +2146,20 @@ void steadyNS::forcesMatrices(label NUmodes, label NPmodes, label NSUPmodes)
 
     if (para->exportPython)
     {
-        ITHACAstream::exportMatrix(tauMatrix, "tau", "python",
-                                   "./ITHACAoutput/Matrices/");
-        ITHACAstream::exportMatrix(nMatrix, "n", "python", "./ITHACAoutput/Matrices/");
+        ITHACAstream::exportToFile(tauMatrix, "tau", "python");
+        ITHACAstream::exportToFile(nMatrix, "n", "python");
     }
 
     if (para->exportMatlab)
     {
-        ITHACAstream::exportMatrix(tauMatrix, "tau", "matlab",
-                                   "./ITHACAoutput/Matrices/");
-        ITHACAstream::exportMatrix(nMatrix, "n", "matlab", "./ITHACAoutput/Matrices/");
+        ITHACAstream::exportToFile(tauMatrix, "tau", "matlab");
+        ITHACAstream::exportToFile(nMatrix, "n", "matlab");
     }
 
     if (para->exportTxt)
     {
-        ITHACAstream::exportMatrix(tauMatrix, "tau", "eigen",
-                                   "./ITHACAoutput/Matrices/");
-        ITHACAstream::exportMatrix(nMatrix, "n", "eigen", "./ITHACAoutput/Matrices/");
+        ITHACAstream::exportToFile(tauMatrix, "tau", "eigen");
+        ITHACAstream::exportToFile(nMatrix, "n", "eigen");
     }
 }
 
@@ -2240,23 +2231,20 @@ void steadyNS::forcesMatrices(label nModes)
 
     if (para->exportPython)
     {
-        ITHACAstream::exportMatrix(tauMatrix, "tau", "python",
-                                   "./ITHACAoutput/Matrices/");
-        ITHACAstream::exportMatrix(nMatrix, "n", "python", "./ITHACAoutput/Matrices/");
+        ITHACAstream::exportToFile(tauMatrix, "tau", "python");
+        ITHACAstream::exportToFile(nMatrix, "n", "python");
     }
 
     if (para->exportMatlab)
     {
-        ITHACAstream::exportMatrix(tauMatrix, "tau", "matlab",
-                                   "./ITHACAoutput/Matrices/");
-        ITHACAstream::exportMatrix(nMatrix, "n", "matlab", "./ITHACAoutput/Matrices/");
+        ITHACAstream::exportToFile(tauMatrix, "tau", "matlab");
+        ITHACAstream::exportToFile(nMatrix, "n", "matlab");
     }
 
     if (para->exportTxt)
     {
-        ITHACAstream::exportMatrix(tauMatrix, "tau", "eigen",
-                                   "./ITHACAoutput/Matrices/");
-        ITHACAstream::exportMatrix(nMatrix, "n", "eigen", "./ITHACAoutput/Matrices/");
+        ITHACAstream::exportToFile(tauMatrix, "tau", "eigen");
+        ITHACAstream::exportToFile(nMatrix, "n", "eigen");
     }
 }
 
@@ -2293,20 +2281,20 @@ void steadyNS::reconstructLiftAndDrag(const Eigen::MatrixXd& velCoeffs,
     // Export the matrices
     if (para->exportPython)
     {
-        ITHACAstream::exportMatrix(fTau, "fTau", "python", folder);
-        ITHACAstream::exportMatrix(fN, "fN", "python", folder);
+        ITHACAstream::exportToFile(fTau, "fTau", "python", folder);
+        ITHACAstream::exportToFile(fN, "fN", "python", folder);
     }
 
     if (para->exportMatlab)
     {
-        ITHACAstream::exportMatrix(fTau, "fTau", "matlab", folder);
-        ITHACAstream::exportMatrix(fN, "fN", "matlab", folder);
+        ITHACAstream::exportToFile(fTau, "fTau", "matlab", folder);
+        ITHACAstream::exportToFile(fN, "fN", "matlab", folder);
     }
 
     if (para->exportTxt)
     {
-        ITHACAstream::exportMatrix(fTau, "fTau", "eigen", folder);
-        ITHACAstream::exportMatrix(fN, "fN", "eigen", folder);
+        ITHACAstream::exportToFile(fTau, "fTau", "eigen", folder);
+        ITHACAstream::exportToFile(fN, "fN", "eigen", folder);
     }
 }
 

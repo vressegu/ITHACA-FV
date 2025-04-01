@@ -141,7 +141,7 @@ void msrProblem::truthSolve(List<scalar> mu_now)
 
     if (mu_samples.rows() == mu.cols())
     {
-        ITHACAstream::exportMatrix(mu_samples, "mu_samples", "eigen",
+        ITHACAstream::exportToFile(mu_samples, "mu_samples", "eigen",
                                    "./ITHACAoutput/Offline");
     }
 }
@@ -538,7 +538,7 @@ Eigen::MatrixXd msrProblem::diffusive_term(label NUmodes, label NPmodes)
     }
 
     // Export the matrix
-    ITHACAstream::exportMatrix(B_matrix, "B", "matlab",
+    ITHACAstream::exportToFile(B_matrix, "B", "matlab",
                                "./ITHACAoutput/Matrices/fluid_dynamics/");
     return B_matrix;
 }
@@ -577,7 +577,7 @@ Eigen::MatrixXd msrProblem::pressure_gradient_term(label NUmodes, label NPmodes)
     }
 
     // Export the matrix
-    ITHACAstream::exportMatrix(K_matrix, "K", "matlab",
+    ITHACAstream::exportToFile(K_matrix, "K", "matlab",
                                "./ITHACAoutput/Matrices/fluid_dynamics/");
     return K_matrix;
 }
@@ -625,7 +625,7 @@ List <Eigen::MatrixXd> msrProblem::convective_term(label NUmodes,
     }
 
     // Export the matrix
-    ITHACAstream::exportMatrix(C_matrix, "C", "matlab",
+    ITHACAstream::exportToFile(C_matrix, "C", "matlab",
                                "./ITHACAoutput/Matrices/fluid_dynamics/");
     return C_matrix;
 }
@@ -662,7 +662,7 @@ Eigen::MatrixXd msrProblem::mass_term(label NUmodes, label NPmodes)
     }
 
     // Export the matrix
-    ITHACAstream::exportMatrix(M_matrix, "M", "matlab",
+    ITHACAstream::exportToFile(M_matrix, "M", "matlab",
                                "./ITHACAoutput/Matrices/fluid_dynamics/");
     return M_matrix;
 }
@@ -703,7 +703,7 @@ Eigen::MatrixXd msrProblem::divergence_term(label NUmodes, label NPmodes)
     }
 
     //Export the matrix
-    ITHACAstream::exportMatrix(P_matrix, "P", "matlab",
+    ITHACAstream::exportToFile(P_matrix, "P", "matlab",
                                "./ITHACAoutput/Matrices/fluid_dynamics/");
     return P_matrix;
 }
@@ -752,7 +752,7 @@ List <Eigen::MatrixXd> msrProblem::div_momentum(label NUmodes, label NPmodes)
     }
 
     // Export the matrix
-    ITHACAstream::exportMatrix(G_matrix, "G", "matlab",
+    ITHACAstream::exportToFile(G_matrix, "G", "matlab",
                                "./ITHACAoutput/Matrices/fluid_dynamics/");
     return G_matrix;
 }
@@ -773,7 +773,7 @@ Eigen::MatrixXd msrProblem::laplacian_pressure(label NPmodes)
     }
 
     //Export the matrix
-    ITHACAstream::exportMatrix(D_matrix, "D", "matlab",
+    ITHACAstream::exportToFile(D_matrix, "D", "matlab",
                                "./ITHACAoutput/Matrices/fluid_dynamics/");
     return D_matrix;
 }
@@ -819,7 +819,7 @@ Eigen::MatrixXd msrProblem::pressure_BC1(label NUmodes, label NPmodes)
         }
     }
 
-    ITHACAstream::exportMatrix(BC1_matrix, "BC1", "matlab",
+    ITHACAstream::exportToFile(BC1_matrix, "BC1", "matlab",
                                "./ITHACAoutput/Matrices/fluid_dynamics/");
     return BC1_matrix;
 }
@@ -878,7 +878,7 @@ List <Eigen::MatrixXd> msrProblem::pressure_BC2(label NUmodes, label NPmodes)
     }
 
     // Export the matrix
-    ITHACAstream::exportMatrix(BC2_matrix, "BC2", "matlab",
+    ITHACAstream::exportToFile(BC2_matrix, "BC2", "matlab",
                                "./ITHACAoutput/Matrices/fluid_dynamics/");
     return BC2_matrix;
 }
@@ -927,7 +927,7 @@ Eigen::MatrixXd msrProblem::pressure_BC3(label NUmodes, label NPmodes)
         }
     }
 
-    ITHACAstream::exportMatrix(BC3_matrix, "BC3", "matlab",
+    ITHACAstream::exportToFile(BC3_matrix, "BC3", "matlab",
                                "./ITHACAoutput/Matrices/fluid_dynamics/");
     return BC3_matrix;
 }
@@ -962,7 +962,7 @@ List<Eigen::MatrixXd> msrProblem::laplacian_flux(label NFluxmodes,
     }
 
     // Export the matrix
-    ITHACAstream::exportMatrix(LF_matrix, "LF", "matlab",
+    ITHACAstream::exportToFile(LF_matrix, "LF", "matlab",
                                "./ITHACAoutput/Matrices/neutronics/");
     return LF_matrix;
 }
@@ -983,7 +983,7 @@ Eigen::MatrixXd msrProblem::mass_flux(label NFluxmodes)
     }
 
     // Export the matrix
-    ITHACAstream::exportMatrix(MF_matrix, "MF", "matlab",
+    ITHACAstream::exportToFile(MF_matrix, "MF", "matlab",
                                "./ITHACAoutput/Matrices/neutronics/");
     return MF_matrix;
 }
@@ -1014,7 +1014,7 @@ List<Eigen::MatrixXd> msrProblem::prod_flux(label NFluxmodes, label NCmodes)
     }
 
     // Export the matrix
-    ITHACAstream::exportMatrix(PF_matrix, "PF", "matlab",
+    ITHACAstream::exportToFile(PF_matrix, "PF", "matlab",
                                "./ITHACAoutput/Matrices/neutronics/");
     return PF_matrix;
 }
@@ -1045,7 +1045,7 @@ List<Eigen::MatrixXd> msrProblem::abs_flux(label NFluxmodes, label NCmodes)
     }
 
     // Export the matrix
-    ITHACAstream::exportMatrix(AF_matrix, "AF", "matlab",
+    ITHACAstream::exportToFile(AF_matrix, "AF", "matlab",
                                "./ITHACAoutput/Matrices/neutronics/");
     return AF_matrix;
 }
@@ -1370,7 +1370,7 @@ Eigen::MatrixXd msrProblem::mass_temp(label NTmodes)
     }
 
     // Export the matrix
-    ITHACAstream::exportMatrix(TM_matrix, "TM", "matlab",
+    ITHACAstream::exportToFile(TM_matrix, "TM", "matlab",
                                "./ITHACAoutput/Matrices/thermal/");
     return TM_matrix;
 }
@@ -1438,7 +1438,7 @@ List<Eigen::MatrixXd> msrProblem::temp_stream(label NUmodes, label NTmodes)
     }
 
     // Export the matrix
-    ITHACAstream::exportMatrix(TS_matrix, "TS", "matlab",
+    ITHACAstream::exportToFile(TS_matrix, "TS", "matlab",
                                "./ITHACAoutput/Matrices/thermal/");
     return TS_matrix;
 }
@@ -1478,7 +1478,7 @@ Eigen::MatrixXd msrProblem::laplacian_temp(label NTmodes)
     }
 
     // Export the matrix
-    ITHACAstream::exportMatrix(LT_matrix, "LT", "matlab",
+    ITHACAstream::exportToFile(LT_matrix, "LT", "matlab",
                                "./ITHACAoutput/Matrices/thermal/");
     return LT_matrix;
 }
@@ -1527,7 +1527,7 @@ List<Eigen::MatrixXd> msrProblem::temp_XSfluxsource(label NTmodes,
         }
     }
 
-    ITHACAstream::exportMatrix(TXS_matrix, "TXS", "matlab",
+    ITHACAstream::exportToFile(TXS_matrix, "TXS", "matlab",
                                "./ITHACAoutput/Matrices/thermal/");
     return TXS_matrix;
 }
@@ -1647,7 +1647,7 @@ void msrProblem::savegroupMatrix(string nome, label n, word folder, M matrice)
 {
     nome.append(std::to_string(n));
     word name = nome;
-    ITHACAstream::exportMatrix(matrice, name, "matlab", folder);
+    ITHACAstream::exportToFile(matrice, name, "matlab", folder);
 }
 
 void msrProblem::homogenizeU()
@@ -1711,7 +1711,7 @@ void msrProblem::readMSRfields()
     ITHACAstream::read_fields(SPFields, SP, "./ITHACAoutput/Offline/");
     ITHACAstream::read_fields(TXSFields, TXS, "./ITHACAoutput/Offline/");
     mu_samples =
-        ITHACAstream::readMatrix("./ITHACAoutput/Offline/mu_samples_mat.txt");
+        ITHACAstream::readMatrix("./ITHACAoutput/Offline/Txt/mu_samples_mat.txt");
 }
 
 void msrProblem::readMSRfields(std::string& dir)
@@ -1796,8 +1796,7 @@ void msrProblem::msrcoeff(label& NC)
 {
     NCmodes = NC;
     Eigen::MatrixXd Ncoeff_v = ITHACAutilities::getCoeffs(vFields, vmodes);
-    ITHACAstream::exportMatrix(Ncoeff_v, "Ncoeff_v", "matlab",
-                               "./ITHACAoutput/Matrices/");
+    ITHACAstream::exportToFile(Ncoeff_v, "Ncoeff_v", "matlab");
     label Ncol = Ncoeff_v.cols();
     SAMPLES_v.resize(NCmodes);
     rbfsplines_v.resize(NCmodes);
@@ -1818,8 +1817,7 @@ void msrProblem::msrcoeff(label& NC)
     }
 
     Eigen::MatrixXd Ncoeff_D = ITHACAutilities::getCoeffs(DFields, Dmodes);
-    ITHACAstream::exportMatrix(Ncoeff_D, "Ncoeff_D", "matlab",
-                               "./ITHACAoutput/Matrices/");
+    ITHACAstream::exportToFile(Ncoeff_D, "Ncoeff_D", "matlab");
     SAMPLES_D.resize(NCmodes);
     rbfsplines_D.resize(NCmodes);
 
@@ -1840,8 +1838,7 @@ void msrProblem::msrcoeff(label& NC)
 
     Eigen::MatrixXd Ncoeff_NSF = ITHACAutilities::getCoeffs(NSFFields,
                                  NSFmodes);
-    ITHACAstream::exportMatrix(Ncoeff_NSF, "Ncoeff_NSF", "matlab",
-                               "./ITHACAoutput/Matrices/");
+    ITHACAstream::exportToFile(Ncoeff_NSF, "Ncoeff_NSF", "matlab");
     SAMPLES_NSF.resize(NCmodes);
     rbfsplines_NSF.resize(NCmodes);
 
@@ -1861,8 +1858,7 @@ void msrProblem::msrcoeff(label& NC)
     }
 
     Eigen::MatrixXd Ncoeff_A = ITHACAutilities::getCoeffs(AFields, Amodes);
-    ITHACAstream::exportMatrix(Ncoeff_A, "Ncoeff_A", "matlab",
-                               "./ITHACAoutput/Matrices/");
+    ITHACAstream::exportToFile(Ncoeff_A, "Ncoeff_A", "matlab");
     SAMPLES_A.resize(NCmodes);
     rbfsplines_A.resize(NCmodes);
 
@@ -1883,8 +1879,7 @@ void msrProblem::msrcoeff(label& NC)
 
     Eigen::MatrixXd Ncoeff_SP = ITHACAutilities::getCoeffs(SPFields,
                                 SPmodes);
-    ITHACAstream::exportMatrix(Ncoeff_SP, "Ncoeff_SP", "matlab",
-                               "./ITHACAoutput/Matrices/");
+    ITHACAstream::exportToFile(Ncoeff_SP, "Ncoeff_SP", "matlab");
     SAMPLES_SP.resize(NCmodes);
     rbfsplines_SP.resize(NCmodes);
 
@@ -1905,8 +1900,7 @@ void msrProblem::msrcoeff(label& NC)
 
     Eigen::MatrixXd Ncoeff_TXS = ITHACAutilities::getCoeffs(TXSFields,
                                  TXSmodes);
-    ITHACAstream::exportMatrix(Ncoeff_TXS, "Ncoeff_TXS", "matlab",
-                               "./ITHACAoutput/Matrices/");
+    ITHACAstream::exportToFile(Ncoeff_TXS, "Ncoeff_TXS", "matlab");
     SAMPLES_TXS.resize(NCmodes);
     rbfsplines_TXS.resize(NCmodes);
 

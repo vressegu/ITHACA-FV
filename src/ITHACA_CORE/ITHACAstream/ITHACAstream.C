@@ -1174,9 +1174,11 @@ template void save(const List<Eigen::SparseMatrix<double>> & MatrixList,
 template void load(List<Eigen::SparseMatrix<double>> & MatrixList, word folder,
                    word MatrixName);
 
-void exportToFile(Eigen::MatrixXd& Matrix,word matrixRoad, word type, word folder)
+template<typename T, int dim>
+void exportToFile(Eigen::Matrix < T, -1, dim > & Matrix,word matrixRoad, word type, word folder)
 {
-
+    //creates the folder if it doesn't exist, exportMatrix will create the subfolder
+    mkDir(folder);
     //allows to handle both folder/ and folder
     if (folder.back()!='/') folder += "/";
     //adds subfolder and calls proper export function
@@ -1198,14 +1200,28 @@ void exportToFile(Eigen::MatrixXd& Matrix,word matrixRoad, word type, word folde
     }
 }
 
+template void exportToFile(Eigen::Matrix<int, -1, -1> & Matrix,word, word, word);
+template void exportToFile(Eigen::Matrix<double, -1, -1> & Matrix,word, word, word);
+template void exportToFile(Eigen::Matrix<std::complex<double>, -1, -1> & Matrix,word, word, word);
+
+
 void exportToFile(Eigen::VectorXd& Vector,word matrixRoad,word type,word folder)
 {
     Eigen::MatrixXd matrix = Vector;
     exportToFile(matrix, matrixRoad, type, folder);
 }
 
+void exportToFile(Eigen::VectorXi& Vector,word matrixRoad,word type,word folder)
+{
+    Eigen::MatrixXi matrix = Vector;
+    exportToFile(matrix, matrixRoad, type, folder);
+}
+
+
 void exportToFile(Eigen::Tensor<double,3>& Tensor,word tensorRoad,word type,word folder)
 {
+    //creates the folder if it doesn't exist, exportMatrix will create the subfolder
+    mkDir(folder);
     //allows to handle both folder/ and folder
     if (folder.back()!='/') folder += "/";
     //adds subfolder and calls proper export function
@@ -1229,6 +1245,8 @@ void exportToFile(Eigen::Tensor<double,3>& Tensor,word tensorRoad,word type,word
 
 void exportToFile(List <Eigen::MatrixXd>& Matrix,word matrixRoad, word type, word folder)
 {
+    //creates the folder if it doesn't exist, exportMatrix will create the subfolder
+    mkDir(folder);
     //allows to handle both folder/ and folder
     if (folder.back()!='/') folder += "/";
     //adds subfolder and call proper export function
@@ -1250,6 +1268,15 @@ void exportToFile(List <Eigen::MatrixXd>& Matrix,word matrixRoad, word type, wor
     }
 }
 
+//as sparseMatrix is not handled by exportMatrix function, had to make a specific wrapper
+void exportToFile(Eigen::SparseMatrix<double>& matrix, word name, word folder)
+{
+    mkDir(folder);
+    //allows to handle both folder/ and folder
+    if (folder.back()!='/') folder +='/';
+    cnpy::save(matrix,folder + name + ".npy");
+}
+
 template<typename T>
 bool importNpy(T &data, word objectName, word folder)
 {
@@ -1266,9 +1293,11 @@ bool importNpy(T &data, word objectName, word folder)
     }
 }
 
-template bool importNpy<Eigen::MatrixXd>(Eigen::MatrixXd&, word, word);
-template bool importNpy<Eigen::VectorXd>(Eigen::VectorXd&, word, word);
-template bool importNpy<Eigen::Tensor<double, 3 >>(Eigen::Tensor<double, 3>&, word, word);
+template bool importNpy(Eigen::MatrixXd&, word, word);
+template bool importNpy(Eigen::VectorXi&, word, word);
+template bool importNpy(Eigen::VectorXd&, word, word);
+template bool importNpy(Eigen::Tensor<double, 3>&, word, word);
+template bool importNpy(Eigen::SparseMatrix<double>&, word, word);
 
 template GeometricField<scalar, fvPatchField, volMesh>
 readFieldByIndex(

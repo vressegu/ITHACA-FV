@@ -174,8 +174,7 @@ void HyperReduction<SnapshotsLists...>::getModesSVD(
 
         modesSVD = eigenVectoreig;
         // TODO correct boundary conditions
-        cnpy::save(eigenValueseig,
-                   "ITHACAoutput/" + problemName + "/ModesSVD/eigenvalues.npy");
+        ITHACAstream::exportToFile(eigenValueseig,"eigenvalues","cnpy",folderSVD);
         eigenValueseig = eigenValueseig / eigenValueseig.sum();
         Eigen::VectorXd cumEigenValues(eigenValueseig);
 
@@ -192,9 +191,8 @@ void HyperReduction<SnapshotsLists...>::getModesSVD(
                                 "ITHACAoutput/" + problemName + "/ModesSVD/CumEigenvalues_" + problemName,
                                 para->precision,
                                 para->outytpe);
-        cnpy::save(modesSVD, "ITHACAoutput/" + problemName + "/ModesSVD/modes.npy");
-        cnpy::save(fieldWeights,
-                   "ITHACAoutput/" + problemName + "/ModesSVD/normalizingWeights.npy");
+        ITHACAstream::exportToFile(modesSVD,"modes","cnpy","ITHACAoutput/" + problemName + "/ModesSVD");
+        ITHACAstream::exportToFile(fieldWeights,"normalizingWeights","cnpy","ITHACAoutput/" + problemName + "/ModesSVD");
 
         if (saveModesFlag)
         {
@@ -215,8 +213,8 @@ void HyperReduction<SnapshotsLists...>::getModesSVD(
     else
     {
         Info << "Reading the existing modes" << endl;
-        cnpy::load(modesSVD, folderSVD + "/modes.npy");
-        cnpy::load(fieldWeights, folderSVD + "/normalizingWeights.npy");
+        ITHACAstream::importNpy(modesSVD,"modes",folderSVD);
+        ITHACAstream::importNpy(fieldWeights,"normalizingWeights",folderSVD);
     }
 }
 
@@ -251,10 +249,8 @@ void HyperReduction<SnapshotsLists...>::getModesSVD(
                                     fieldWeightsBoundaryList[id];
         }
 
-        cnpy::save(fieldWeights,
-                   "ITHACAoutput/" + problemName + "/ModesSVD/normalizingWeights.npy");
-        cnpy::save(fieldWeightsBoundary,
-                   "ITHACAoutput/" + problemName + "/ModesSVD/normalizingWeightsBoundary.npy");
+        ITHACAstream::exportToFile(fieldWeights,"normalizingWeights", "cnpy",folderSVD);
+        ITHACAstream::exportToFile(fieldWeightsBoundary,"normalizingWeightsBoundary", "cnpy",folderSVD);
         fieldWeights.conservativeResize(fieldWeights.rows() +
                                         fieldWeightsBoundary.rows());
         fieldWeights.tail(fieldWeightsBoundary.rows()) = fieldWeightsBoundary;
@@ -289,8 +285,7 @@ void HyperReduction<SnapshotsLists...>::getModesSVD(
         modesSVDBoundary = eigenVectoreig.topRows(n_boundary_cells);
         fieldWeights.conservativeResize(fieldWeights.rows() -
                                         fieldWeightsBoundary.rows());
-        cnpy::save(eigenValueseig,
-                   "ITHACAoutput/" + problemName + "/ModesSVD/eigenvalues.npy");
+        ITHACAstream::exportToFile(eigenValueseig,"eigenvalues", "cnpy",folderSVD);
         eigenValueseig = eigenValueseig / eigenValueseig.sum();
         Eigen::VectorXd cumEigenValues(eigenValueseig);
 
@@ -307,10 +302,9 @@ void HyperReduction<SnapshotsLists...>::getModesSVD(
                                 "ITHACAoutput/" + problemName + "/ModesSVD/CumEigenvalues_" + problemName,
                                 para->precision,
                                 para->outytpe);
-        cnpy::save(modesSVD, "ITHACAoutput/" + problemName + "/ModesSVD/modes.npy");
-        cnpy::save(modesSVDBoundary,
-                   "ITHACAoutput/" + problemName + "/ModesSVD/modesBoundary.npy");
-
+        ITHACAstream::exportToFile(modesSVD,"modes", "cnpy",folderSVD);
+        ITHACAstream::exportToFile(modesSVDBoundary,"modesBoundary", "cnpy",folderSVD);
+        
         if (saveModesFlag)
         {
             unsigned int rowIndex{0};
@@ -332,12 +326,10 @@ void HyperReduction<SnapshotsLists...>::getModesSVD(
     else
     {
         Info << "Reading the existing modes" << endl;
-        cnpy::load(modesSVD, folderSVD + "/modes.npy");
-        cnpy::load(modesSVDBoundary,
-                   "ITHACAoutput/" + problemName + "/ModesSVD/modesBoundary.npy");
-        cnpy::load(fieldWeights, folderSVD + "/normalizingWeights.npy");
-        cnpy::load(fieldWeightsBoundary,
-                   "ITHACAoutput/" + problemName + "/ModesSVD/normalizingWeightsBoundary.npy");
+        ITHACAstream::importNpy(modesSVD,"modes",folderSVD);
+        ITHACAstream::importNpy(modesSVDBoundary,"modesBoundary",folderSVD);
+        ITHACAstream::importNpy(fieldWeights,"normalizingWeights",folderSVD);
+        ITHACAstream::importNpy(fieldWeightsBoundary,"normalizingWeightsBoundary",folderSVD);
     }
 }
 
@@ -643,12 +635,12 @@ void HyperReduction<SnapshotsLists...>::offlineGappyDEIM(
         renormalizedBasisMatrix = normalizingWeights.asDiagonal() * basisMatrix;
         MatrixOnline = renormalizedBasisMatrix* pinvPU;
         P.makeCompressed();
-        cnpy::save(basisMatrix, folderMethod + "/basisMatrix.npy");
-        cnpy::save(P, folderMethod + "/projectionMatrix.npz");
-        cnpy::save(normalizingWeights, folderMethod + "/normalizingWeights.npy");
-        cnpy::save(nodes, folderMethod + "/mp.npy");
-        cnpy::save(pinvPU, folderMethod + "/pinvPU.npy");
-        cnpy::save(MatrixOnline, folderMethod + "/MatrixOnline.npy");
+        ITHACAstream::exportToFile(basisMatrix,"basisMatrix","cnpy",folderMethod);
+        ITHACAstream::exportToFile(P,"projectionMatrix",folderMethod);
+        ITHACAstream::exportToFile(normalizingWeights,"normalizingWeights","cnpy",folderMethod);
+        ITHACAstream::exportToFile(nodes,"mp","cnpy",folderMethod);
+        ITHACAstream::exportToFile(pinvPU,"pinvPU","cnpy",folderMethod);
+        ITHACAstream::exportToFile(MatrixOnline,"MatrixOnline","cnpy",folderMethod);
         nodePoints().write();
         Info << "Projection Matrix shape: " << P.rows() << " " << P.cols() << endl;
         Info << "Basis Matrix shape: " << basisMatrix.rows() << " " <<
@@ -659,12 +651,12 @@ void HyperReduction<SnapshotsLists...>::offlineGappyDEIM(
     else
     {
         Info << "Read GappyDEIM\n";
-        cnpy::load(basisMatrix, folderMethod + "/basisMatrix.npy");
-        cnpy::load(MatrixOnline, folderMethod + "/MatrixOnline.npy");
-        cnpy::load(normalizingWeights, folderMethod + "/normalizingWeights.npy");
-        cnpy::load(P, folderMethod + "/projectionMatrix.npz");
-        cnpy::load(nodes, folderMethod + "/mp.npy");
-        cnpy::load(pinvPU, folderMethod + "/pinvPU.npy");
+        ITHACAstream::importNpy(basisMatrix,"basisMatrix",folderMethod);
+        ITHACAstream::importNpy(MatrixOnline,"MatrixOnline",folderMethod);
+        ITHACAstream::importNpy(normalizingWeights,"normalizingWeights",folderMethod);
+        ITHACAstream::importNpy(P,"projectionMatrix",folderMethod);
+        ITHACAstream::importNpy(nodes,"mp",folderMethod);
+        ITHACAstream::importNpy(pinvPU,"pinvPU",folderMethod);
         renormalizedBasisMatrix = normalizingWeights.asDiagonal() * basisMatrix;
         Info << "Projection Matrix shape: " << P.rows() << " " << P.cols() << endl;
         Info << "Basis Matrix shape: " << basisMatrix.rows() << " " <<
@@ -760,21 +752,21 @@ void HyperReduction<SnapshotsLists...>::offlineECP(Eigen::MatrixXd&
         Info << "####### End ECP #######" << endl;
         basisMatrix = snapshotsModes.leftCols(n_modes);
         evaluateWPU(P, basisMatrix, normalizingWeights, quadratureWeights);
-        cnpy::save(basisMatrix, folderMethod + "/basisMatrix.npy");
-        cnpy::save(quadratureWeights, folderMethod + "/quadratureWeights.npy");
-        cnpy::save(normalizingWeights, folderMethod + "/normalizingWeights.npy");
-        cnpy::save(nodes, folderMethod + "/mp.npy");
-        cnpy::save(wPU, folderMethod + "/wPU.npy");
+        ITHACAstream::exportToFile(basisMatrix,"basisMatrix","cnpy",folderMethod);
+        ITHACAstream::exportToFile(quadratureWeights,"quadratureWeights","cnpy",folderMethod);
+        ITHACAstream::exportToFile(normalizingWeights,"normalizingWeights","cnpy",folderMethod);
+        ITHACAstream::exportToFile(nodes,"mp","cnpy",folderMethod);
+        ITHACAstream::exportToFile(wPU,"wPU","cnpy",folderMethod);
         nodePoints().write();
     }
     else
     {
         Info << "Read ECP\n";
-        cnpy::load(basisMatrix, folderMethod + "/basisMatrix.npy");
-        cnpy::load(quadratureWeights, folderMethod + "/quadratureWeights.npy");
-        cnpy::load(normalizingWeights, folderMethod + "/normalizingWeights.npy");
-        cnpy::load(nodes, folderMethod + "/mp.npy");
-        cnpy::load(wPU, folderMethod + "/wPU.npy");
+        ITHACAstream::importNpy(basisMatrix, "basisMatrix", folderMethod);
+        ITHACAstream::importNpy(quadratureWeights, "quadratureWeights", folderMethod);
+        ITHACAstream::importNpy(normalizingWeights, "normalizingWeights", folderMethod);
+        ITHACAstream::importNpy(nodes, "mp", folderMethod);
+        ITHACAstream::importNpy(wPU, "wPU", folderMethod);
     }
 }
 
@@ -1097,15 +1089,15 @@ void HyperReduction<SnapshotsLists...>::createMasks(bool offlineStage)
         }
 
         submesh2nodes.makeCompressed();
-        cnpy::save(field2submesh, folderMethod + "/field2submesh.npz");
-        cnpy::save(submesh2nodes, folderMethod + "/submesh2nodes.npz");
-        cnpy::save(submesh2nodesMask, folderMethod + "/submesh2nodesMask.npy");
+        ITHACAstream::exportToFile(field2submesh,"field2submesh",folderMethod);
+        ITHACAstream::exportToFile(submesh2nodes,"submesh2nodes",folderMethod);
+        ITHACAstream::exportToFile(submesh2nodesMask,"submesh2nodesMask","cnpy",folderMethod);
     }
     else
     {
-        cnpy::load(field2submesh, folderMethod + "/field2submesh.npz");
-        cnpy::load(submesh2nodes, folderMethod + "/submesh2nodes.npz");
-        cnpy::load(submesh2nodesMask, folderMethod + "/submesh2nodesMask.npy");
+        ITHACAstream::importNpy(field2submesh,"field2submesh",folderMethod);
+        ITHACAstream::importNpy(submesh2nodes,"submesh2nodes",folderMethod);
+        ITHACAstream::importNpy(submesh2nodesMask,"submesh2nodesMask",folderMethod);
     }
 }
 

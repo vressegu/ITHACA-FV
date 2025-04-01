@@ -385,7 +385,7 @@ void incrementalPOD<Type, PatchField, GeoMesh>::writeModes()
     ITHACAstream::exportFields(this->toPtrList(),
                                outputFolder,
                                "base");
-    ITHACAstream::exportMatrix(singularValues, "singularValues", "eigen",
+    ITHACAstream::exportToFile(singularValues, "singularValues", "eigen",
                                outputFolder);
 }
 

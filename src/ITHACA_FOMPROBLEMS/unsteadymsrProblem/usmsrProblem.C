@@ -298,7 +298,7 @@ void usmsrProblem::truthSolve(List<scalar> mu_now)
 
     if (mu_samples.rows() == nsnapshots* mu.cols())
     {
-        ITHACAstream::exportMatrix(mu_samples, "mu_samples", "eigen",
+        ITHACAstream::exportToFile(mu_samples, "mu_samples", "eigen",
                                    "./ITHACAoutput/Offline");
     }
 }

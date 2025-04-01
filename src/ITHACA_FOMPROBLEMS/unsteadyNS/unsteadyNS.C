@@ -222,7 +222,7 @@ void unsteadyNS::truthSolve(List<scalar> mu_now, fileName folder)
 
     if (mu_samples.rows() == counter* mu.cols())
     {
-        ITHACAstream::exportMatrix(mu_samples, "mu_samples", "eigen",
+        ITHACAstream::exportToFile(mu_samples, "mu_samples", "eigen",
                                    folder);
     }
 }

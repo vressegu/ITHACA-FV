@@ -935,13 +935,13 @@ void reducedusMSR::solveOnline(Eigen::MatrixXd vel_now,
         counter++;
     }
 
-    ITHACAstream::exportMatrix(online_solution_fd, "red_coeff_fd", "matlab",
+    ITHACAstream::exportToFile(online_solution_fd, "red_coeff_fd", "matlab",
                                "./ITHACAoutput/red_coeff_fd");
-    ITHACAstream::exportMatrix(online_solution_n, "red_coeff_n", "matlab",
+    ITHACAstream::exportToFile(online_solution_n, "red_coeff_n", "matlab",
                                "./ITHACAoutput/red_coeff_n");
-    ITHACAstream::exportMatrix(online_solution_t, "red_coeff_t", "matlab",
+    ITHACAstream::exportToFile(online_solution_t, "red_coeff_t", "matlab",
                                "./ITHACAoutput/red_coeff_t");
-    ITHACAstream::exportMatrix(online_solution_C, "red_coeff_C", "matlab",
+    ITHACAstream::exportToFile(online_solution_C, "red_coeff_C", "matlab",
                                "./ITHACAoutput/red_coeff_C");
 }
 
