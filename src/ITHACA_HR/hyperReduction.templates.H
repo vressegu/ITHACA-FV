@@ -103,6 +103,8 @@ HyperReduction<SnapshotsLists...>::HyperReduction(label n_modes,
     }
 
     Info << "Number of boundary cells: " << n_boundary_cells << endl;
+
+    Eigen::VectorXd volumes = ITHACAutilities::getMassMatrixFV(std::get<0>(snapshotsListTuple)[0]);
 }
 
 
@@ -113,13 +115,15 @@ HyperReduction<SnapshotsLists...>::HyperReduction(label n_modes,
         unsigned int vectorialDim,
         label n_cells,
         Eigen::VectorXi initialSeeds,
-        word problemName)
+        word problemName,
+        Eigen::VectorXd volumes)
     : n_modes{n_modes},
       n_nodes{n_nodes},
       vectorial_dim{vectorialDim},
       n_cells{n_cells},
       initialSeeds{initialSeeds},
-      problemName{problemName}
+      problemName{problemName},
+      volumes{volumes}
 {
     Info << "Init HyperReduction class with vectorial dim: " << vectorial_dim <<
          endl;
@@ -676,12 +680,13 @@ void HyperReduction<SnapshotsLists...>::offlineGappyDEIM(
 
 template <typename... SnapshotsLists>
 void HyperReduction<SnapshotsLists...>::offlineECP(Eigen::MatrixXd&
-        snapshotsModes, Eigen::VectorXd& weights, word folderMethodName)
+        snapshotsModes, Eigen::VectorXd& weights, word folderMethodName, bool predictVolume)
 {
     folderMethod = folderMethodName;
     Info << "FolderMethod : " << folderMethod << endl;
     mkDir(folderMethod);
-    n_nodes = n_modes + 1;
+    //n_nodes = n_modes + 1;
+    label n_modes_modif = n_modes + predictVolume;
     normalizingWeights = weights;
     Info << "####### Begin ECP #######" << endl;
     Info << "####### Modes=" <<  n_modes
@@ -694,38 +699,77 @@ void HyperReduction<SnapshotsLists...>::offlineECP(Eigen::MatrixXd&
 
     if (offlineStage)
     {
+
+        bool normalizedArgmaxSelectionCubaturePoints = 0;
+        bool cellVolumesInCubatureWeights = 1;
+
         assert(n_modes > 0);
-        assert(n_nodes >= n_modes);
+        // assert(n_nodes >= n_modes);
         // matrices for quadratureWeights evaluation
-        Eigen::MatrixXd J;//shape: (vectorial_dim * (n_modes + 1), nodePoints->size())
-        Eigen::MatrixXd Jwhole(vectorial_dim * (n_modes + 1), n_cells);
-        Eigen::VectorXd q(vectorial_dim * (n_modes + 1));
+        Eigen::MatrixXd J;//shape: (vectorial_dim * n_modes_modif, nodePoints->size())
+        Eigen::MatrixXd Jwhole(vectorial_dim * n_modes_modif, n_cells);
+        Eigen::VectorXd q(vectorial_dim * n_modes_modif);
         // matrices for greedy selection of the nodes
         Eigen::MatrixXd A(vectorial_dim* n_modes, n_cells);
         Eigen::VectorXd b = Eigen::VectorXd::Constant(vectorial_dim* n_modes, 1);
-        Eigen::VectorXd volumes = ITHACAutilities::getMassMatrixFV(std::get<0>
-                                  (snapshotsListTuple)[0]);
-        double volume = volumes.array().sum();
-
+        
         for (unsigned int ith_field = 0; ith_field < vectorial_dim; ith_field++)
         {
             Eigen::MatrixXd block = snapshotsModes.block(ith_field* n_cells, 0, n_cells,
                                     n_modes).transpose();
-            q.segment(ith_field*(n_modes + 1), n_modes) = block.rowwise().sum();
-            q(ith_field*(n_modes + 1) + n_modes) = volume;
-            Jwhole.middleRows(ith_field*(n_modes + 1), n_modes) = block;
-            Jwhole.row(ith_field*(n_modes + 1) + n_modes) = Eigen::VectorXd::Constant(
-                      n_cells, 1);
-            Eigen::VectorXd mean = block.rowwise().mean();
-            block.colwise() -= mean;
-            Eigen::VectorXd Anorm = block.colwise().lpNorm<2>();
 
-            if (Anorm.minCoeff() > 0)
+            q.segment(ith_field*n_modes_modif, n_modes) = block.rowwise().sum();
+
+            if (cellVolumesInCubatureWeights)
             {
-                block.array().rowwise() /= Anorm.transpose().array();
+                block = (volumes.array().cwiseInverse().matrix().asDiagonal()*block.transpose()).transpose();
+                Eigen::MatrixXd normL2modes = block.rowwise().norm().array().cwiseInverse().matrix().asDiagonal();
+                block = normL2modes * block;
+                q.segment(ith_field*n_modes_modif, n_modes) = normL2modes * q.segment(ith_field*n_modes_modif, n_modes);
             }
 
-            A.middleRows(ith_field* n_modes, n_modes) = block;
+            Jwhole.middleRows(ith_field*n_modes_modif, n_modes) = block;
+
+            if (predictVolume)
+            {
+                if (!(volumes.size() == n_cells))
+                {
+                Info << "Cell's volumes must be filled if predicting volume in ECP" << endl;
+                abort();
+                }  
+                else if (volumes.size() == n_cells)
+                {
+                    if (!cellVolumesInCubatureWeights)
+                    {
+                        q(ith_field*n_modes_modif + n_modes) = volumes.sum() / volumes.norm();
+                        Jwhole.row(ith_field*n_modes_modif + n_modes) = (volumes.array() / volumes.norm()).matrix();
+                    }
+                    else
+                    {
+                        Eigen::VectorXd unityVector = Eigen::VectorXd::Constant(n_cells,1);
+                        Jwhole.row(ith_field*n_modes_modif + n_modes) = (unityVector.array() / unityVector.norm()).matrix();
+                        q(ith_field*n_modes_modif + n_modes) = volumes.sum() / unityVector.norm();
+                    }
+                }
+            }
+
+            if (normalizedArgmaxSelectionCubaturePoints)
+            {
+                Eigen::VectorXd mean = block.rowwise().mean();
+                block.colwise() -= mean;
+                Eigen::VectorXd Anorm = block.colwise().lpNorm<2>();
+
+                if (Anorm.minCoeff() > 0)
+                {
+                    block.array().rowwise() /= Anorm.transpose().array();
+                }
+
+                A.middleRows(ith_field* n_modes, n_modes) = block;
+            }
+            else
+            {
+                A.middleRows(ith_field* n_modes, n_modes) = Jwhole.middleRows(ith_field* n_modes, n_modes);
+            }
         }
 
         Eigen::VectorXd mp_not_mask = Eigen::VectorXd::Constant(n_cells* vectorial_dim,
@@ -757,14 +801,32 @@ void HyperReduction<SnapshotsLists...>::offlineECP(Eigen::MatrixXd&
             }
         }
 
+Eigen::VectorXd learningErr = q - J*quadratureWeights;
+cnpy::save(learningErr, folderMethod + "/ECPLearningRelErr.npy");
+
         Info << "####### End ECP #######" << endl;
         basisMatrix = snapshotsModes.leftCols(n_modes);
         evaluateWPU(P, basisMatrix, normalizingWeights, quadratureWeights);
+
+        if (cellVolumesInCubatureWeights)
+        {
+            for (label i=0; i<nodePoints->size(); i++)
+                {
+                for (unsigned int ith_field = 0; ith_field < vectorial_dim; ith_field++)
+                {
+                    quadratureWeights(ith_field * nodePoints->size() + i) = 
+                            quadratureWeights(ith_field * nodePoints->size() + i)/(volumes(nodePoints()[i]));
+                }
+            }
+        }
+
         cnpy::save(basisMatrix, folderMethod + "/basisMatrix.npy");
         cnpy::save(quadratureWeights, folderMethod + "/quadratureWeights.npy");
         cnpy::save(normalizingWeights, folderMethod + "/normalizingWeights.npy");
         cnpy::save(nodes, folderMethod + "/mp.npy");
         cnpy::save(wPU, folderMethod + "/wPU.npy");
+        P.makeCompressed();
+        cnpy::save(P, folderMethod + "/projectionMatrix.npz");
         nodePoints().write();
     }
     else
@@ -775,6 +837,7 @@ void HyperReduction<SnapshotsLists...>::offlineECP(Eigen::MatrixXd&
         cnpy::load(normalizingWeights, folderMethod + "/normalizingWeights.npy");
         cnpy::load(nodes, folderMethod + "/mp.npy");
         cnpy::load(wPU, folderMethod + "/wPU.npy");
+        cnpy::load(P, folderMethod + "/projectionMatrix.npz");
     }
 }
 
@@ -854,20 +917,32 @@ void HyperReduction<SnapshotsLists...>::computeLS(Eigen::MatrixXd& J,
         Eigen::MatrixXd& Jwhole, Eigen::VectorXd& b, Eigen::VectorXd& q)
 {
     // TODO fix with only positive weights (NNLS)
-    J.resize(vectorial_dim * (n_modes + 1), nodePoints->size());
+    label n_modes_modif = Jwhole.rows()/vectorial_dim;
+    J.resize(vectorial_dim * n_modes_modif, nodePoints->size());
     J = Jwhole(Eigen::indexing::all, nodes);
     quadratureWeights.resize(nodePoints->size() * vectorial_dim);
 
     for (unsigned int ith_field = 0; ith_field < vectorial_dim; ith_field++)
     {
         quadratureWeights.segment(ith_field* nodePoints->size(),
-                                  nodePoints->size()) = J.middleRows(ith_field*(n_modes + 1),
-                                      n_modes + 1).colPivHouseholderQr().solve(q.segment(ith_field*(n_modes + 1),
-                                          n_modes + 1));
-        b.segment(ith_field* n_modes, n_modes) = q.segment(ith_field*(n_modes + 1),
-            n_modes) - J.middleRows(ith_field*(n_modes + 1),
-                                    n_modes) * quadratureWeights.segment(ith_field* nodePoints->size(),
-                                        nodePoints->size());
+        nodePoints->size()) = J.middleRows(ith_field*(n_modes_modif),
+            n_modes_modif).colPivHouseholderQr().solve(q.segment(ith_field*(n_modes_modif),
+                n_modes_modif));
+
+/* Info << "J matrix of LS for quadWeights (J*quadWeights = q)" << endl;
+std::cout << J.middleRows(ith_field*n_modes_modif,n_modes_modif) << std::endl;
+Info << "q vector of LS for quadWeights (J*quadWeights = q)" << endl;
+std::cout << q.segment(ith_field*n_modes_modif,n_modes_modif) << std::endl; */
+// Condition number 
+Eigen::JacobiSVD<Eigen::MatrixXd> svd(J.middleRows(ith_field*(n_modes_modif), n_modes_modif));
+double cond = svd.singularValues()(0) / svd.singularValues()(svd.singularValues().size() - 1);
+Info << "Condition number of LS for quadWeights = " << cond << endl;
+
+
+        b.segment(ith_field* n_modes, n_modes) = q.segment(ith_field*(n_modes_modif),
+        n_modes) - J.middleRows(ith_field*(n_modes_modif),
+                                n_modes) * quadratureWeights.segment(ith_field* nodePoints->size(),
+                                    nodePoints->size());
     }
 
     b = b / b.lpNorm<2>();
