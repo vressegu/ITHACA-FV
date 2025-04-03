@@ -1326,8 +1326,7 @@ DEIMmodes(List<Eigen::SparseMatrix<double>> & A,
 
         for (label i = 0; i < ModesB.size(); i++)
         {
-            ITHACAstream::SaveDenseMatrix(ModesB[i],
-                                          "./ITHACAoutput/DEIM/" + MatrixName + "/", "B_" + MatrixName + name(i));
+            ITHACAstream::exportToFile(ModesB[i],"B_" + MatrixName + name(i),"cnpy","./ITHACAoutput/DEIM/" + MatrixName);
         }
     }
     else
@@ -1340,8 +1339,7 @@ DEIMmodes(List<Eigen::SparseMatrix<double>> & A,
 
         for (label i = 0; i < nmodesB; i++)
         {
-            ITHACAstream::ReadDenseMatrix(ModesB[i],
-                                          "./ITHACAoutput/DEIM/" + MatrixName + "/", "B_" + MatrixName + name(i));
+            ITHACAstream::importNpy(ModesB[i],"B_" + MatrixName + name(i),  "./ITHACAoutput/DEIM/" + MatrixName);
         }
     }
 
@@ -1670,8 +1668,7 @@ DEIMmodes(PtrList<type_matrix> & MatrixList, label nmodesA, label nmodesB,
 
         for (label i = 0; i < ModesB.size(); i++)
         {
-            ITHACAstream::SaveDenseMatrix(ModesB[i],
-                                          "./ITHACAoutput/DEIM/" + MatrixName + "/", "B_" + MatrixName + name(i));
+            ITHACAstream::exportToFile(ModesB[i],"B_" + MatrixName + name(i), "cnpy", "./ITHACAoutput/DEIM/" + MatrixName);
         }
 
         Eigen::saveMarketVector(eigenValueseigA,
@@ -1697,8 +1694,7 @@ DEIMmodes(PtrList<type_matrix> & MatrixList, label nmodesA, label nmodesB,
 
         for (label i = 0; i < nmodesB; i++)
         {
-            ITHACAstream::ReadDenseMatrix(ModesB[i],
-                                          "./ITHACAoutput/DEIM/" + MatrixName + "/", "B_" + MatrixName + name(i));
+            ITHACAstream::importNpy(ModesB[i],"B_" + MatrixName + name(i), "./ITHACAoutput/DEIM/" + MatrixName);
         }
     }
 

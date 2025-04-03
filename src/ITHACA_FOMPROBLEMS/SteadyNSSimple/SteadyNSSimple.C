@@ -75,7 +75,7 @@ void SteadyNSSimple::getTurbRBF(label NNutModes)
     {
         word weightName = "wRBF_M" + name(i + 1);
 
-        if (ITHACAutilities::check_file("./ITHACAoutput/weights/" + weightName))
+        if (ITHACAstream::importNpy(weights,weightName,"./ITHACAoutput/weights/"))
         {
             samples[i] = new SPLINTER::DataTable(1, 1);
 
@@ -85,7 +85,6 @@ void SteadyNSSimple::getTurbRBF(label NNutModes)
                 samples[i]->addSample(mu.row(j), coeffL2(i, j));
             }
 
-            ITHACAstream::ReadDenseMatrix(weights, "./ITHACAoutput/weights/", weightName);
             rbfSplines[i] = new SPLINTER::RBFSpline( * samples[i],
                 SPLINTER::RadialBasisFunctionType::GAUSSIAN, weights);
             // std::cout << "Constructing RadialBasisFunction for mode " << i + 1 << std::endl;
@@ -103,8 +102,7 @@ void SteadyNSSimple::getTurbRBF(label NNutModes)
 
             rbfSplines[i] = new SPLINTER::RBFSpline( * samples[i],
                 SPLINTER::RadialBasisFunctionType::GAUSSIAN);
-            ITHACAstream::SaveDenseMatrix(rbfSplines[i]->weights,
-                                          "./ITHACAoutput/weights/", weightName);
+            ITHACAstream::exportToFile(rbfSplines[i]->weights, weightName, "cnpy", "./ITHACAoutput/weights/");
             // std::cout << "Constructing RadialBasisFunction for mode " << i + 1 << std::endl;
             Info << "Constructing RadialBasisFunction for mode " << i + 1 << endl;
         }

@@ -210,8 +210,7 @@ Eigen::MatrixXd SteadyNSTurbIntrusive::btTurbulence(label nModes)
     }
 
     // Export the matrix
-    ITHACAstream::SaveDenseMatrix(btMatrix, "./ITHACAoutput/Matrices/",
-                                  "bt_" + name(nModes) + "_t");
+    ITHACAstream::exportToFile(btMatrix,  "bt_" + name(nModes) + "_t");
     return btMatrix;
 }
 
@@ -223,33 +222,21 @@ void SteadyNSTurbIntrusive::project(fileName folder, label nModes)
     {
         word bStr = "b_" + name(nModes);
 
-        if (ITHACAutilities::check_file("./ITHACAoutput/Matrices/" + bStr))
-        {
-            ITHACAstream::ReadDenseMatrix(bMatrix, "./ITHACAoutput/Matrices/", bStr);
-        }
-        else
+        if (!ITHACAstream::importNpy(bMatrix,bStr))
         {
             bMatrix = diffusiveTerm(nModes);
         }
 
         word btStr = "bt_" + name(nModes);
 
-        if (ITHACAutilities::check_file("./ITHACAoutput/Matrices/" + btStr))
-        {
-            ITHACAstream::ReadDenseMatrix(btMatrix, "./ITHACAoutput/Matrices/", btStr);
-        }
-        else
+        if (!ITHACAstream::importNpy(btMatrix,btStr))
         {
             btMatrix = btTurbulence(nModes);
         }
 
         word kStr = "k_" + name(nModes);
 
-        if (ITHACAutilities::check_file("./ITHACAoutput/Matrices/" + kStr))
-        {
-            ITHACAstream::ReadDenseMatrix(kMatrix, "./ITHACAoutput/Matrices/", kStr);
-        }
-        else
+        if (!ITHACAstream::importNpy(kMatrix,kStr))
         {
             kMatrix = pressureGradientTerm(nModes);
         }
@@ -368,8 +355,7 @@ Eigen::MatrixXd SteadyNSTurbIntrusive::diffusiveTerm(label nModes)
         reduce(bMatrix, sumOp<Eigen::MatrixXd>());
     }
 
-    ITHACAstream::SaveDenseMatrix(bMatrix, "./ITHACAoutput/Matrices/",
-                                  "b_" + name(nModes));
+    ITHACAstream::exportToFile(bMatrix, "b_" + name(nModes));
     return bMatrix;
 }
 
@@ -421,8 +407,7 @@ Eigen::MatrixXd SteadyNSTurbIntrusive::pressureGradientTerm(label nModes)
         reduce(kMatrix, sumOp<Eigen::MatrixXd>());
     }
 
-    ITHACAstream::SaveDenseMatrix(kMatrix, "./ITHACAoutput/Matrices/",
-                                  "k_" + name(nModes));
+    ITHACAstream::exportToFile(kMatrix, "k_" + name(nModes));
     return kMatrix;
 }
 
