@@ -31,7 +31,7 @@ class pyRedLUM:
     Class that handles the data structure of the output of the RedLUM code
     """
 
-    def __init__(self, res_folder="./",save_dir ="./",verbose=0,sota_type=None,name=None):
+    def __init__(self, res_folder="./",save_dir ="./",verbose=0,sota_type=None,name=None, time=None):
         """
         :param res_folder: Folder containing the results in npy format
         :param save_dir: Path where you should change your
@@ -42,6 +42,7 @@ class pyRedLUM:
         self.verbose = verbose
         self.sota_type = sota_type
         self.name = name
+        self.time = time
 
         self.check_pressure_modes()
 

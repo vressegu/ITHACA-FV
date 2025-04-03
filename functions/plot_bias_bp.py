@@ -7,6 +7,7 @@ def plot_bias(case,name_out=None):
     error = case.load_errors()
     nmodes = case.get_nmodes()
     error_list = error.keys()
+    time = case.time
 
     # Get the time for the xaxis
     t = case.get_t_sim()
@@ -29,6 +30,8 @@ def plot_bias(case,name_out=None):
     plt.legend(frameon=False)
     plt.xlabel("Time (s)")
     plt.ylabel("Normalised Velocity Error")
+    if time is not None:
+        plt.xlim(time[0], time[1])
     plt.tight_layout()
     case.save_plot(name_save)
 

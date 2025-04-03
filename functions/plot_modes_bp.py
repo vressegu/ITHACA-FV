@@ -127,7 +127,7 @@ def plot_all_modes(case,name_out=False):
 
         handles,labels = axs[1].get_legend_handles_labels()
         setup_legend(axl,handles,labels)
-
+        time = case.time
         for n in range(nmodes):
             ss = axs[n].get_subplotspec()
 
@@ -172,11 +172,15 @@ def plot_all_modes(case,name_out=False):
             # Removing unnecessary spines
             axs[n].spines["top"].set_visible(False)
             axs[n].spines["right"].set_visible(False)
+            if time is not None:
+                axs[n].set_xlim(time[0], time[1])
 
         fig.align_ylabels(ax_left)
 
         fig.suptitle(title[dtype])
-
+        time = case.time
+        if time is not None:
+            plt.xlim(time[0], time[1])
         plt.tight_layout()
         if name_out:
             name_save = f"{dtype}_{name_out}_{nmodes}"
@@ -334,6 +338,7 @@ def compare_SOTA_modes(case,sota):
 
     fig.align_ylabels(ax_left)
     fig.suptitle("Velocity Mode")
+
     plt.tight_layout()
     case.save_plot(f"compare_{case.name}-{sota.name}_{nmodes}")
 
