@@ -39,4 +39,7 @@ exportTxt 1;
 
 bcMethod lift;
 
+//CCR add for parametering POD calculation
+lifting 0;
+centeredOrNot 0;
 

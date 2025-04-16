@@ -56,6 +56,10 @@ class ITHACAparameters
         bool debug;
         bool warnings;
 
+        bool lifting;       //CCR Add variable for parametering POD calculation
+        bool centeredOrNot; //CCR Add variable for parametering POD calculation
+
+
         /// type of output format can be fixed or scientific
         std::_Ios_Fmtflags outytpe;
 

@@ -41,3 +41,7 @@ exportTxt 1;
 // Output format to save market vectors.
 OutPrecision 20;
 OutType fixed;
+
+//CCR add for parametering POD calculation
+lifting 0;
+centeredOrNot 0;

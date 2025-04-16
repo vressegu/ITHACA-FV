@@ -60,6 +60,89 @@ SourceFiles
 namespace ITHACAPOD
 {
 
+
+// CCR ADD
+// Structure to store the indexes of the added block to the cov matrix
+// Triangular block
+struct indexTri
+{
+  label index_start;
+  label index_end;
+};
+
+
+// Structure to store the indexes of the added block to the cov matrix
+// Square block
+struct indexSquare
+{
+  label index1_start;
+  label index1_end;
+  label index2_start;
+  label index2_end;
+};
+
+template<typename T>
+class PODCalcParamTemplate
+{
+    // CCR : TODO : think to a thread-safe method for this parameter class
+public:
+    PtrList<T> liftfield;
+    Eigen::MatrixXi inletIndex;
+    T *f_meanField;
+    Eigen::VectorXd lambda;
+
+ 
+    // number of modes
+    label l_nmodes;
+    // Number of snapshot, also number of time step
+    label l_nSnapshot;
+
+    //Hilbert space used for the POD scalar product (and the associated norm to sort the modes)
+    word l_hilbertSp;
+
+    //Weight of the boundary conditions
+    double weightBC;
+    
+    //Patch for the boundary conditions
+    word patchBC;
+
+    // name and folder to save the covMatrix
+    fileName name_covMatrix;
+    word folder_covMatrix;
+
+    // singleton mechanism
+    /// Pointer to the PODCalcParamTemplate class
+    static PODCalcParamTemplate* instance;
+
+    ///
+    /// @brief      Gets an instance of PODCalcParamTemplate, to be used if the instance is not existing.
+    ///
+    /// @param      mesh       The mesh
+    /// @param      localTime  The runtime object
+    ///
+    /// @return     The instance.
+    ///
+    static PODCalcParamTemplate* getInstance(fvMesh& mesh, Time& localTime);
+
+    ///
+    /// @brief      Gets an instance of PODCalcParamTemplate, to be used if the instance is already existing.
+    ///
+    /// @return     The instance.
+    ///
+    static PODCalcParamTemplate* getInstance();
+
+
+    /// Delete empty constructor
+    ~PODCalcParamTemplate() = delete;
+};
+
+
+
+//end of CCR ADD
+
+
+
+
 // Public Members
 
 //------------------------------------------------------------------------------
@@ -354,7 +437,66 @@ void getModes(PtrList<Field_type>& snapshots, PtrList<Field_type>& modes,
               bool sup = 0,
               label nmodes = 0);
 
+
+
+// CCR moved methods from RedLUM_cpp
+//--------------------------------------------------------------------------
+// Homogenize the snapshot matrix, it works with PtrList of volVectorField and volScalarField
+//
+// @param[in]      Lfield     The list of snapshots to be homogenized.
+template<typename T>
+void lift(PtrList<T>& snapshots);
+
+template<typename T>
+void lift(T& snapshot);
+
+void computeLift(PtrList<volScalarField>& Lfield, PtrList<volScalarField>& liftfield, PtrList<volScalarField>& omfield, Eigen::MatrixXi inletIndex);
+void computeLift(PtrList<volVectorField>& Lfield, PtrList<volVectorField>& liftfield, PtrList<volVectorField>& omfield, Eigen::MatrixXi inletIndex);
+void computeLift(PtrList<volTensorField>& Lfield, PtrList<volTensorField>& liftfield, PtrList<volTensorField>& omfield, Eigen::MatrixXi inletIndex);
+
+
+// computation of test temporal modes energies
+void compute_lambda(Eigen::MatrixXd& temporalModes);
+/*----------------------------------------------------------------------------*/
+// method to add a new square block to the covariance matrix
+// used in buildCovMatrix method
+// param[inout] : covMatrix, covariance matrix
+// param[in] : snapshots1 and snapshots2, sample of the field
+// param[in] : indexes of the added block
+template<typename T>
+void addCovMatrixSquareCoeff(Eigen::MatrixXd& covMatrix,
+    PtrList<T>& snapshots1,
+    PtrList<T>& snapshots2,
+    ITHACAPOD::indexSquare& indSquare);
+  
 };
+
+// method to add a new triangular block to the covariance matrix (near the diagonal)
+// used in buildCovMatrix method
+// param[inout] : covMatrix, covariance matrix
+// param[in] : snapshots sample of the field
+// param[in] : indexes of the added block
+template<typename T>
+void addCovMatrixTriCoeff(Eigen::MatrixXd& covMatrix,
+    PtrList<T>& snapshots,
+    ITHACAPOD::indexTri& indTri);
+ 
+// temporary covMatrix filename
+word nameTempCovMatrix( int& i, int& j);
+
+// save the temporary covMatrix file
+void saveTempCovMatrix(Eigen::MatrixXd& covMatrix, int i, int j);
+
+// delete the temporary covMatrix file
+void deleteTempCovMatrix(int i, int j);
+
+// delete previous [step-N] covMatrix temp file -> keep last N covMatrix temp file
+void deletePreviousTempCovMatrix_N(int* valI, int* valJ, int i, int j, int N);
+
+// if a covMatrix temporary file is found in the covMat folder
+// it is loaded and the process continues where it stopped
+template<typename T>
+void findTempFile(Eigen::MatrixXd* covMat, int* index1, int* index2);
 
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
 
