@@ -82,9 +82,10 @@ struct indexSquare
 };
 
 template<typename T>
-class PODCalcParamTemplate
+class ITHACAPODTemplate
 {
     // CCR : TODO : think to a thread-safe method for this parameter class
+//protected:
 public:
     PtrList<T> liftfield;
     Eigen::MatrixXi inletIndex;
@@ -110,32 +111,69 @@ public:
     fileName name_covMatrix;
     word folder_covMatrix;
 
-    // singleton mechanism
-    /// Pointer to the PODCalcParamTemplate class
-    static PODCalcParamTemplate* instance;
 
-    ///
-    /// @brief      Gets an instance of PODCalcParamTemplate, to be used if the instance is not existing.
-    ///
-    /// @param      mesh       The mesh
-    /// @param      localTime  The runtime object
-    ///
-    /// @return     The instance.
-    ///
-    static PODCalcParamTemplate* getInstance(fvMesh& mesh, Time& localTime);
+public:
+    ITHACAPODTemplate<T>(fvMesh& mesh, Time& localTime);
+    virtual ~ITHACAPODTemplate<T>() = delete;
+    //virtual ~ITHACAPODTemplate();
 
-    ///
-    /// @brief      Gets an instance of PODCalcParamTemplate, to be used if the instance is already existing.
-    ///
-    /// @return     The instance.
-    ///
-    static PODCalcParamTemplate* getInstance();
+    //--------------------------------------------------------------------------
+    // Homogenize the snapshot matrix, it works with PtrList of volVectorField and volScalarField
+    //
+    // @param[in]      Lfield     The list of snapshots to be homogenized.
+     void lift(PtrList<T>& snapshots);
+
+    void lift(T& snapshot);
 
 
-    /// Delete empty constructor
-    ~PODCalcParamTemplate() = delete;
-};
 
+    // computation of test temporal modes energies
+    void compute_lambda(Eigen::MatrixXd& temporalModes);
+    /*----------------------------------------------------------------------------*/
+    // method to add a new square block to the covariance matrix
+    // used in buildCovMatrix method
+    // param[inout] : covMatrix, covariance matrix
+    // param[in] : snapshots1 and snapshots2, sample of the field
+    // param[in] : indexes of the added block
+
+    //CCR : added by CCR for test removing error       template<typename T>
+    void addCovMatrixSquareCoeff(Eigen::MatrixXd& covMatrix,
+        PtrList<T>& snapshots1,
+        PtrList<T>& snapshots2,
+        ITHACAPOD::indexSquare& indSquare);
+    
+    
+
+    // method to add a new triangular block to the covariance matrix (near the diagonal)
+    // used in buildCovMatrix method
+    // param[inout] : covMatrix, covariance matrix
+    // param[in] : snapshots sample of the field
+    // param[in] : indexes of the added block
+    void addCovMatrixTriCoeff(Eigen::MatrixXd& covMatrix,
+        PtrList<T>& snapshots,
+        ITHACAPOD::indexTri& indTri);
+    
+    // temporary covMatrix filename
+    word nameTempCovMatrix( int& i, int& j);
+
+    // save the temporary covMatrix file
+    void saveTempCovMatrix(Eigen::MatrixXd& covMatrix, int i, int j);
+
+    // delete the temporary covMatrix file
+    void deleteTempCovMatrix(int i, int j);
+
+    // delete previous [step-N] covMatrix temp file -> keep last N covMatrix temp file
+    void deletePreviousTempCovMatrix_N(int* valI, int* valJ, int i, int j, int N);
+
+    // if a covMatrix temporary file is found in the covMat folder
+    // it is loaded and the process continues where it stopped
+    void findTempFile(Eigen::MatrixXd* covMat, int* index1, int* index2);
+};//end of class ITHACAPODTemplate
+
+
+void computeLift(PtrList<volScalarField>& Lfield, PtrList<volScalarField>& liftfield, PtrList<volScalarField>& omfield, Eigen::MatrixXi inletIndex);
+void computeLift(PtrList<volVectorField>& Lfield, PtrList<volVectorField>& liftfield, PtrList<volVectorField>& omfield, Eigen::MatrixXi inletIndex);
+void computeLift(PtrList<volTensorField>& Lfield, PtrList<volTensorField>& liftfield, PtrList<volTensorField>& omfield, Eigen::MatrixXi inletIndex);
 
 
 //end of CCR ADD
@@ -440,6 +478,7 @@ void getModes(PtrList<Field_type>& snapshots, PtrList<Field_type>& modes,
 
 
 // CCR moved methods from RedLUM_cpp
+/*
 //--------------------------------------------------------------------------
 // Homogenize the snapshot matrix, it works with PtrList of volVectorField and volScalarField
 //
@@ -457,7 +496,7 @@ void computeLift(PtrList<volTensorField>& Lfield, PtrList<volTensorField>& liftf
 
 // computation of test temporal modes energies
 void compute_lambda(Eigen::MatrixXd& temporalModes);
-/*----------------------------------------------------------------------------*/
+/ *----------------------------------------------------------------------------* /
 // method to add a new square block to the covariance matrix
 // used in buildCovMatrix method
 // param[inout] : covMatrix, covariance matrix
@@ -469,7 +508,6 @@ void addCovMatrixSquareCoeff(Eigen::MatrixXd& covMatrix,
     PtrList<T>& snapshots2,
     ITHACAPOD::indexSquare& indSquare);
   
-};
 
 // method to add a new triangular block to the covariance matrix (near the diagonal)
 // used in buildCovMatrix method
@@ -497,8 +535,10 @@ void deletePreviousTempCovMatrix_N(int* valI, int* valJ, int i, int j, int N);
 // it is loaded and the process continues where it stopped
 template<typename T>
 void findTempFile(Eigen::MatrixXd* covMat, int* index1, int* index2);
-
+*/
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
+
+}//End of namespace ITHACAPOD
 
 #endif
 

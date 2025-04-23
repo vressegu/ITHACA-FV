@@ -1704,8 +1704,23 @@ DEIMmodes(
     label nmodes,
     word FunctionName, word FieldName);
 
-
+/////////////////////////////////////////////////////////////////////////////////////////////////////////
 // CCR Code moved from RedLUM
+template<typename T>
+ITHACAPODTemplate<T>::ITHACAPODTemplate(fvMesh& mesh, Time& localTime)//fvMesh& mesh, Time& localTime)
+{
+    //TODO CCR
+}
+/*
+template<typename T>
+ITHACAPODTemplate<T>::~ITHACAPODTemplate()
+{
+    //TODO CCR
+}
+*/
+
+
+
 void computeLift(PtrList<volTensorField>& Lfield, PtrList<volTensorField>& liftfield, PtrList<volTensorField>& omfield, Eigen::MatrixXi inletIndex)
 {
     scalar u_bc;
@@ -1813,37 +1828,32 @@ void computeLift(PtrList<volScalarField>& Lfield, PtrList<volScalarField>& liftf
 
 
 template<typename T>
-void lift(PtrList<T>& snapshots) // déclarer PtrList<T> liftfield, Eigen::MatrixXi inletIndex et T *f_meanField;
+void ITHACAPODTemplate<T>::lift(PtrList<T>& snapshots) // déclarer PtrList<T> liftfield, Eigen::MatrixXi inletIndex et T *f_meanField;
 {
     ITHACAparameters *paramsIthaca =  ITHACAparameters::getInstance();
 
-
-    #pragma message "TODO: CCR : initialise this instance in the beginning of getModes_podVersion"
-    PODCalcParamTemplate<T> *paramsPod = PODCalcParamTemplate<T>::getInstance();
-
-
-    if(!paramsPod->f_meanField)
+    if(!f_meanField)
     {
-        paramsPod->f_meanField = new T(snapshots[0].name(), snapshots[0] * 0);
+        f_meanField = new T(snapshots[0].name(), snapshots[0] * 0);
     }
 
     if (paramsIthaca->lifting)
     {
       PtrList<T> omfield;
-      computeLift(snapshots, paramsPod->liftfield, omfield, paramsPod->inletIndex);
+      computeLift(snapshots, liftfield, omfield, inletIndex);
       snapshots = omfield;
     }
     if (paramsIthaca->centeredOrNot)// CCR : NOTE origin : if (b_centeredOrNot) // member of IthacaFVParameters
     {
       for (label k = 0; k < snapshots.size(); k++)
       {
-        ITHACAutilities::subtractFields(snapshots[k], *(paramsPod->f_meanField));
+        ITHACAutilities::subtractFields(snapshots[k], *(f_meanField));
       }
     }
 }
 
 template<typename T>
-void lift(T& snapshot)
+void ITHACAPODTemplate<T>::lift(T& snapshot)
 {
     PtrList<T> snapshots(1);
     snapshots.set(0, new T(snapshot.name(), snapshot));
@@ -1851,12 +1861,12 @@ void lift(T& snapshot)
     snapshot = snapshots[0];
 }
 //specialisation
-template void lift(PtrList<volTensorField>& snapshots);
-template void lift(volTensorField& snapshot);
-template void lift(PtrList<volVectorField>& snapshots);
-template void lift(volVectorField& snapshot);
-template void lift(PtrList<volScalarField>& snapshots);
-template void lift(volScalarField& snapshot);
+template void ITHACAPODTemplate<volTensorField>::lift(PtrList<volTensorField>& snapshots);
+template void ITHACAPODTemplate<volTensorField>::lift(volTensorField& snapshot);
+template void ITHACAPODTemplate<volVectorField>::lift(PtrList<volVectorField>& snapshots);
+template void ITHACAPODTemplate<volVectorField>::lift(volVectorField& snapshot);
+template void ITHACAPODTemplate<volScalarField>::lift(PtrList<volScalarField>& snapshots);
+template void ITHACAPODTemplate<volScalarField>::lift(volScalarField& snapshot);
 
 
 
@@ -1864,38 +1874,36 @@ template void lift(volScalarField& snapshot);
 
 
 template<typename T>
-void compute_lambda(Eigen::MatrixXd& temporalModes)
+void ITHACAPODTemplate<T>::compute_lambda(Eigen::MatrixXd& temporalModes)
 {
-    PODCalcParamTemplate<T> *paramsPod = PODCalcParamTemplate<T>::getInstance();
 
-  for (int p = 0; p < paramsPod->l_nmodes; p++)
+  for (int p = 0; p < l_nmodes; p++)
   {
-    for (int i = 0; i < paramsPod->l_nSnapshot; i++)
+    for (int i = 0; i < l_nSnapshot; i++)
     {
-        paramsPod->lambda(p) += temporalModes(i,p)*temporalModes(i,p);
+        lambda(p) += temporalModes(i,p)*temporalModes(i,p);
     }
-    paramsPod->lambda(p) /= paramsPod->l_nSnapshot;
+    lambda(p) /= l_nSnapshot;
   }
 }
 //specialisation
-template void compute_lambda<volScalarField>(Eigen::MatrixXd& temporalModes);
-template void compute_lambda<volVectorField>(Eigen::MatrixXd& temporalModes);
-template void compute_lambda<volTensorField>(Eigen::MatrixXd& temporalModes);
+template void ITHACAPODTemplate<volScalarField>::compute_lambda(Eigen::MatrixXd& temporalModes);
+template void ITHACAPODTemplate<volVectorField>::compute_lambda(Eigen::MatrixXd& temporalModes);
+template void ITHACAPODTemplate<volTensorField>::compute_lambda(Eigen::MatrixXd& temporalModes);
 
 
 
 template<typename T>
-void addCovMatrixSquareCoeff(Eigen::MatrixXd& covMatrix,
+void ITHACAPODTemplate<T>::addCovMatrixSquareCoeff(Eigen::MatrixXd& covMatrix,
   PtrList<T>& snapshots1,
   PtrList<T>& snapshots2,
   ITHACAPOD::indexSquare& indSquare)
   {
-    PODCalcParamTemplate<T> *paramsPod = PODCalcParamTemplate<T>::getInstance();
 
     Info << "Adding the square block [" << indSquare.index1_start << ":" << indSquare.index1_end -1 << "]x["
     << indSquare.index2_start << ":" << indSquare.index2_end -1 << "] to the covariance matrix" << endl;
 
-    Eigen::MatrixXd covMatrixTemp(ITHACAutilities::dot_product_POD(snapshots1,snapshots2, paramsPod->l_hilbertSp, paramsPod->weightBC, paramsPod->patchBC));
+    Eigen::MatrixXd covMatrixTemp(ITHACAutilities::dot_product_POD(snapshots1,snapshots2, l_hilbertSp, weightBC, patchBC));
 
     for (label i = 0; i < indSquare.index1_end - indSquare.index1_start; i++)
     {
@@ -1910,14 +1918,13 @@ void addCovMatrixSquareCoeff(Eigen::MatrixXd& covMatrix,
 
 
 template<typename T>
-void addCovMatrixTriCoeff(Eigen::MatrixXd& covMatrix, PtrList<T>& snapshots, ITHACAPOD::indexTri& indTri)
+void ITHACAPODTemplate<T>::addCovMatrixTriCoeff(Eigen::MatrixXd& covMatrix, PtrList<T>& snapshots, ITHACAPOD::indexTri& indTri)
 {
-    PODCalcParamTemplate<T> *paramsPod = PODCalcParamTemplate<T>::getInstance();
 
     Info << "Adding the triangular block [" << indTri.index_start << ":" << indTri.index_end - 1 << "]x["
     << indTri.index_start << ":" << indTri.index_end - 1 << "] to the covariance matrix" << endl;
 
-    Eigen::MatrixXd covMatrixTemp(ITHACAutilities::dot_product_POD(snapshots,snapshots, paramsPod->l_hilbertSp, paramsPod->weightBC, paramsPod->patchBC));
+    Eigen::MatrixXd covMatrixTemp(ITHACAutilities::dot_product_POD(snapshots,snapshots, l_hilbertSp, weightBC, patchBC));
 
     for (label i = 0; i < indTri.index_end - indTri.index_start; i++)
     {
@@ -1930,24 +1937,24 @@ void addCovMatrixTriCoeff(Eigen::MatrixXd& covMatrix, PtrList<T>& snapshots, ITH
     Info << endl;
 }
 //specialisation
-template void addCovMatrixTriCoeff(Eigen::MatrixXd& covMatrix,
+template void ITHACAPODTemplate<volVectorField>::addCovMatrixTriCoeff(Eigen::MatrixXd& covMatrix,
     PtrList<volVectorField>& snapshots,
     ITHACAPOD::indexTri& indTri);
-template void addCovMatrixSquareCoeff(Eigen::MatrixXd& covMatrix,
+template void ITHACAPODTemplate<volVectorField>::addCovMatrixSquareCoeff(Eigen::MatrixXd& covMatrix,
     PtrList<volVectorField>& snapshots1,
     PtrList<volVectorField>& snapshots2,
     ITHACAPOD::indexSquare& indSquare);
-template void addCovMatrixTriCoeff(Eigen::MatrixXd& covMatrix,
+template void ITHACAPODTemplate<volScalarField>::addCovMatrixTriCoeff(Eigen::MatrixXd& covMatrix,
         PtrList<volScalarField>& snapshots,
         ITHACAPOD::indexTri& indTri);
-template void addCovMatrixSquareCoeff(Eigen::MatrixXd& covMatrix,
+template void ITHACAPODTemplate<volScalarField>::addCovMatrixSquareCoeff(Eigen::MatrixXd& covMatrix,
         PtrList<volScalarField>& snapshots1,
         PtrList<volScalarField>& snapshots2,
         ITHACAPOD::indexSquare& indSquare);
-template void addCovMatrixTriCoeff(Eigen::MatrixXd& covMatrix,
+template void ITHACAPODTemplate<volTensorField>::addCovMatrixTriCoeff(Eigen::MatrixXd& covMatrix,
             PtrList<volTensorField>& snapshots,
             ITHACAPOD::indexTri& indTri);
-template void addCovMatrixSquareCoeff(Eigen::MatrixXd& covMatrix,
+template void ITHACAPODTemplate<volTensorField>::addCovMatrixSquareCoeff(Eigen::MatrixXd& covMatrix,
             PtrList<volTensorField>& snapshots1,
             PtrList<volTensorField>& snapshots2,
             ITHACAPOD::indexSquare& indSquare);
@@ -1956,36 +1963,35 @@ template void addCovMatrixSquareCoeff(Eigen::MatrixXd& covMatrix,
 
 
 template<typename T>
-word nameTempCovMatrix(int& i, int& j){
-    PODCalcParamTemplate<T> *paramsPod = PODCalcParamTemplate<T>::getInstance();
+word ITHACAPODTemplate<T>::nameTempCovMatrix(int& i, int& j){
   char str1[10]; sprintf(str1, "%d", i);
   char str2[10]; sprintf(str2, "%d", j);
   word suffix = "_temp_" + static_cast<word>(str1) + "_" + static_cast<word>(str2);
-  word filename = paramsPod->folder_covMatrix + paramsPod->name_covMatrix + suffix + ".npy";
+  word filename = folder_covMatrix + name_covMatrix + suffix + ".npy";
   return filename;
 }
 
 template<typename T>
-void saveTempCovMatrix(Eigen::MatrixXd& covMatrix, int i, int j){
-  word filename = nameTempCovMatrix<T>(i,j);
+void ITHACAPODTemplate<T>::saveTempCovMatrix(Eigen::MatrixXd& covMatrix, int i, int j){
+  word filename = this->nameTempCovMatrix(i,j);
   cnpy::save(covMatrix, filename);
 }
 
 
 template<typename T>
-void deleteTempCovMatrix(int i, int j){
-  word filename = nameTempCovMatrix<T>(i,j);
+void ITHACAPODTemplate<T>::deleteTempCovMatrix(int i, int j){
+  word filename = this->nameTempCovMatrix(i,j);
   std::ifstream fileStr(filename.c_str());
   if (fileStr) remove(filename.c_str());
 }
 //specialisation
-template void deleteTempCovMatrix<volTensorField>(int i, int j);
+template void ITHACAPODTemplate<volTensorField>::deleteTempCovMatrix(int i, int j);
  
 
 
 
 template<typename T>
-void deletePreviousTempCovMatrix_N(int* valI, int* valJ, int i, int j, int N)
+void ITHACAPODTemplate<T>::deletePreviousTempCovMatrix_N(int* valI, int* valJ, int i, int j, int N)
 {
   // NUM = (sum_{n=1}^{n=i} n) = ( (m+(m+i))+(m+1+(m+i)-1)+...+((m+i)+m))/2 = (2*m*i+i+i*i)/2
   //  => NUM(m=0) = (i+i*i)/2
@@ -2016,7 +2022,7 @@ void deletePreviousTempCovMatrix_N(int* valI, int* valJ, int i, int j, int N)
   {
     Info << "Last matrix temp saved is ("<< i <<","<<j<<"); with " << N << " previous matrix hold => ";
     Info << "Deleting temp matrix (" << *valI << "," << *valJ << ")" << endl;
-    deleteTempCovMatrix<T>(*valI,*valJ);
+    this->deleteTempCovMatrix(*valI,*valJ);
   }
   *valJ = j;
 }
@@ -2026,15 +2032,14 @@ void deletePreviousTempCovMatrix_N(int* valI, int* valJ, int i, int j, int N)
 
 
 template<typename T>
-void findTempFile(Eigen::MatrixXd* covMat, int* index1, int* index2)
+void ITHACAPODTemplate<T>::findTempFile(Eigen::MatrixXd* covMat, int* index1, int* index2)
 {
-    PODCalcParamTemplate<T> *paramsPod = PODCalcParamTemplate<T>::getInstance();
-    word pathTemp = paramsPod->name_covMatrix + "_temp_";
+    word pathTemp = name_covMatrix + "_temp_";
     DIR *dir;
     struct dirent *entry;
-    dir = opendir(paramsPod->folder_covMatrix.c_str());
+    dir = opendir(folder_covMatrix.c_str());
     word extTemp = ".npy";
-    Info << "looking for " << pathTemp.c_str() << "*" << extTemp.c_str() << " in " << paramsPod->folder_covMatrix.c_str() << endl;
+    Info << "looking for " << pathTemp.c_str() << "*" << extTemp.c_str() << " in " << folder_covMatrix.c_str() << endl;
     // INDEX : index1 and index2 of oldest and most recent *_temp_*.npy file
     // INDEX[O][*] : index min (for example with *_temp_0_1.npy and *_temp_3_2.npy => INDEX[0][0]=0 and INDEX[0][1]=1 )
     // INDEX[1][*] : index max (for example with *_temp_0_1.npy and *_temp_3_2.npy => INDEX[1][0]=3 and INDEX[1][1]=2 )
@@ -2113,11 +2118,11 @@ void findTempFile(Eigen::MatrixXd* covMat, int* index1, int* index2)
       char str1[10]; sprintf(str1, "%d", *index1);
       char str2[10]; sprintf(str2, "%d", *index2);
       word suffix = static_cast<word>(str1) + "_" + static_cast<word>(str2);
-      cnpy::load(*covMat, paramsPod->folder_covMatrix + pathTemp + suffix + extTemp);
+      cnpy::load(*covMat, folder_covMatrix + pathTemp + suffix + extTemp);
       Info << "       with covMat size=(" << covMat->rows() << ", " << covMat->cols() << ")" << endl;
     }
 }
-template void findTempFile<volTensorField>(Eigen::MatrixXd* covMat, int* index1, int* index2);
+template void ITHACAPODTemplate<volTensorField>::findTempFile(Eigen::MatrixXd* covMat, int* index1, int* index2);
 
 
 // end of CCR Code moved from RedLUM
