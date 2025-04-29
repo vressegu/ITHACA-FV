@@ -42,7 +42,7 @@ class ITHACAparameters
     public:
 
         ITHACAparameters(fvMesh& mesh, Time& localTime);
-
+    
         /// type of eigensolver used in the eigenvalue decomposition can be either be eigen or spectra
         word eigensolver;
 
@@ -55,10 +55,6 @@ class ITHACAparameters
         bool exportTxt;
         bool debug;
         bool warnings;
-
-        bool lifting;       //CCR Add variable for parametering POD calculation
-        bool centeredOrNot; //CCR Add variable for parametering POD calculation
-
 
         /// type of output format can be fixed or scientific
         std::_Ios_Fmtflags outytpe;

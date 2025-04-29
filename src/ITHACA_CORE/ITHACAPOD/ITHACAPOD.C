@@ -89,6 +89,7 @@ template void getNestedSnapshotMatrix(
     PtrList<volVectorField>& snapshots, PtrList<volVectorField>& ModesGlobal,
     word fieldName, label Npar, label NnestedOut);
 
+
 template<class Type, template<class> class PatchField, class GeoMesh>
 void getModes(
     PtrList<GeometricField<Type, PatchField, GeoMesh>>& snapshots,
@@ -325,6 +326,7 @@ template void getModes(
     bool correctBC);
 
 template<class Type, template<class> class PatchField, class GeoMesh>
+
 void getWeightedModes(
     PtrList<GeometricField<Type, PatchField, GeoMesh>>& snapshots,
     PtrList<GeometricField<Type, PatchField, GeoMesh>>& modes,
@@ -466,6 +468,7 @@ template void getWeightedModes(
     PtrList<volVectorField>& snapshots, PtrList<volVectorField>& modes,
     word fieldName, bool podex, bool supex, bool sup, label nmodes,
     bool correctBC);
+
 
 template<class Type, template<class> class PatchField, class GeoMesh>
 void getModesSVD(
@@ -1706,16 +1709,41 @@ DEIMmodes(
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////
 // CCR Code moved from RedLUM
+/* => transfered to IthacaPODTemplate.H 
 template<typename T>
-ITHACAPODTemplate<T>::ITHACAPODTemplate(fvMesh& mesh, Time& localTime)//fvMesh& mesh, Time& localTime)
+ITHACAPODTemplate<T>::ITHACAPODTemplate(fvMesh& mesh, Time& localTime, const word& myfield_name)
 {
-    //TODO CCR
+    ithacaFVParameters = ITHACAparameters::getInstance(mesh, localTime);
+    ithacaPODParams    = IthacaPODParameters::getInstance();
+
+    field_name(myfield_name);
+    casenameData(ithacaPODParams->get_casenameData());
+    l_nSnapshot = ithacaPODParams->get_nSnapshots();//l_nSnapshot(ithacaPODParams->get_nSnapshots());
+    l_nBlocks = ithacaPODParams->get_nBlocks();//l_nBlocks(ithacaPODParams->get_nBlocks());
+    l_nmodes = ithacaPODParams->get_nModes()[field_name];//l_nmodes(ithacaPODParams->get_nModes()[field_name]);
+    l_hilbertSp(ithacaPODParams->get_hilbertSpacePOD()[field_name]);
+    weightH1 = ithacaPODParams->get_weightH1();//weightH1(ithacaPODParams->get_weightH1());
+    weightBC = ithacaPODParams->get_weightPOD();//weightBC(ithacaPODParams->get_weightPOD());
+    patchBC(ithacaPODParams->get_patchBC());
+    l_startTime = ithacaPODParams->get_startTime();//l_startTime(ithacaPODParams->get_startTime());
+    l_endTime = ithacaPODParams->get_endTime();//l_endTime(ithacaPODParams->get_endTime());
+    l_nSnapshotSimulation = ithacaPODParams->get_nSnapshotsSimulation();//l_nSnapshotSimulation(ithacaPODParams->get_nSnapshotsSimulation());
+    l_endTimeSimulation = ithacaPODParams->get_endTimeSimulation();//l_endTimeSimulation(ithacaPODParams->get_endTimeSimulation());
+    b_centeredOrNot = ithacaPODParams->get_centeredOrNot();//b_centeredOrNot(ithacaPODParams->get_centeredOrNot());
+    lambda(Eigen::VectorXd::Zero(l_nmodes));
+    w_eigensolver(ithacaPODParams->get_eigensolver());
+    i_precision = ithacaPODParams->get_precision();                         //i_precision(ithacaPODParams->get_precision());
+    ios_outytpe = ithacaPODParams->get_outytpe();                           //ios_outytpe(ithacaPODParams->get_outytpe());
+    #pragma message "CCR - TODO - s'occuper de l'attribut runTime2 ci-dessous"
+    //runTime2(Foam::Time::controlDictName, ".", ithacaPODParams->get_casenameData());
 }
-/*
+
+
 template<typename T>
 ITHACAPODTemplate<T>::~ITHACAPODTemplate()
 {
-    //TODO CCR
+  delete f_field;
+  delete f_meanField;
 }
 */
 
@@ -1826,24 +1854,23 @@ void computeLift(PtrList<volScalarField>& Lfield, PtrList<volScalarField>& liftf
     }
 }
 
+/* => transfered to IthacaPODTemplate.H 
 
 template<typename T>
 void ITHACAPODTemplate<T>::lift(PtrList<T>& snapshots) // déclarer PtrList<T> liftfield, Eigen::MatrixXi inletIndex et T *f_meanField;
 {
-    ITHACAparameters *paramsIthaca =  ITHACAparameters::getInstance();
-
     if(!f_meanField)
     {
         f_meanField = new T(snapshots[0].name(), snapshots[0] * 0);
     }
 
-    if (paramsIthaca->lifting)
+    if (lifting)
     {
       PtrList<T> omfield;
       computeLift(snapshots, liftfield, omfield, inletIndex);
       snapshots = omfield;
     }
-    if (paramsIthaca->centeredOrNot)// CCR : NOTE origin : if (b_centeredOrNot) // member of IthacaFVParameters
+    if (b_centeredOrNot)
     {
       for (label k = 0; k < snapshots.size(); k++)
       {
@@ -1945,25 +1972,26 @@ template void ITHACAPODTemplate<volVectorField>::addCovMatrixSquareCoeff(Eigen::
     PtrList<volVectorField>& snapshots2,
     ITHACAPOD::indexSquare& indSquare);
 template void ITHACAPODTemplate<volScalarField>::addCovMatrixTriCoeff(Eigen::MatrixXd& covMatrix,
-        PtrList<volScalarField>& snapshots,
-        ITHACAPOD::indexTri& indTri);
+    PtrList<volScalarField>& snapshots,
+    ITHACAPOD::indexTri& indTri);
 template void ITHACAPODTemplate<volScalarField>::addCovMatrixSquareCoeff(Eigen::MatrixXd& covMatrix,
-        PtrList<volScalarField>& snapshots1,
-        PtrList<volScalarField>& snapshots2,
-        ITHACAPOD::indexSquare& indSquare);
+    PtrList<volScalarField>& snapshots1,
+    PtrList<volScalarField>& snapshots2,
+    ITHACAPOD::indexSquare& indSquare);
 template void ITHACAPODTemplate<volTensorField>::addCovMatrixTriCoeff(Eigen::MatrixXd& covMatrix,
-            PtrList<volTensorField>& snapshots,
-            ITHACAPOD::indexTri& indTri);
+    PtrList<volTensorField>& snapshots,
+    ITHACAPOD::indexTri& indTri);
 template void ITHACAPODTemplate<volTensorField>::addCovMatrixSquareCoeff(Eigen::MatrixXd& covMatrix,
-            PtrList<volTensorField>& snapshots1,
-            PtrList<volTensorField>& snapshots2,
-            ITHACAPOD::indexSquare& indSquare);
+    PtrList<volTensorField>& snapshots1,
+    PtrList<volTensorField>& snapshots2,
+    ITHACAPOD::indexSquare& indSquare);
  
             
 
 
 template<typename T>
-word ITHACAPODTemplate<T>::nameTempCovMatrix(int& i, int& j){
+word ITHACAPODTemplate<T>::nameTempCovMatrix(int& i, int& j)
+{
   char str1[10]; sprintf(str1, "%d", i);
   char str2[10]; sprintf(str2, "%d", j);
   word suffix = "_temp_" + static_cast<word>(str1) + "_" + static_cast<word>(str2);
@@ -1972,14 +2000,16 @@ word ITHACAPODTemplate<T>::nameTempCovMatrix(int& i, int& j){
 }
 
 template<typename T>
-void ITHACAPODTemplate<T>::saveTempCovMatrix(Eigen::MatrixXd& covMatrix, int i, int j){
+void ITHACAPODTemplate<T>::saveTempCovMatrix(Eigen::MatrixXd& covMatrix, int i, int j)
+{
   word filename = this->nameTempCovMatrix(i,j);
   cnpy::save(covMatrix, filename);
 }
 
 
 template<typename T>
-void ITHACAPODTemplate<T>::deleteTempCovMatrix(int i, int j){
+void ITHACAPODTemplate<T>::deleteTempCovMatrix(int i, int j)
+{
   word filename = this->nameTempCovMatrix(i,j);
   std::ifstream fileStr(filename.c_str());
   if (fileStr) remove(filename.c_str());
@@ -2122,7 +2152,660 @@ void ITHACAPODTemplate<T>::findTempFile(Eigen::MatrixXd* covMat, int* index1, in
       Info << "       with covMat size=(" << covMat->rows() << ", " << covMat->cols() << ")" << endl;
     }
 }
+//Specialisation
 template void ITHACAPODTemplate<volTensorField>::findTempFile(Eigen::MatrixXd* covMat, int* index1, int* index2);
+
+template<typename T>
+void ITHACAPODTemplate<T>::define_paths()
+{
+  word pathCentered("");
+  if (b_centeredOrNot && !(field_name=="U"))
+  {
+    pathCentered = "_centered";
+  }
+  if (lifting) 
+  {
+    pathCentered += "Lifted";
+  }
+  word pathHilbertSpace(get_pathHilbertSpace_fromHS(l_hilbertSp));
+
+  // name and folder of the covariance
+  // check if the matrix was already computed
+  name_covMatrix = "covMatrix" + f_field->name();
+  folder_covMatrix = "./ITHACAoutput/CovMatrices" + pathHilbertSpace
+                                                  + pathCentered + "/";
+  exist_covMatrix = ITHACAutilities::check_file(folder_covMatrix + name_covMatrix+".npy");
+
+  // name and folder of the eigen decomposition
+  name_eigenValues = "Eigenvalues_" + f_field->name();
+  name_eigenValuesNormalized = "EigenvaluesNormalized_" + f_field->name();
+  name_cumEigenValues = "/CumEigenvalues_" + f_field->name();
+  name_eigenVector = "/Eigenvector_" + f_field->name() ;
+  folder_eigen = "./ITHACAoutput/EigenValuesandVector"
+                    + pathCentered + "_" + std::to_string(l_nmodes) + "modes/";
+  exist_eigenDecomposition = ITHACAutilities::check_file(folder_eigen + name_eigenValues+".npy")
+    && ITHACAutilities::check_file(folder_eigen + name_eigenVector+".npy");
+
+  // folder of the spatial modes and check if every modes were already computed
+  folder_spatialModes = "./ITHACAoutput/spatialModes"
+                    + pathCentered +"_" + std::to_string(l_nmodes) + "modes/";
+  exist_spatialModes = ITHACAutilities::check_file(folder_spatialModes + "1/" + f_field->name());
+
+  // folder of the temporal modes and check if modes were already computed
+  folder_temporalModes = "./ITHACAoutput/temporalModes"
+                    + pathCentered + "_" + std::to_string(l_nmodes) + "modes/";
+  exist_temporalModes = ITHACAutilities::check_file(folder_temporalModes + f_field->name() + ".npy");
+
+  // folder of the temporal modes and check if modes were already computed
+  folder_temporalModesSimulation = "./ITHACAoutput/temporalModesSimulation"
+                    + pathCentered + "_" + std::to_string(l_nmodes) + "modes/";
+  exist_temporalModesSimulation = ITHACAutilities::check_file(folder_temporalModesSimulation + f_field->name() + ".npy");
+
+  // folder of mean field and check if mean was already computed
+  folder_mean = "./ITHACAoutput/mean/";
+  exist_noMean = !ITHACAutilities::check_file(folder_mean + "/" + std::to_string(1) + "/" + f_field->name());
+}
+
+template<typename T>
+void ITHACAPODTemplate<T>::appendMeanfieldtoSpatialModes(PtrList<T>& spatialModes)
+{
+  if (b_centeredOrNot)
+  {
+      spatialModes.set(l_nmodes, f_meanField);
+  }
+}
+
+
+
+template<typename T>
+PtrList<T> ITHACAPODTemplate<T>::computeSpatialModes(Eigen::VectorXd& eigenValueseig, Eigen::MatrixXd& eigenVectoreig)
+{
+  PtrList<T> spatialModes;
+
+  // In case the modes were not computed
+  if (!exist_spatialModes)
+  {
+    Info << "Computing the spatial modes of the " << f_field->name() << " field" << endl;
+
+    spatialModes.resize(l_nmodes);
+    for (int k = 0; k < l_nmodes; k++)
+    {
+      spatialModes.set(k, new T(f_field->name(), *f_field) );
+      ITHACAutilities::setToZero(spatialModes[k]);
+    }
+
+    for (label j = 0; j < l_nSnapshot; j++)
+    {
+      T snapshotj = *f_field;
+      ithacaPODParams->read_snapshot(snapshotj, l_startTime+j);
+      if (ithacaPODParams->get_DEIMInterpolatedField() == "nut" && l_hilbertSp == "dL2"){
+        ITHACAutilities::multField(snapshotj, ithacaPODParams->get_deltaWeight()); 
+      }
+
+      lift(snapshotj);
+
+      for (label k = 0; k < l_nmodes; k++)
+      {
+        ITHACAutilities::addFields(spatialModes[k], snapshotj, eigenVectoreig(j,k));
+      }
+    }
+
+    for (int k = 0; k < l_nmodes; k++)
+    {
+      ITHACAutilities::multField(spatialModes[k], 1/eigenValueseigLam(k));
+    }
+
+    mkDir(folder_spatialModes);
+    ITHACAstream::exportFields(spatialModes, folder_spatialModes, f_field->name());
+  }
+  // in the case the spatial modes was already computed, it reads in the hard disk
+  else
+  {
+    Info << "Reading the spatial modes of the " << f_field->name() << " field" << endl;
+    ITHACAstream::read_fields(spatialModes, (*f_field), folder_spatialModes);
+  }
+  Info << endl;
+
+  return spatialModes;
+}
+
+
+template<typename T>
+Eigen::MatrixXd ITHACAPODTemplate<T>::computeTemporalModes(Eigen::VectorXd& eigenValueseig, Eigen::MatrixXd& eigenVectoreig)
+{
+  Eigen::MatrixXd temporalModes(l_nSnapshot, l_nmodes);
+
+  if (!exist_temporalModes)
+  {
+    Info << "Computing the temporal modes of the " << f_field->name() << " field" << endl;
+
+    mkDir( folder_temporalModes );
+
+    for(int i = 0; i < l_nmodes; i++)
+    {
+      temporalModes.col(i) = eigenVectoreig.col(i) * eigenValueseigLam(i);
+    }
+
+    cnpy::save(temporalModes, folder_temporalModes + f_field->name()+ ".npy");
+  }
+  else
+  {
+    Info << "Reading the temporal modes of the " << f_field->name() << " field" << endl;
+    cnpy::load(temporalModes, folder_temporalModes + f_field->name()+ ".npy");
+  }
+  Info << endl;
+
+  return temporalModes;
+}
+
+
+
+word get_pathHilbertSpace_fromHS(word hilbertSp)
+{
+  word pathHilbertSpace = "";
+  if (hilbertSp == "L2" || hilbertSp == "dL2")
+  {
+    pathHilbertSpace = "";
+  }
+  else if (hilbertSp == "L2wBC")
+  {
+    pathHilbertSpace = "_L2wBC";
+  }
+  else if (hilbertSp == "H1")
+  {
+    pathHilbertSpace = "_H1";
+  }
+  else if (hilbertSp == "wH1")
+  {
+    pathHilbertSpace = "_wH1";
+  }
+  else
+  {
+    Info << "Error: hilbertSpacePOD type " <<
+    hilbertSp
+    << " is not valid." << endl;
+    Info << "dot_product_POD is available for L2, L2wBC, H1 and wH1 only." << endl;
+    abort();
+  }
+  return pathHilbertSpace;
+}
+
+
+
+
+template<typename T>
+void ITHACAPODTemplate<T>::diagonalisation(Eigen::MatrixXd& covMatrix, Eigen::VectorXd& eigenValueseig, Eigen::MatrixXd& eigenVectoreig)
+{
+  if(!exist_eigenDecomposition)
+  {
+    mkDir(folder_eigen);
+
+    Info << "Performing the eigen decomposition" << endl;
+    if (w_eigensolver == "spectra")
+    {
+      Spectra::DenseSymMatProd<double> op(covMatrix);
+      Spectra::SymEigsSolver<double, Spectra::LARGEST_ALGE, Spectra::DenseSymMatProd<double>> es(&op, l_nmodes, l_nSnapshot);
+      std::cout << "Using Spectra EigenSolver " << std::endl;
+      es.init();
+      es.compute(1000, 1e-10, Spectra::LARGEST_ALGE);
+      M_Assert(es.info() == Spectra::SUCCESSFUL, "The Eigenvalue Decomposition did not succeed");
+      eigenVectoreig = es.eigenvectors().real();
+      eigenValueseig = es.eigenvalues().real();
+    }
+    else if (w_eigensolver == "eigen")
+    {
+      Eigen::SelfAdjointEigenSolver<Eigen::MatrixXd> esEg;
+      std::cout << "Using Eigen EigenSolver " << std::endl;
+      esEg.compute(covMatrix);
+      M_Assert(esEg.info() == Eigen::Success, "The Eigenvalue Decomposition did not succeed");
+      eigenVectoreig = esEg.eigenvectors().real().rowwise().reverse().leftCols(l_nmodes);
+      eigenValueseig = esEg.eigenvalues().real().reverse().head(l_nmodes);
+    }
+    else
+    {
+    }
+    // Compute the norm of each Modes
+    eigenValueseigLam = eigenValueseig.real().array().abs().sqrt();
+
+    // save the eigen values
+    cnpy::save(eigenValueseig, folder_eigen + name_eigenValues + ".npy");
+
+    // save the eigen vectors
+    cnpy::save(eigenVectoreig, folder_eigen + "/Eigenvector_" + f_field->name()+ ".npy");
+
+    // save the norm of each Modes
+    cnpy::save(eigenValueseigLam, folder_eigen + "/EigenvectorLambda_" + f_field->name()+ ".npy");
+
+    Eigen::VectorXd eigenValueseigNormalized = eigenValueseig / eigenValueseig.sum();
+    Eigen::VectorXd cumEigenValues(eigenValueseigNormalized);
+
+    for (int j = 1; j < cumEigenValues.size(); ++j)
+    {
+      cumEigenValues(j) += cumEigenValues(j - 1);
+    }
+
+    // save eigen values normalized
+    cnpy::save(eigenValueseigNormalized, folder_eigen + name_eigenValuesNormalized + ".npy");
+    // save the cumulated eigen values
+    cnpy::save(cumEigenValues, folder_eigen + name_cumEigenValues + ".npy");
+
+  }
+  else
+  {
+    // in case the eigen decomposition was already performed
+    // load eigen values
+    cnpy::load(eigenValueseig, folder_eigen + name_eigenValues + ".npy");
+    // load eigen vectors
+    cnpy::load(eigenVectoreig, folder_eigen + "/Eigenvector_" + f_field->name()+ ".npy");
+    // load the norm of each Modes
+    cnpy::load(eigenValueseigLam, folder_eigen + "/EigenvectorLambda_" + f_field->name()+ ".npy");
+  }
+  double resolvedVaryingEnergy = eigenValueseig.sum()/l_nSnapshot;
+  if (l_hilbertSp == "L2")
+  {
+    ithacaPODParams->set_resolvedVaryingEnergy( f_field->name(), resolvedVaryingEnergy);
+  }
+  else
+  {
+    ithacaPODParams->set_resolvedVaryingEnergy( f_field->name() + "_" + l_hilbertSp, resolvedVaryingEnergy);
+  }
+  Info << "% of varying " << l_hilbertSp << " energy captures by the modes for " << field_name 
+       << " : " << 100.0*eigenValueseig.sum()/covMatrix.trace() << "%" << endl;
+  Info << endl;
+}
+
+template<typename T>
+Eigen::MatrixXd ITHACAPODTemplate<T>::buildCovMatrix()
+{
+  // the covariance matrix is initialized to a unreal value
+  double CovUnrealValue = 999999.999999;
+  Eigen::MatrixXd covMatrix;
+  covMatrix.setConstant(l_nSnapshot,l_nSnapshot,CovUnrealValue);
+
+  bool exist_covMatrix_bin = ITHACAutilities::check_file(folder_covMatrix + name_covMatrix);
+  
+  int valI,valJ;
+  //initializing value of etapeI and etapeJ : no temp file found
+  int etapeI, etapeJ;
+  etapeI = -1; etapeJ = -1;
+
+  // create folder
+  mkDir(folder_covMatrix);
+
+  // updating covMatrix from previous step (when a *_temp_* file exist)
+  findTempFile(&covMatrix, &etapeI, &etapeJ);
+
+  // in case the cov matrix was not computed
+  if(!exist_covMatrix && !exist_covMatrix_bin)
+  {
+
+    Info << "Computing the covariance matrix of the " << f_field->name() << " field" << endl;
+    // the size is cov matrix l_nSnapshot, it has been subdivised in l_nBlocks
+    label q = l_nSnapshot/l_nBlocks;
+    label r = l_nSnapshot%l_nBlocks;
+
+    Info << "q = " << q << endl;
+    Info << "r = " << r << endl;
+    Info << "nSnapshot = " << l_nSnapshot << endl;
+    Info << "nBlocks = " << l_nBlocks << endl;
+    Info << endl;
+
+    PtrList<T> snapshots;
+
+    // If a temp file is found load it and go to the next step
+    if(etapeI != -1)
+    {
+      if(etapeJ == etapeI-1){
+        etapeJ = 0;
+        etapeI +=1;
+      }else{
+        etapeJ +=1;
+      }
+    }else{
+      etapeI = 0;
+      etapeJ = 0;
+    }
+
+    // Number of previous tempory CovMatrix to keep in directory
+    // (parameter used by [deletePreviousTempCovMatrix_N])
+    int N_previous_temp_Mat = 3;
+    
+    for (label i = etapeI; i < l_nBlocks; i++)
+    {
+      ITHACAstream::read_fields(snapshots, (*f_field), casenameData, l_startTime -2 + i*q, q);
+      lift(snapshots);
+
+      ITHACAPOD::indexTri indTri;
+      indTri.index_start = i*q;
+      indTri.index_end = (i+1)*q;
+
+      addCovMatrixTriCoeff(covMatrix, snapshots, indTri);
+
+      PtrList<T> snapshots2;
+      
+      int valI=etapeI,valJ=etapeJ;
+
+      for (label j = etapeJ; j < i; j++)
+      {
+        ITHACAstream::read_fields(snapshots2, (*f_field), casenameData, l_startTime -2 + j*q, q);
+        lift(snapshots2);
+
+        ITHACAPOD::indexSquare indSquare;
+        indSquare.index1_start = i*q;
+        indSquare.index1_end = (i+1)*q;
+        indSquare.index2_start = j*q;
+        indSquare.index2_end = (j+1)*q;
+
+        addCovMatrixSquareCoeff(covMatrix, snapshots,snapshots2, indSquare);
+
+        // Clear the pointer to snapshots2
+        snapshots2.clear();
+
+        // Save cove matrix temp file
+        saveTempCovMatrix(covMatrix, i,j);
+
+        // Delete previous covMatrix temp file after saving the current one
+        deletePreviousTempCovMatrix_N(&valI,&valJ,i,j,N_previous_temp_Mat);
+      }
+
+      // Clear the pointer to snapshots
+      snapshots.clear();
+      valI = i;
+      etapeJ = 0;
+    }
+
+    if (r != 0)
+    {
+      PtrList<T> snapshotsEnd;
+
+      ITHACAstream::read_fields(snapshotsEnd, (*f_field), casenameData, l_startTime -2 + l_nBlocks*q, r);
+      lift(snapshotsEnd);
+
+      ITHACAPOD::indexTri indTri;
+      indTri.index_start = l_nBlocks*q;
+      indTri.index_end = l_nSnapshot;
+
+      addCovMatrixTriCoeff(covMatrix, snapshotsEnd, indTri);
+
+      PtrList<T> snapshotsEnd2;
+
+      for (label j = 0; j < l_nBlocks; j++)
+      {
+        ITHACAstream::read_fields(snapshotsEnd2, (*f_field), casenameData, l_startTime -2 + j*q, q);
+        lift(snapshotsEnd2);
+
+        ITHACAPOD::indexSquare indSquare;
+        indSquare.index1_start = l_nBlocks*q;
+        indSquare.index1_end =  l_nSnapshot;
+        indSquare.index2_start = j*q;
+        indSquare.index2_end = (j+1)*q;
+
+        addCovMatrixSquareCoeff(covMatrix, snapshotsEnd, snapshotsEnd2, indSquare);
+
+        snapshotsEnd2.clear();
+        
+        // Save cove matrix temp file
+        saveTempCovMatrix(covMatrix, l_nBlocks,j);
+        
+        // Delete previous covMatrix temp file after saving the current one
+        deletePreviousTempCovMatrix_N(&valI,&valJ,l_nBlocks,j,N_previous_temp_Mat);
+      }
+
+      snapshotsEnd.clear();
+    }
+    // covMatrix is symetric, the lower part is used to build the upper part
+    covMatrix = covMatrix.selfadjointView<Eigen::Lower>();
+    cnpy::save(covMatrix, folder_covMatrix + name_covMatrix+ ".npy");
+    
+    // Delete previous covMatrix temp file after saving the current one
+    if (r == 0) deletePreviousTempCovMatrix_N(&valI,&valJ,l_nBlocks-1,l_nBlocks-1,1);
+    if (r != 0) deletePreviousTempCovMatrix_N(&valI,&valJ,l_nBlocks,l_nBlocks,1);
+  }
+  // in case the cov matrix was already computed, it reads in the hard disk
+  else if (exist_covMatrix)
+  {
+    Info << "Reading the covariance matrix of the " << f_field->name() << " field" << endl;
+    cnpy::load(covMatrix, folder_covMatrix + name_covMatrix+ ".npy");
+  }
+  // in case the cov matrix was already computed, it reads in the hard disk
+  else
+  {
+    Info << "Reading (binary) the covariance matrix of the " << f_field->name() << " field" << endl;
+    ITHACAstream::ReadDenseMatrix(covMatrix, folder_covMatrix, name_covMatrix);
+    cnpy::save(covMatrix, folder_covMatrix + name_covMatrix+ ".npy");
+  }
+
+  // looking for CovUnrealValue
+  int covMatrixOK = 1;
+  int NbCovUnrealValue = 0;
+  for (int i=0;i<l_nSnapshot;i++)
+  {
+    for (int j=i; j<l_nSnapshot; j++)
+    {
+      if (covMatrix(i,j) == CovUnrealValue)
+      {
+        covMatrixOK = 0;
+        NbCovUnrealValue += 1;
+      }
+    }
+  }
+  if (covMatrixOK == 0) 
+  {
+    Info << "\n!!! OUPS !!! Unreal value [" << CovUnrealValue << "] found " << NbCovUnrealValue << " times in triangular up part of " << name_covMatrix << " !!!\n" << endl;
+    abort();
+  }
+  
+  double varyingEnergy = covMatrix.trace()/l_nSnapshot;
+  if (l_hilbertSp == "L2" || l_hilbertSp == "dL2")
+  {
+    ithacaPODParams->set_varyingEnergy( f_field->name(), varyingEnergy);
+  }
+  Info << "Total varying " << l_hilbertSp << " energy for " << field_name << " : " << varyingEnergy << endl;
+  Info << endl;
+
+  return covMatrix;
+}
+
+template<typename T>
+void ITHACAPODTemplate<T>::computeMeanField()
+{
+  if (lifting)
+  {
+    Info << "Loading lifting functions" << endl;
+    liftfield.resize(inletIndex.rows());
+    for (label k = 0; k < inletIndex.rows(); k++)
+    {
+        T* f_lift = new T
+        (
+          IOobject
+          (
+            f_field->name() +"lift" + std::to_string(k),
+            runTime2.path() + runTime2.times()[1].name(),
+            ithacaPODParams->get_mesh(),
+            IOobject::MUST_READ
+          ),
+          ithacaPODParams->get_mesh()
+        );
+        liftfield.set(k, f_lift );
+    }
+  }
+  if (b_centeredOrNot)
+  {
+
+    if (exist_noMean)
+    {
+      ITHACAutilities::setToZero(*f_meanField);
+      Info << "Computing the mean of " << f_field->name() << " field" << endl;
+      T snapshotj = *f_field;
+      b_centeredOrNot = false;
+      for (label j = 0; j < l_nSnapshot; j++)
+      {
+        // Read the j-th field
+        ithacaPODParams->read_snapshot(snapshotj, l_startTime+j);
+        lift(snapshotj);
+        // add j-th field to meanfield
+        ITHACAutilities::addFields(*f_meanField,snapshotj);
+      }
+      b_centeredOrNot = true;
+
+      ITHACAutilities::multField(*f_meanField, 1/double(l_nSnapshot));
+
+      PtrList<T> meanExport(1);
+      meanExport.set(0, new T(f_meanField->name(), *f_meanField));
+      ITHACAstream::exportFields(meanExport, folder_mean, f_field->name());
+    }
+    else
+    {
+      PtrList<T> meanRead;
+      Info << "Reading the mean of " << f_field->name() << " field" << endl;
+      ITHACAstream::read_fields(meanRead, (*f_field), folder_mean);
+      *f_meanField = meanRead[0];
+    }
+    double energyMean = ITHACAutilities::dot_product_L2(*f_meanField,*f_meanField);
+    double energyHilbertMean = ITHACAutilities::dot_product_POD(*f_meanField,*f_meanField,l_hilbertSp);
+    ithacaPODParams->set_meanEnergy( f_meanField->name(), energyMean);
+    ithacaPODParams->set_meanEnergy( f_meanField->name() + "_" + l_hilbertSp, energyHilbertMean);
+  }
+  else
+  {
+    ITHACAutilities::setToZero(*f_meanField);
+  }
+
+  Info << endl;
+}
+
+template<typename T>
+Eigen::MatrixXd ITHACAPODTemplate<T>::computeSimulationTemporalModes(PtrList<T>& f_spatialModes)
+{
+  Eigen::MatrixXd temporalModesSimulation(l_nSnapshotSimulation, l_nmodes);
+
+  if (!exist_temporalModesSimulation)
+  {
+    Info << "Computing the Simulation temporal modes of the " << f_field->name() << " field" << endl;
+    mkDir( folder_temporalModesSimulation );
+
+    label l_startTimeSimulation(l_endTime);
+    for (label j = 0; j < l_nSnapshotSimulation; j++)
+    {
+
+      T snapshotj = *f_field;
+      ithacaPODParams->read_snapshot(snapshotj, l_startTimeSimulation + j);
+      if (ithacaPODParams->get_DEIMInterpolatedField() == "nut" && l_hilbertSp == "dL2"){
+        ITHACAutilities::multField(snapshotj, ithacaPODParams->get_deltaWeight()); 
+      }
+      lift(snapshotj);
+
+      for (label i = 0; i < l_nmodes; i++)
+      {
+        temporalModesSimulation(j,i) = ITHACAutilities::dot_product_POD(snapshotj , f_spatialModes[i], l_hilbertSp, weightBC, patchBC,weightH1);
+      }
+    }
+    cnpy::save(temporalModesSimulation, folder_temporalModesSimulation + f_field->name()+ ".npy");
+  }
+  else
+  {
+    Info << "Reading the Simulation temporal modes of the " << f_field->name() << " field" << endl;
+    cnpy::load(temporalModesSimulation, folder_temporalModesSimulation + f_field->name()+ ".npy");
+  }
+  Info << endl;
+
+  return temporalModesSimulation;
+}
+
+
+template<typename T>
+void ITHACAPODTemplate<T>::getModes(PtrList<T>& spatialModes,
+  Eigen::MatrixXd& temporalModes, Eigen::MatrixXd& temporalModesSimulation,
+  Eigen::MatrixXd& covMatrix)
+{
+  Info << "-------------------------------------------------------------------------------------------" << endl;
+  Info << "The POD is performing with the following parameters :" << endl;
+  Info << "Field : " << f_field->name() << endl;
+  Info << "Number of modes : " << l_nmodes << endl;
+  Info << "POD Hilbert space : " << l_hilbertSp << endl;
+  Info << "Weight for the boundary conditions (0 for L2 POD Hilbert space) : " << weightBC << endl;
+  Info<< "Patch for the boundary conditions(inlet by default) used in L2wBC : "<<patchBC<<endl;
+
+  Info << "start time : " << l_startTime << endl;
+  Info << "End time : " << l_endTime << endl;
+  Info << "Number of snapshots : " << l_nSnapshot << endl;
+  Info << "Number of test snapshots : " << l_nSnapshotSimulation << endl;
+
+  Info << "Number of blocks : " << l_nBlocks << endl;
+  Info << "Centered datas or not : " << b_centeredOrNot << " (1 centered, 0 not centered)" << endl;
+
+  Info << "Name of eigensolver used : " << w_eigensolver << endl;
+
+  Info << "Results folder : " << "ITHACAoutput" << endl;
+
+  computeMeanField();
+  covMatrix = this->buildCovMatrix();
+  // Reduction (parallelization)
+  Eigen::VectorXd eigenValueseig = Eigen::VectorXd::Zero(l_nmodes);
+  Eigen::MatrixXd eigenVectoreig = Eigen::MatrixXd::Zero(l_nSnapshot,l_nmodes);
+  diagonalisation(covMatrix, eigenValueseig, eigenVectoreig);
+  spatialModes = computeSpatialModes(eigenValueseig, eigenVectoreig);
+  temporalModes = computeTemporalModes(eigenValueseig, eigenVectoreig);
+  compute_lambda(temporalModes);
+  temporalModesSimulation = computeSimulationTemporalModes(spatialModes);
+  // Reduction (parallelization)
+
+  if (field_name == "U")
+  {
+      ithacaPODParams->set_eigenValues_U(eigenValueseig);
+      ithacaPODParams->set_lambda(lambda);
+  }
+
+  Info << "-------------------------------------------------------------------------------------------" << endl;
+}
+
+
+
+  // Specialisation
+  template ITHACAPODTemplate<volTensorField>::ITHACAPODTemplate(fvMesh& mesh, Time& localTime, const word& myfield_name);//template ITHACAPODTemplate<volTensorField>::ITHACAPODTemplate(Parameters* myParameters, const word& myfield_name);
+  template ITHACAPODTemplate<volTensorField>::~ITHACAPODTemplate();
+  template void ITHACAPODTemplate<volTensorField>::define_paths();
+  template void ITHACAPODTemplate<volTensorField>::computeMeanField();
+  template void ITHACAPODTemplate<volTensorField>::appendMeanfieldtoSpatialModes(PtrList<volTensorField>& spatialModes);
+  //template word ITHACAPODTemplate<volTensorField>::nameTempCovMatrix(int i, int j);
+  template void ITHACAPODTemplate<volTensorField>::saveTempCovMatrix(Eigen::MatrixXd& covMatrix, int i, int j);
+  template void ITHACAPODTemplate<volTensorField>::deletePreviousTempCovMatrix_N(int* valI, int* valJ, int i, int j, int N);
+  template Eigen::MatrixXd ITHACAPODTemplate<volTensorField>::buildCovMatrix();
+  template void ITHACAPODTemplate<volTensorField>::diagonalisation(Eigen::MatrixXd& covMatrix, Eigen::VectorXd& eigenValueseig, Eigen::MatrixXd& eigenVectoreig);
+  template PtrList<volTensorField> ITHACAPODTemplate<volTensorField>::computeSpatialModes(Eigen::VectorXd& eigenValueseig, Eigen::MatrixXd& eigenVectoreig);
+  template Eigen::MatrixXd ITHACAPODTemplate<volTensorField>::computeTemporalModes(Eigen::VectorXd& eigenValueseig, Eigen::MatrixXd& eigenVectoreig);
+  template void ITHACAPODTemplate<volTensorField>::getModes(PtrList<volTensorField>& spatialModes, Eigen::MatrixXd& temporalModes,
+    Eigen::MatrixXd& temporalModesSimulation, Eigen::MatrixXd& covMatrix);
+  template Eigen::MatrixXd ITHACAPODTemplate<volTensorField>::computeSimulationTemporalModes(PtrList<volTensorField>& spatialModes);
+
+  // Specialisation
+  template ITHACAPODTemplate<volVectorField>::ITHACAPODTemplate(fvMesh& mesh, Time& localTime, const word& myfield_name);//template ITHACAPODTemplate<volVectorField>::ITHACAPODTemplate(Parameters* myParameters, const word& myfield_name);
+  template ITHACAPODTemplate<volVectorField>::~ITHACAPODTemplate();
+  template void ITHACAPODTemplate<volVectorField>::define_paths();
+  template void ITHACAPODTemplate<volVectorField>::computeMeanField();
+  template void ITHACAPODTemplate<volVectorField>::appendMeanfieldtoSpatialModes(PtrList<volVectorField>& spatialModes);
+  template Eigen::MatrixXd ITHACAPODTemplate<volVectorField>::buildCovMatrix();
+  template void ITHACAPODTemplate<volVectorField>::diagonalisation(Eigen::MatrixXd& covMatrix, Eigen::VectorXd& eigenValueseig, Eigen::MatrixXd& eigenVectoreig);
+  template PtrList<volVectorField> ITHACAPODTemplate<volVectorField>::computeSpatialModes(Eigen::VectorXd& eigenValueseig, Eigen::MatrixXd& eigenVectoreig);
+  template Eigen::MatrixXd ITHACAPODTemplate<volVectorField>::computeTemporalModes(Eigen::VectorXd& eigenValueseig, Eigen::MatrixXd& eigenVectoreig);
+  template void ITHACAPODTemplate<volVectorField>::getModes(PtrList<volVectorField>& spatialModes, Eigen::MatrixXd& temporalModes,
+    Eigen::MatrixXd& temporalModesSimulation, Eigen::MatrixXd& covMatrix);
+  template Eigen::MatrixXd ITHACAPODTemplate<volVectorField>::computeSimulationTemporalModes(PtrList<volVectorField>& spatialModes);
+
+  // Specialisation
+  template ITHACAPODTemplate<volScalarField>::ITHACAPODTemplate(fvMesh& mesh, Time& localTime, const word& myfield_name);//template ITHACAPODTemplate<volScalarField>::ITHACAPODTemplate(Parameters* myParameters, const word& myfield_name);
+  template ITHACAPODTemplate<volScalarField>::~ITHACAPODTemplate();
+  template void ITHACAPODTemplate<volScalarField>::define_paths();
+  template void ITHACAPODTemplate<volScalarField>::computeMeanField();
+  template void ITHACAPODTemplate<volScalarField>::appendMeanfieldtoSpatialModes(PtrList<volScalarField>& spatialModes);
+  template Eigen::MatrixXd ITHACAPODTemplate<volScalarField>::buildCovMatrix();
+  template void ITHACAPODTemplate<volScalarField>::diagonalisation(Eigen::MatrixXd& covMatrix, Eigen::VectorXd& eigenValueseig, Eigen::MatrixXd& eigenVectoreig);
+  template PtrList<volScalarField> ITHACAPODTemplate<volScalarField>::computeSpatialModes(Eigen::VectorXd& eigenValueseig, Eigen::MatrixXd& eigenVectoreig);
+  template Eigen::MatrixXd ITHACAPODTemplate<volScalarField>::computeTemporalModes(Eigen::VectorXd& eigenValueseig, Eigen::MatrixXd& eigenVectoreig);
+  template void ITHACAPODTemplate<volScalarField>::getModes(PtrList<volScalarField>& spatialModes, Eigen::MatrixXd& temporalModes,
+    Eigen::MatrixXd& temporalModesSimulation, Eigen::MatrixXd& covMatrix);
+  template Eigen::MatrixXd ITHACAPODTemplate<volScalarField>::computeSimulationTemporalModes(PtrList<volScalarField>& spatialModes);
+*/
 
 
 // end of CCR Code moved from RedLUM
