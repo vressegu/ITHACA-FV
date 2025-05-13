@@ -70,6 +70,8 @@ class ITHACAparameters
 
         /// argument list
         autoPtr<argList> args;
+        int argc;
+        char **argv;
 
         /// Pointer to the ITHACAparameters singleton instance
         static ITHACAparameters* instance;

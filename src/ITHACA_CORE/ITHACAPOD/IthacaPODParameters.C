@@ -32,7 +32,7 @@ namespace ITHACAPOD {
   }
   
 
-  IthacaPODParameters::IthacaPODParameters(int argc, char** argv, ITHACAparameters *para, Foam::fvMesh  *mesh, const word& myfield_name) :
+  IthacaPODParameters::IthacaPODParameters(ITHACAparameters *para, Foam::fvMesh  *mesh, const word& myfield_name) :
   //IthacaPODParameters::IthacaPODParameters(int argc, char* argv[], const word& myfield_name) :
   ithacaLibraryParameters(para),
   mesh(mesh),
@@ -54,7 +54,7 @@ namespace ITHACAPOD {
     instance = this;
     _args = autoPtr<argList>
         (
-          new argList(argc, argv)
+          new argList(ithacaLibraryParameters->argc, ithacaLibraryParameters->argv)
           );
 
     if (!_args->checkRootCase())
@@ -65,9 +65,9 @@ namespace ITHACAPOD {
     argList& args = _args();
 
     std::cout << "in IthacaPODParameters, arglist, used for initilise runTime0,  is :" << std::endl;
-    for (int i=0; i<argc; i++)
+    for (int i=0; i<ithacaLibraryParameters->argc; i++)
     {
-      std::cout << "argv[" << i << "] = " << argv[i] << std::endl;
+      std::cout << "argv[" << i << "] = " << ithacaLibraryParameters->argv[i] << std::endl;
     }
 
     runTime0 = autoPtr<Foam::Time>( new Foam::Time( Foam::Time::controlDictName,

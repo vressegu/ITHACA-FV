@@ -58,6 +58,8 @@ SourceFiles
 #include "ITHACAparameters.H"
 
 #include "IthacaPODParameters.H"
+#include "IthacaPODTemplate.H"
+
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
 
 int main(int argc, char *argv[])
@@ -221,11 +223,26 @@ int main(int argc, char *argv[])
 
         if (field_type == "vector")
         {
-            ITHACAPOD::getModes(Vfield, Vmodes, field_name, 0, 0, 0, nmodes);
+            //CCR - remplacement en cours
+            //ITHACAPOD::getModes(Vfield, Vmodes, field_name, 0, 0, 0, nmodes);
+            IthacaPODParameters *podParams = IthacaPODParameters::getInstance(fvMesh& mesh, Time& localTime);
+            podParams->setArguments(para->argc, para->argv);
+            IthacaPODTemplate<volVectorField> *IPodTemplate = new ITHACAPODTemplate<volVectorField>(para, podParams, mesh, runTime, field_name);
+            IPodTemplate->getModes(PtrList<T>& spatialModes,
+                                    Eigen::MatrixXd& temporalModes, Eigen::MatrixXd& temporalModesSimulation,
+                                    Eigen::MatrixXd& covMatrix);
+            
         }
         if (field_type == "scalar")
         {
-            ITHACAPOD::getModes(Sfield, Smodes, field_name, 0, 0, 0, nmodes);
+            //CCR - remplacement en cours
+            //ITHACAPOD::getModes(Sfield, Smodes, field_name, 0, 0, 0, nmodes);
+            IthacaPODParameters *podParams = IthacaPODParameters::getInstance(fvMesh& mesh, Time& localTime);
+            podParams->setArguments(para->argc, para->argv);
+            IthacaPODTemplate<volScalarField> *IPodTemplate = new ITHACAPODTemplate<volScalarField>(para, podParams, mesh, runTime, field_name);
+            IPodTemplate->getModes(PtrList<T>& spatialModes,
+                                    Eigen::MatrixXd& temporalModes, Eigen::MatrixXd& temporalModesSimulation,
+                                    Eigen::MatrixXd& covMatrix);
         }
 
         Vfield.clear();

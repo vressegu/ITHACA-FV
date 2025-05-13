@@ -61,5 +61,7 @@ ITHACAparameters* ITHACAparameters::getInstance()
 
 int ITHACAparameters::setArguments(int argc, char **argv)
 {
+    this->argc = argc;
+    this->argv = argv;
     args = autoPtr<argList>( new argList(argc, argv) );
 }

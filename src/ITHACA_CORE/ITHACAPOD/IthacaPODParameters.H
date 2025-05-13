@@ -197,11 +197,7 @@ namespace ITHACAPOD {
   private:
     
   public:
-    //OLD CHC CONSTRUCTOR
-    //IthacaPODParameters(int argc, char* argv[], const word& myfield_name);
-
-    //CCR 12/05 : new constructor : 
-    IthacaPODParameters(int argc, char** argv, ITHACAparameters *para, Foam::fvMesh *mesh, const word& myfield_name);
+    IthacaPODParameters(ITHACAparameters *para, Foam::fvMesh *mesh, const word& myfield_name);
 
 
 

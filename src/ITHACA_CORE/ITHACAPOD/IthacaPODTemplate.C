@@ -98,41 +98,7 @@ field_name(myfield_name),
 
   define_paths();
 }
-/*{
-    ithacaFVParameters = ITHACAparameters::getInstance();
-    if(ithacaFVParameters == nullptr){
-      ithacaFVParameters = ITHACAparameters::getInstance(mesh, localTime);
-      #pragma message "what to do if this case appends ? ITHACAparameters must be a valid instance when this is launched"
-      //ithacaFVParameters->setArguments(argc, argv);
-    
-    }
-    ithacaPODParams    = IthacaPODParameters::getInstance();
 
-    // now, as ithacaPODParams is instantied, i can initilize the object
-    field_name(myfield_name);
-    casenameData(ithacaPODParams->get_casenameData());
-    l_nSnapshot = ithacaPODParams->get_nSnapshots();//l_nSnapshot(ithacaPODParams->get_nSnapshots());
-    l_nBlocks = ithacaPODParams->get_nBlocks();//l_nBlocks(ithacaPODParams->get_nBlocks());
-    l_nmodes = ithacaPODParams->get_nModes()[field_name];//l_nmodes(ithacaPODParams->get_nModes()[field_name]);
-    l_hilbertSp(ithacaPODParams->get_hilbertSpacePOD()[field_name]);
-    weightH1 = ithacaPODParams->get_weightH1();//weightH1(ithacaPODParams->get_weightH1());
-    weightBC = ithacaPODParams->get_weightPOD();//weightBC(ithacaPODParams->get_weightPOD());
-    patchBC(ithacaPODParams->get_patchBC());
-    l_startTime = ithacaPODParams->get_startTime();//l_startTime(ithacaPODParams->get_startTime());
-    l_endTime = ithacaPODParams->get_endTime();//l_endTime(ithacaPODParams->get_endTime());
-    l_nSnapshotSimulation = ithacaPODParams->get_nSnapshotsSimulation();//l_nSnapshotSimulation(ithacaPODParams->get_nSnapshotsSimulation());
-    l_endTimeSimulation = ithacaPODParams->get_endTimeSimulation();//l_endTimeSimulation(ithacaPODParams->get_endTimeSimulation());
-    b_centeredOrNot = ithacaPODParams->get_centeredOrNot();//b_centeredOrNot(ithacaPODParams->get_centeredOrNot());
-    lambda(Eigen::VectorXd::Zero(l_nmodes));
-    w_eigensolver(ithacaPODParams->get_eigensolver());
-    i_precision = ithacaPODParams->get_precision();                         //i_precision(ithacaPODParams->get_precision());
-    ios_outytpe = ithacaPODParams->get_outytpe();                           //ios_outytpe(ithacaPODParams->get_outytpe());
-
-
-    #pragma message "CCR - TODO - s'occuper de l'attribut runTime2 ci-dessous"
-    runTime2(Foam::Time::controlDictName, ".", ithacaPODParams->get_casenameData());
-}
-*/
 template<typename T>
 ITHACAPODTemplate<T>::~ITHACAPODTemplate()
 {
@@ -141,117 +107,8 @@ ITHACAPODTemplate<T>::~ITHACAPODTemplate()
 }
 
 
-
-#pragma message "CCR : remove computeLift from this class, already moved to ITHACAPOD.C"
-/*
-void computeLift(PtrList<volTensorField>& Lfield, PtrList<volTensorField>& liftfield, PtrList<volTensorField>& omfield, Eigen::MatrixXi inletIndex)
-{
-    scalar u_bc;
-    scalar u_lf;
-    scalar area;
-
-    for (label k = 0; k < inletIndex.rows(); k++)
-    {
-        label p = inletIndex(k, 0);
-        label l = inletIndex(k, 1);
-        area = gSum(Lfield[0].mesh().magSf().boundaryField()[p]);
-        u_lf = gSum(liftfield[k].mesh().magSf().boundaryField()[p] *
-                    liftfield[k].boundaryField()[p]).component(l) / area;
-        M_Assert(std::abs(u_lf) > 1e-5,
-                 "The lift cannot be computed. Please, check your inletIndex definition");
-
-        for (label j = 0; j < Lfield.size(); j++)
-        {
-            if (k == 0)
-            {
-                u_bc = gSum(Lfield[j].mesh().magSf().boundaryField()[p] *
-                            Lfield[j].boundaryField()[p]).component(l) / area;
-                volTensorField C(Lfield[0].name(), Lfield[j] - liftfield[k]*u_bc / u_lf);
-                omfield.append(C.clone());
-            }
-            else
-            {
-                u_bc = gSum(omfield[j].mesh().magSf().boundaryField()[p] *
-                            omfield[j].boundaryField()[p]).component(l) / area;
-                volTensorField C(Lfield[0].name(), omfield[j] - liftfield[k]*u_bc / u_lf);
-                omfield.set(j, C.clone());
-            }
-        }
-    }
-}
-
-void computeLift(PtrList<volVectorField>& Lfield, PtrList<volVectorField>& liftfield, PtrList<volVectorField>& omfield, Eigen::MatrixXi inletIndex)
-{
-    scalar u_bc;
-    scalar u_lf;
-    scalar area;
-
-    for (label k = 0; k < inletIndex.rows(); k++)
-    {
-        label p = inletIndex(k, 0);
-        label l = inletIndex(k, 1);
-        area = gSum(Lfield[0].mesh().magSf().boundaryField()[p]);
-        u_lf = gSum(liftfield[k].mesh().magSf().boundaryField()[p] *
-                    liftfield[k].boundaryField()[p]).component(l) / area;
-        M_Assert(std::abs(u_lf) > 1e-5,
-                 "The lift cannot be computed. Please, check your inletIndex definition");
-
-        for (label j = 0; j < Lfield.size(); j++)
-        {
-            if (k == 0)
-            {
-                u_bc = gSum(Lfield[j].mesh().magSf().boundaryField()[p] *
-                            Lfield[j].boundaryField()[p]).component(l) / area;
-                volVectorField C(Lfield[0].name(), Lfield[j] - liftfield[k]*u_bc / u_lf);
-                omfield.append(C.clone());
-            }
-            else
-            {
-                u_bc = gSum(omfield[j].mesh().magSf().boundaryField()[p] *
-                            omfield[j].boundaryField()[p]).component(l) / area;
-                volVectorField C(Lfield[0].name(), omfield[j] - liftfield[k]*u_bc / u_lf);
-                omfield.set(j, C.clone());
-            }
-        }
-    }
-}
-
-void computeLift(PtrList<volScalarField>& Lfield, PtrList<volScalarField>& liftfield, PtrList<volScalarField>& omfield, Eigen::MatrixXi inletIndex)
-{
-    scalar t_bc;
-    scalar t_lf;
-    scalar area;
-
-    for (label k = 0; k < inletIndex.rows(); k++)
-    {
-        label p = inletIndex(k, 0);
-        area = gSum(Lfield[0].mesh().magSf().boundaryField()[p]);
-        t_lf = gSum(liftfield[k].mesh().magSf().boundaryField()[p] *
-                    liftfield[k].boundaryField()[p]) / area;
-
-        for (label j = 0; j < Lfield.size(); j++)
-        {
-            if (k == 0)
-            {
-                t_bc = gSum(Lfield[j].mesh().magSf().boundaryField()[p] *
-                            Lfield[j].boundaryField()[p]) / area;
-                volScalarField C(Lfield[0].name(), Lfield[j] - liftfield[k]*t_bc / t_lf);
-                omfield.append(C.clone());
-            }
-            else
-            {
-                t_bc = gSum(omfield[j].mesh().magSf().boundaryField()[p] *
-                            omfield[j].boundaryField()[p]) / area;
-                volScalarField C(Lfield[0].name(), omfield[j] - liftfield[k]*t_bc / t_lf);
-                omfield.set(j, C.clone());
-            }
-        }
-    }
-}
-*/
-
 template<typename T>
-void ITHACAPODTemplate<T>::lift(PtrList<T>& snapshots) // déclarer PtrList<T> liftfield, Eigen::MatrixXi inletIndex et T *f_meanField;
+void ITHACAPODTemplate<T>::lift(PtrList<T>& snapshots)
 {
     if(!f_meanField)
     {
@@ -1153,8 +1010,6 @@ void ITHACAPODTemplate<T>::getModes(PtrList<T>& spatialModes,
   Info << "-------------------------------------------------------------------------------------------" << endl;
 }
 
-
-#pragma message "CCR -TODO - retrait des spécialisations du constructeur de ITHACAPODTemplate"
 // Specialisation
 template ITHACAPODTemplate<volTensorField>::ITHACAPODTemplate(ITHACAparameters *parameters, IthacaPODParameters *podParams, fvMesh& mesh, Time& localTime, const word& myfield_name);//template ITHACAPODTemplate<volTensorField>::ITHACAPODTemplate(Parameters* myParameters, const word& myfield_name);
 template ITHACAPODTemplate<volTensorField>::~ITHACAPODTemplate();

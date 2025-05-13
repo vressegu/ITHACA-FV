@@ -36,7 +36,7 @@ SourceFiles
 #define __ITHACA_POD_TEMPLATE_H__
 
 #include "ITHACAPOD.H"
-/*
+/* moved to "IthacaPODParameters.H"
 #include "fvCFD.H"
 #include "ITHACAutilities.H"
 #include "ITHACAstream.H"
