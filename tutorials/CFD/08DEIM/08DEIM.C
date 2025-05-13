@@ -90,6 +90,7 @@ int main(int argc, char* argv[])
         )
     );
     ITHACAparameters* para = ITHACAparameters::getInstance(mesh, runTime);
+    para->setArguments(argc, argv);
     int NDEIM = para->ITHACAdict->lookupOrDefault<int>("NDEIM", 15);
     simpleControl simple(mesh);
 #include "createFields.H"

@@ -85,6 +85,7 @@ SteadyNSTurbIntrusive::SteadyNSTurbIntrusive(int argc, char* argv[])
     M_Assert(bcMethod == "lift" || bcMethod == "penalty",
              "The BC method must be set to lift or penalty in ITHACAdict");
     para = ITHACAparameters::getInstance(mesh, runTime);
+    para->setArguments(argc, argv);
     offline = ITHACAutilities::check_off();
     podex = ITHACAutilities::check_pod();
     supex = ITHACAutilities::check_sup();

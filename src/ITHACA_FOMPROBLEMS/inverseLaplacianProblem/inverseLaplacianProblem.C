@@ -80,6 +80,7 @@ inverseLaplacianProblem::inverseLaplacianProblem(int argc, char* argv[])
         )
     );
     para = ITHACAparameters::getInstance(mesh, runTime);
+    para->setArguments(argc, argv);
     offline = ITHACAutilities::check_off();
     podex = ITHACAutilities::check_pod();
     nProcs = Pstream::nProcs();

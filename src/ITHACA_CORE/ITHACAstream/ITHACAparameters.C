@@ -51,9 +51,15 @@ ITHACAparameters* ITHACAparameters::getInstance(fvMesh& mesh,
     return instance;
 }
 
+
 ITHACAparameters* ITHACAparameters::getInstance()
 {
     M_Assert(instance != nullptr,
              "ITHACAparameters needs to be initialized, call ITHACAparameters::getInstance(mesh, runTime) first");
     return instance;
+}
+
+int ITHACAparameters::setArguments(int argc, char **argv)
+{
+    args = autoPtr<argList>( new argList(argc, argv) );
 }

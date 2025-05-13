@@ -86,6 +86,7 @@ SteadyNSTurb::SteadyNSTurb(int argc, char* argv[])
              "The BC method must be set to lift or penalty in ITHACAdict");
     viscCoeff = ITHACAdict->lookupOrDefault<word>("viscCoeff", "RBF");
     para = ITHACAparameters::getInstance(mesh, runTime);
+    para->setArguments(argc, argv);
     offline = ITHACAutilities::check_off();
     podex = ITHACAutilities::check_pod();
     supex = ITHACAutilities::check_sup();

@@ -77,6 +77,7 @@ unsteadyNS::unsteadyNS(int argc, char* argv[])
 #include "createFields.H"
 #include "createFvOptions.H"
     para = ITHACAparameters::getInstance(mesh, runTime);
+    para->setArguments(argc, argv);
     bcMethod = ITHACAdict->lookupOrDefault<word>("bcMethod", "lift");
     M_Assert(bcMethod == "lift" || bcMethod == "penalty",
              "The BC method must be set to lift or penalty in ITHACAdict");

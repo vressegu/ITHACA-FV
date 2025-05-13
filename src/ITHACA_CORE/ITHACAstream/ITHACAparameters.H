@@ -35,14 +35,14 @@ SourceFiles
 #include "fvCFD.H"
 #include "ITHACAassert.H"
 
-/// Class for the definition of some general parameters, the parameters must be defined from the file ITHACAdict inside the
+/// Singleton Class for the definition of some general parameters, the parameters must be defined from the file ITHACAdict inside the
 /// system folder.
 class ITHACAparameters
 {
-    public:
+    private:
 
         ITHACAparameters(fvMesh& mesh, Time& localTime);
-    
+    public:
         /// type of eigensolver used in the eigenvalue decomposition can be either be eigen or spectra
         word eigensolver;
 
@@ -68,7 +68,10 @@ class ITHACAparameters
         /// Mesh object defined locally
         fvMesh& mesh;
 
-        /// Pointer to the ITHACAparameters class
+        /// argument list
+        autoPtr<argList> args;
+
+        /// Pointer to the ITHACAparameters singleton instance
         static ITHACAparameters* instance;
 
     public:
@@ -82,6 +85,7 @@ class ITHACAparameters
         ///
         static ITHACAparameters* getInstance(fvMesh& mesh, Time& localTime);
 
+
         ///
         /// @brief      Gets an instance of ITHACAparameters, to be used if the instance is already existing.
         ///
@@ -93,6 +97,7 @@ class ITHACAparameters
         /// Delete empty constructor
         ~ITHACAparameters() = delete;
 
+        int setArguments(int argc, char **argv);
 
     private:
 

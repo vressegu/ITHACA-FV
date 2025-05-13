@@ -601,6 +601,7 @@ int main(int argc, char* argv[])
         )
     );
     ITHACAparameters* para = ITHACAparameters::getInstance(mesh, runTime);
+    para->setArguments(argc, argv);
 
     if (args.get("test").match("scalar"))
     {   

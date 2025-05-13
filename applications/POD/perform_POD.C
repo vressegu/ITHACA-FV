@@ -75,6 +75,8 @@ int main(int argc, char *argv[])
 
     bool pod_exist;
     struct stat sb;
+    para->setArguments(argc, argv);
+    
 
     if (stat("./ITHACAoutput/POD", &sb) == 0 && S_ISDIR(sb.st_mode))
     {

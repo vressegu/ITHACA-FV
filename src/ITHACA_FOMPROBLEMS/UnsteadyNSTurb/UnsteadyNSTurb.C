@@ -86,6 +86,7 @@ UnsteadyNSTurb::UnsteadyNSTurb(int argc, char* argv[])
              || timeDerivativeSchemeOrder == "second",
              "The time derivative approximation must be set to either first or second order scheme in ITHACAdict");
     para = ITHACAparameters::getInstance(mesh, runTime);
+    para->setArguments(argc, argv);
     offline = ITHACAutilities::check_off();
     podex = ITHACAutilities::check_pod();
     supex = ITHACAutilities::check_sup();
