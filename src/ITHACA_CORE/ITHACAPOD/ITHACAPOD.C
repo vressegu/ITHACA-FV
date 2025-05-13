@@ -1714,6 +1714,8 @@ template<typename T>
 ITHACAPODTemplate<T>::ITHACAPODTemplate(fvMesh& mesh, Time& localTime, const word& myfield_name)
 {
     ithacaFVParameters = ITHACAparameters::getInstance(mesh, localTime);
+    para->setArguments(argc, argv);
+    
     ithacaPODParams    = IthacaPODParameters::getInstance();
 
     field_name(myfield_name);

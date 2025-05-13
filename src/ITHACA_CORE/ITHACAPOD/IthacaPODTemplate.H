@@ -88,7 +88,7 @@ template<typename T>
 class ITHACAPODTemplate
 {
 public:
-    ITHACAparameters* ithacaFVParameters;
+    ITHACAparameters* ithacaParameters;
     IthacaPODParameters* ithacaPODParams;
 
     /// @brief Path where OpenFOAM simulation outputs are
@@ -179,7 +179,7 @@ public:
 
 public:
     //IthacaFVPODTemplate(Parameters* myParameters, const word& myfield_name);
-    ITHACAPODTemplate<T>(fvMesh& mesh, Time& localTime, const word& myfield_name);
+    ITHACAPODTemplate<T>(ITHACAparameters *parameters, IthacaPODParameters *podParams, fvMesh& mesh, Time& localTime, const word& myfield_name);
     virtual ~ITHACAPODTemplate<T>();
  
     //--------------------------------------------------------------------------

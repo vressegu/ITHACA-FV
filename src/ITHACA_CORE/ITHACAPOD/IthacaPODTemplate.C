@@ -23,33 +23,92 @@ License
     You should have received a copy of the GNU Lesser General Public License
     along with ITHACA-FV. If not, see <http://www.gnu.org/licenses/>.
 Class
-    ITHACAPOD
+    ITHACAPODTemplate
 Description
     Implementation of a POD decomposition of a general field
 SourceFiles
-    ITHACAPOD.C
+    ITHACAPODTemplate.C
 \*---------------------------------------------------------------------------*/
 
 
 
-/// \file
-/// source file for the ITHACAPODTemplate class, exported from RedLUM
+/// @file source file for the ITHACAPODTemplate class, exported from RedLUM
 
 #include "ITHACAPOD.H"
+
 #include "IthacaPODTemplate.H"
 
 
 
-/// namespace for the ITHACAPODTemplate class
+/// @brief namespace for the ITHACAPODTemplate class
+
 namespace ITHACAPOD
 {
 
 template<typename T>
-ITHACAPODTemplate<T>::ITHACAPODTemplate(fvMesh& mesh, Time& localTime, const word& myfield_name)
+ITHACAPODTemplate<T>::ITHACAPODTemplate(ITHACAparameters *parameters, IthacaPODParameters *podParams, fvMesh& mesh, Time& localTime, const word& myfield_name) :
+  ithacaParameters(parameters),
+  ithacaPODParams(podParams),
+field_name(myfield_name),
+  casenameData(ithacaPODParams->get_casenameData()),
+  l_nSnapshot(ithacaPODParams->get_nSnapshots()),
+  l_nBlocks(ithacaPODParams->get_nBlocks()),
+  l_nmodes(ithacaPODParams->get_nModes()[field_name]),
+  l_hilbertSp(ithacaPODParams->get_hilbertSpacePOD()[field_name]),
+  weightH1(ithacaPODParams->get_weightH1()),
+  weightBC(ithacaPODParams->get_weightPOD()),
+  patchBC(ithacaPODParams->get_patchBC()),
+  l_startTime(ithacaPODParams->get_startTime()),
+  l_endTime(ithacaPODParams->get_endTime()),
+  l_nSnapshotSimulation(ithacaPODParams->get_nSnapshotsSimulation()),
+  l_endTimeSimulation(ithacaPODParams->get_endTimeSimulation()),
+  b_centeredOrNot(ithacaPODParams->get_centeredOrNot()),
+  lambda(Eigen::VectorXd::Zero(l_nmodes)),
+  w_eigensolver(ithacaPODParams->get_eigensolver()),
+  i_precision(ithacaPODParams->get_precision()),
+  ios_outytpe(ithacaPODParams->get_outytpe()),
+  runTime2(Foam::Time::controlDictName, ".", ithacaPODParams->get_casenameData())
 {
-    ithacaFVParameters = ITHACAparameters::getInstance(mesh, localTime);
+  f_field = new T(
+    IOobject
+    (
+      field_name,
+      runTime2.path() + runTime2.times()[1].name(),
+      ithacaPODParams->get_mesh(),
+      IOobject::MUST_READ
+    ),
+    ithacaPODParams->get_mesh()
+  );
+  f_meanField = new T(f_field->name(),*f_field);
+
+  // // Set the inlet boundaries where we have non homogeneous boundary conditions
+  // inletIndex.resize(1, 2);
+  // inletIndex(0, 0) = 3;
+  // inletIndex(0, 1) = 2;
+  // if (field_name=="U")
+  // {
+  //   lifting = true;
+  // }
+  // else
+  // {
+  //   lifting = false;
+  // }
+  // b_centeredOrNot = false;
+  lifting = false;
+
+  define_paths();
+}
+/*{
+    ithacaFVParameters = ITHACAparameters::getInstance();
+    if(ithacaFVParameters == nullptr){
+      ithacaFVParameters = ITHACAparameters::getInstance(mesh, localTime);
+      #pragma message "what to do if this case appends ? ITHACAparameters must be a valid instance when this is launched"
+      //ithacaFVParameters->setArguments(argc, argv);
+    
+    }
     ithacaPODParams    = IthacaPODParameters::getInstance();
 
+    // now, as ithacaPODParams is instantied, i can initilize the object
     field_name(myfield_name);
     casenameData(ithacaPODParams->get_casenameData());
     l_nSnapshot = ithacaPODParams->get_nSnapshots();//l_nSnapshot(ithacaPODParams->get_nSnapshots());
@@ -68,10 +127,12 @@ ITHACAPODTemplate<T>::ITHACAPODTemplate(fvMesh& mesh, Time& localTime, const wor
     w_eigensolver(ithacaPODParams->get_eigensolver());
     i_precision = ithacaPODParams->get_precision();                         //i_precision(ithacaPODParams->get_precision());
     ios_outytpe = ithacaPODParams->get_outytpe();                           //ios_outytpe(ithacaPODParams->get_outytpe());
-    #pragma message "CCR - TODO - s'occuper de l'attribut runTime2 ci-dessous"
-    //runTime2(Foam::Time::controlDictName, ".", ithacaPODParams->get_casenameData());
-}
 
+
+    #pragma message "CCR - TODO - s'occuper de l'attribut runTime2 ci-dessous"
+    runTime2(Foam::Time::controlDictName, ".", ithacaPODParams->get_casenameData());
+}
+*/
 template<typename T>
 ITHACAPODTemplate<T>::~ITHACAPODTemplate()
 {
@@ -81,7 +142,8 @@ ITHACAPODTemplate<T>::~ITHACAPODTemplate()
 
 
 
-
+#pragma message "CCR : remove computeLift from this class, already moved to ITHACAPOD.C"
+/*
 void computeLift(PtrList<volTensorField>& Lfield, PtrList<volTensorField>& liftfield, PtrList<volTensorField>& omfield, Eigen::MatrixXi inletIndex)
 {
     scalar u_bc;
@@ -186,7 +248,7 @@ void computeLift(PtrList<volScalarField>& Lfield, PtrList<volScalarField>& liftf
         }
     }
 }
-
+*/
 
 template<typename T>
 void ITHACAPODTemplate<T>::lift(PtrList<T>& snapshots) // déclarer PtrList<T> liftfield, Eigen::MatrixXi inletIndex et T *f_meanField;
@@ -1094,7 +1156,7 @@ void ITHACAPODTemplate<T>::getModes(PtrList<T>& spatialModes,
 
 #pragma message "CCR -TODO - retrait des spécialisations du constructeur de ITHACAPODTemplate"
 // Specialisation
-//template ITHACAPODTemplate<volTensorField>::ITHACAPODTemplate(fvMesh& mesh, Time& localTime, const word& myfield_name);//template ITHACAPODTemplate<volTensorField>::ITHACAPODTemplate(Parameters* myParameters, const word& myfield_name);
+template ITHACAPODTemplate<volTensorField>::ITHACAPODTemplate(ITHACAparameters *parameters, IthacaPODParameters *podParams, fvMesh& mesh, Time& localTime, const word& myfield_name);//template ITHACAPODTemplate<volTensorField>::ITHACAPODTemplate(Parameters* myParameters, const word& myfield_name);
 template ITHACAPODTemplate<volTensorField>::~ITHACAPODTemplate();
 template void ITHACAPODTemplate<volTensorField>::define_paths();
 template void ITHACAPODTemplate<volTensorField>::computeMeanField();
@@ -1111,7 +1173,7 @@ template void ITHACAPODTemplate<volTensorField>::getModes(PtrList<volTensorField
 template Eigen::MatrixXd ITHACAPODTemplate<volTensorField>::computeSimulationTemporalModes(PtrList<volTensorField>& spatialModes);
 
 // Specialisation
-//template ITHACAPODTemplate<volVectorField>::ITHACAPODTemplate(fvMesh& mesh, Time& localTime, const word& myfield_name);//template ITHACAPODTemplate<volVectorField>::ITHACAPODTemplate(Parameters* myParameters, const word& myfield_name);
+template ITHACAPODTemplate<volVectorField>::ITHACAPODTemplate(ITHACAparameters *parameters, IthacaPODParameters *podParams, fvMesh& mesh, Time& localTime, const word& myfield_name);//template ITHACAPODTemplate<volVectorField>::ITHACAPODTemplate(Parameters* myParameters, const word& myfield_name);
 template ITHACAPODTemplate<volVectorField>::~ITHACAPODTemplate();
 template void ITHACAPODTemplate<volVectorField>::define_paths();
 template void ITHACAPODTemplate<volVectorField>::computeMeanField();
@@ -1125,7 +1187,7 @@ template void ITHACAPODTemplate<volVectorField>::getModes(PtrList<volVectorField
 template Eigen::MatrixXd ITHACAPODTemplate<volVectorField>::computeSimulationTemporalModes(PtrList<volVectorField>& spatialModes);
 
 // Specialisation
-//template ITHACAPODTemplate<volScalarField>::ITHACAPODTemplate(fvMesh& mesh, Time& localTime, const word& myfield_name);//template ITHACAPODTemplate<volScalarField>::ITHACAPODTemplate(Parameters* myParameters, const word& myfield_name);
+template ITHACAPODTemplate<volScalarField>::ITHACAPODTemplate(ITHACAparameters *parameters, IthacaPODParameters *podParams, fvMesh& mesh, Time& localTime, const word& myfield_name);//template ITHACAPODTemplate<volScalarField>::ITHACAPODTemplate(Parameters* myParameters, const word& myfield_name);
 template ITHACAPODTemplate<volScalarField>::~ITHACAPODTemplate();
 template void ITHACAPODTemplate<volScalarField>::define_paths();
 template void ITHACAPODTemplate<volScalarField>::computeMeanField();

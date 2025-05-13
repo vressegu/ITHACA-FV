@@ -31,13 +31,24 @@ namespace ITHACAPOD {
       return instance;
   }
   
-  IthacaPODParameters::IthacaPODParameters(int argc, char* argv[]) :
+
+  IthacaPODParameters::IthacaPODParameters(int argc, char** argv, ITHACAparameters *para, Foam::fvMesh  *mesh, const word& myfield_name) :
+  //IthacaPODParameters::IthacaPODParameters(int argc, char* argv[], const word& myfield_name) :
+  ithacaLibraryParameters(para),
+  mesh(mesh),
     corTime
     (
       "corTime",
       dimensionSet(0,0,1,0,0),
       scalar(0)
-      )
+    ),
+    myfield_name(myfield_name)
+
+
+
+
+
+
 
   {
     instance = this;
@@ -53,6 +64,7 @@ namespace ITHACAPOD {
 
     argList& args = _args();
 
+    std::cout << "in IthacaPODParameters, arglist, used for initilise runTime0,  is :" << std::endl;
     for (int i=0; i<argc; i++)
     {
       std::cout << "argv[" << i << "] = " << argv[i] << std::endl;
@@ -60,24 +72,24 @@ namespace ITHACAPOD {
 
     runTime0 = autoPtr<Foam::Time>( new Foam::Time( Foam::Time::controlDictName,
                                                     args ) );
+    //DEJA FAIT DANS L'AUTOLOAD
+    //mesh = (
+    //            new fvMesh
+    //            (
+    //              Foam::IOobject
+    //              (
+    //                Foam::fvMesh::defaultRegion,
+    //                runTime0->timeName(),
+    //                *runTime0,
+    //                Foam::IOobject::MUST_READ
+    //             )
+    //            )
+    //        );
 
-    mesh = (
-          new fvMesh
-          (
-            Foam::IOobject
-            (
-              Foam::fvMesh::defaultRegion,
-              runTime0->timeName(),
-              *runTime0,
-              Foam::IOobject::MUST_READ
-              )
-            )
-          );
 
-
-
-    nCells = mesh->cells().size();
-    ithacaLibraryParameters = ITHACAparameters::getInstance(*mesh,*runTime0);
+            nCells = mesh->cells().size();
+            
+    //DEJA FAIT DANS L'AUTOLOAD     ithacaLibraryParameters = ITHACAparameters::getInstance(*mesh,*runTime0);
     ITHACAdict = ithacaLibraryParameters->ITHACAdict;
     casenameData = ITHACAdict->lookupOrDefault<fileName>("casename", "./");
     fieldlist = static_cast<List<word>>(ITHACAdict->lookup("fields"));
@@ -87,6 +99,7 @@ namespace ITHACAPOD {
     exportMatlab = ithacaLibraryParameters->exportMatlab;
     exportTxt = ithacaLibraryParameters->exportTxt;
     outytpe = ithacaLibraryParameters->outytpe;
+         
     pressureResolutionKind = StrLookup<PressureResolutionKind>(
           {
             {"FullOrder",PressureResolutionKind::FullOrder},
@@ -112,7 +125,7 @@ namespace ITHACAPOD {
            // SOTA can be 0 (no SOTA), D (deterministic version), S (stochastic version)
     useSOTA = ITHACAdict->lookupOrDefault<word>("useSOTA", "None");
     set_useSOTA(useSOTA);
-
+    
   if (useSOTA != "None")
   {
     Info << "===============================================================" << endl;
@@ -133,7 +146,7 @@ namespace ITHACAPOD {
     }
     
   }
-  
+      
     if ( (!(ROMTemporalScheme == "adams-bashforth"))
          && (!(ROMTemporalScheme == "euler"))
          && (!(ROMTemporalScheme == "euler–maruyama")) )
@@ -151,7 +164,8 @@ namespace ITHACAPOD {
       Info << "Stratonovich correction needs stochastic model to be performed." << endl;
       abort();
     }
-
+    
+    
     // Object Time to read OpenFOAM data in the correct folder
     runTimeData = new Foam::Time(Foam::Time::controlDictName, ".", casenameData);
 
@@ -180,7 +194,7 @@ namespace ITHACAPOD {
           );
 
     nParticules = ITHACAdict->lookupOrDefault<label>("nParticules", 1);
-
+     
     reducingNoisesMatrix = ITHACAdict->lookupOrDefault("reducingNoisesMatrix", true);
     nSimu = ITHACAdict->lookupOrDefault("nSimu", 100);
     intervalConfidenceRatio = ITHACAdict->lookupOrDefault("intervalConfidenceRatio", 0.95);
@@ -189,7 +203,7 @@ namespace ITHACAPOD {
     // Initialize field_name, field_type and nModes
     field_name.resize(fieldlist.size());
     field_type.resize(fieldlist.size());
-
+    
     for (label k = 0; k < fieldlist.size(); k++)
     {
       dictionary& subDict = ITHACAdict->subDict(fieldlist[k]);
@@ -247,7 +261,7 @@ namespace ITHACAPOD {
       }
       FinalTime = std::stof(runTimeData->times()[endTime].name());
     }
-
+  
     // Read Initial and last time from the POD dictionary
     const entry* existnsnapSimulation = ITHACAdict->findEntry("NsnapshotsSimulation");
     const entry* existLTSimulation = ITHACAdict->findEntry("FinalTimeSimulation");
@@ -280,7 +294,7 @@ namespace ITHACAPOD {
       FinalTimeSimulation = std::stof(runTimeData->times()[endTimeSimulation].name());
     }
 
-    // Initialize saveTime
+        // Initialize saveTime
     IOdictionary controlDict
         (
           IOobject
@@ -399,8 +413,7 @@ namespace ITHACAPOD {
         simu = new dimensionedScalar();
       }
     }
-
-    volume = new volScalarField(
+        volume = new volScalarField(
           IOobject(
             "volume",
             runTimeData->timeName(),

@@ -36,6 +36,9 @@ usmsrProblem::usmsrProblem(int argc, char* argv[])
 #include "setRootCase.H"
 #include "createTime.H"
 #include "createMesh.H"
+    this->argc = argc;
+    this->argv = argv;
+    
     _pimple = autoPtr<pimpleControl>
               (
                   new pimpleControl

@@ -64,6 +64,13 @@ class usmsrProblem: public msrProblem, public UnsteadyProblem
         /// Turbulence model
         autoPtr<incompressible::turbulenceModel> turbulence;
 
+
+        /// argc, used after moving RedLUM POD calculation, for initilise ITHACAPODParameters singleton class
+        int argc;
+
+        /// argv, used after moving RedLUM POD calculation, for initilise ITHACAPODParameters singleton class
+        char** argv;
+
         /// adjustTimeStep
         bool adjustTimeStep;
 

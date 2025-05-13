@@ -56,6 +56,8 @@ SourceFiles
 #include <stdio.h>
 #include "ITHACAPOD.H"
 #include "ITHACAparameters.H"
+
+#include "IthacaPODParameters.H"
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
 
 int main(int argc, char *argv[])

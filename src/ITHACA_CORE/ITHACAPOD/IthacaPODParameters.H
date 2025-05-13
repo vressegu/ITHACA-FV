@@ -27,7 +27,7 @@ namespace ITHACAPOD {
    *  @brief  Class that containing all parameters of the stochastic POD
    ***********************************************/
    #pragma message "CCR - Oublier temporairement le parent 'vide' Parameters..."
-  class IthacaPODParameters {              // } : public Parameters {
+  class IthacaPODParameters { // : public Parameters
   public:
     enum class PressureResolutionKind{
       FullOrder,
@@ -37,7 +37,7 @@ namespace ITHACAPOD {
     };
   private:
     /// Pointer to the IthacaPODParameters class for singleton pattern use
-    static IthacaPODParameters* instance;// = nullptr ;
+    static IthacaPODParameters* instance;  // = nullptr ;
 
     autoPtr<argList> _args;
     autoPtr<Time> runTime0;
@@ -191,15 +191,25 @@ namespace ITHACAPOD {
     Eigen::Tensor<double, 3 > M_xi_onMagicPts;
 
     Eigen::VectorXd* deltaWeight;
+
+    word myfield_name;
+
   private:
     
   public:
-    IthacaPODParameters(int argc, char* argv[]);
+    //OLD CHC CONSTRUCTOR
+    //IthacaPODParameters(int argc, char* argv[], const word& myfield_name);
+
+    //CCR 12/05 : new constructor : 
+    IthacaPODParameters(int argc, char** argv, ITHACAparameters *para, Foam::fvMesh *mesh, const word& myfield_name);
+
+
+
     static IthacaPODParameters* getInstance();
     ~IthacaPODParameters();
 
     template<typename T>
-    void read_snapshot(T& snapshot, const label& i_snap, word path = "default_path", word name = "default_name") const;
+    void read_snapshot(T& snapshot, const label& i_snap, word p0ath = "default_path", word name = "default_name") const;
 
     /// \brief Getter to access all IthacaPODParameters members in the other classes
     ITHACAparameters* get_ITHACAparameters() const { return ithacaLibraryParameters; }
