@@ -175,7 +175,7 @@ template<typename T>
 void ITHACAPODTemplate<T>::addCovMatrixSquareCoeff(Eigen::MatrixXd& covMatrix,
   PtrList<T>& snapshots1,
   PtrList<T>& snapshots2,
-  ITHACAPOD::indexSquare& indSquare)
+  ITHACAutilities::indexSquare& indSquare)
   {
 
     Info << "Adding the square block [" << indSquare.index1_start << ":" << indSquare.index1_end -1 << "]x["
@@ -741,7 +741,7 @@ Eigen::MatrixXd ITHACAPODTemplate<T>::buildCovMatrix()
         ITHACAstream::read_fields(snapshots2, (*f_field), casenameData, l_startTime -2 + j*q, q);
         lift(snapshots2);
 
-        ITHACAPOD::indexSquare indSquare;
+        ITHACAutilities::indexSquare indSquare;
         indSquare.index1_start = i*q;
         indSquare.index1_end = (i+1)*q;
         indSquare.index2_start = j*q;
@@ -785,7 +785,7 @@ Eigen::MatrixXd ITHACAPODTemplate<T>::buildCovMatrix()
         ITHACAstream::read_fields(snapshotsEnd2, (*f_field), casenameData, l_startTime -2 + j*q, q);
         lift(snapshotsEnd2);
 
-        ITHACAPOD::indexSquare indSquare;
+        ITHACAutilities::indexSquare indSquare;
         indSquare.index1_start = l_nBlocks*q;
         indSquare.index1_end =  l_nSnapshot;
         indSquare.index2_start = j*q;
