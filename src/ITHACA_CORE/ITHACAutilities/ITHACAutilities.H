@@ -74,6 +74,28 @@ using namespace std::placeholders;
 namespace ITHACAutilities
 {
 
+
+    /// \brief Structure to store the indexes of the added Triangular block to the cov matrix
+    /// Triangular block
+    struct indexTri
+    {
+        label index_start;
+        label index_end;
+    };
+
+
+    /// \brief Structure to store the indexes of the added Square block to the cov matrix
+    /// Square block
+    struct indexSquare
+    {
+        label index1_start;
+        label index1_end;
+        label index2_start;
+        label index2_end;
+    };
+
+
+
 //--------------------------------------------------------------------------
 /// @brief      Generates random matrix with random values in an interval
 ///

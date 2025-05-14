@@ -196,7 +196,7 @@ void ITHACAPODTemplate<T>::addCovMatrixSquareCoeff(Eigen::MatrixXd& covMatrix,
 
 
 template<typename T>
-void ITHACAPODTemplate<T>::addCovMatrixTriCoeff(Eigen::MatrixXd& covMatrix, PtrList<T>& snapshots, ITHACAPOD::indexTri& indTri)
+void ITHACAPODTemplate<T>::addCovMatrixTriCoeff(Eigen::MatrixXd& covMatrix, PtrList<T>& snapshots, ITHACAutilities::indexTri& indTri)
 {
 
     Info << "Adding the triangular block [" << indTri.index_start << ":" << indTri.index_end - 1 << "]x["
@@ -217,25 +217,25 @@ void ITHACAPODTemplate<T>::addCovMatrixTriCoeff(Eigen::MatrixXd& covMatrix, PtrL
 //specialisation
 template void ITHACAPODTemplate<volVectorField>::addCovMatrixTriCoeff(Eigen::MatrixXd& covMatrix,
     PtrList<volVectorField>& snapshots,
-    ITHACAPOD::indexTri& indTri);
+    ITHACAutilities::indexTri& indTri);
 template void ITHACAPODTemplate<volVectorField>::addCovMatrixSquareCoeff(Eigen::MatrixXd& covMatrix,
     PtrList<volVectorField>& snapshots1,
     PtrList<volVectorField>& snapshots2,
-    ITHACAPOD::indexSquare& indSquare);
+    ITHACAutilities::indexSquare& indSquare);
 template void ITHACAPODTemplate<volScalarField>::addCovMatrixTriCoeff(Eigen::MatrixXd& covMatrix,
     PtrList<volScalarField>& snapshots,
-    ITHACAPOD::indexTri& indTri);
+    ITHACAutilities::indexTri& indTri);
 template void ITHACAPODTemplate<volScalarField>::addCovMatrixSquareCoeff(Eigen::MatrixXd& covMatrix,
     PtrList<volScalarField>& snapshots1,
     PtrList<volScalarField>& snapshots2,
-    ITHACAPOD::indexSquare& indSquare);
+    ITHACAutilities::indexSquare& indSquare);
 template void ITHACAPODTemplate<volTensorField>::addCovMatrixTriCoeff(Eigen::MatrixXd& covMatrix,
     PtrList<volTensorField>& snapshots,
-    ITHACAPOD::indexTri& indTri);
+    ITHACAutilities::indexTri& indTri);
 template void ITHACAPODTemplate<volTensorField>::addCovMatrixSquareCoeff(Eigen::MatrixXd& covMatrix,
     PtrList<volTensorField>& snapshots1,
     PtrList<volTensorField>& snapshots2,
-    ITHACAPOD::indexSquare& indSquare);
+    ITHACAutilities::indexSquare& indSquare);
  
             
 
@@ -726,7 +726,7 @@ Eigen::MatrixXd ITHACAPODTemplate<T>::buildCovMatrix()
       ITHACAstream::read_fields(snapshots, (*f_field), casenameData, l_startTime -2 + i*q, q);
       lift(snapshots);
 
-      ITHACAPOD::indexTri indTri;
+      ITHACAutilities::indexTri indTri;
       indTri.index_start = i*q;
       indTri.index_end = (i+1)*q;
 
@@ -772,7 +772,7 @@ Eigen::MatrixXd ITHACAPODTemplate<T>::buildCovMatrix()
       ITHACAstream::read_fields(snapshotsEnd, (*f_field), casenameData, l_startTime -2 + l_nBlocks*q, r);
       lift(snapshotsEnd);
 
-      ITHACAPOD::indexTri indTri;
+      ITHACAutilities::indexTri indTri;
       indTri.index_start = l_nBlocks*q;
       indTri.index_end = l_nSnapshot;
 

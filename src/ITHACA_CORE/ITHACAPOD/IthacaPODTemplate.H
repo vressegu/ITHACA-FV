@@ -63,24 +63,6 @@ SourceFiles
 namespace ITHACAPOD
 {
 
-    /// \brief Structure to store the indexes of the added Triangular block to the cov matrix
-    /// Triangular block
-    struct indexTri
-    {
-        label index_start;
-        label index_end;
-    };
-
-
-    /// \brief Structure to store the indexes of the added Square block to the cov matrix
-    /// Square block
-    struct indexSquare
-    {
-        label index1_start;
-        label index1_end;
-        label index2_start;
-        label index2_end;
-    };
 
 
 
@@ -211,7 +193,7 @@ public:
     void addCovMatrixSquareCoeff(Eigen::MatrixXd& covMatrix,
         PtrList<T>& snapshots1,
         PtrList<T>& snapshots2,
-        ITHACAPOD::indexSquare& indSquare);
+        ITHACAutilities::indexSquare& indSquare);
     
     
 
@@ -223,7 +205,7 @@ public:
     /// \param[in] indTri : indexes of the added block
     void addCovMatrixTriCoeff(Eigen::MatrixXd& covMatrix,
         PtrList<T>& snapshots,
-        ITHACAPOD::indexTri& indTri);
+        ITHACAutilities::indexTri& indTri);
     
     /// \brief temporary covMatrix filename
     ///
