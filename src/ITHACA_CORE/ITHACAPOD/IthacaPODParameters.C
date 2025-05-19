@@ -24,34 +24,26 @@ struct StrLookup: public std::map<std::string,Enum>{
 };
 
 namespace ITHACAPOD {
-  IthacaPODParameters* IthacaPODParameters::IthacaPODParameters::getInstance()
-  {
-      M_Assert(instance != nullptr,
-               "IthacaPODParameters needs to be initialized, call IthacaPODParameters::getInstance(mesh, runTime) first");
-      return instance;
-  }
+  //IthacaPODParameters* IthacaPODParameters::IthacaPODParameters::getInstance()
+  //{
+  //    M_Assert(instance != nullptr,
+  //             "IthacaPODParameters needs to be initialized, call IthacaPODParameters::getInstance(mesh, runTime) first");
+  //    return instance;
+  //}
   
 
   IthacaPODParameters::IthacaPODParameters(ITHACAparameters *para, Foam::fvMesh  *mesh, const word& myfield_name) :
-  //IthacaPODParameters::IthacaPODParameters(int argc, char* argv[], const word& myfield_name) :
-  ithacaLibraryParameters(para),
-  mesh(mesh),
-    corTime
-    (
-      "corTime",
-      dimensionSet(0,0,1,0,0),
-      scalar(0)
-    ),
-    myfield_name(myfield_name)
-
-
-
-
-
-
-
-  {
-    instance = this;
+          ithacaLibraryParameters(para),
+          mesh(mesh),
+            corTime
+            (
+              "corTime",
+              dimensionSet(0,0,1,0,0),
+              scalar(0)
+            ),
+            myfield_name(myfield_name)
+{
+    //this->instance = this;
     _args = autoPtr<argList>
         (
           new argList(ithacaLibraryParameters->argc, ithacaLibraryParameters->argv)

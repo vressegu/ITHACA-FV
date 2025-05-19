@@ -35,9 +35,9 @@ namespace ITHACAPOD {
       Neglected,
       Undefined
     };
+    //static IthacaPODParameters* instance;  // = nullptr ;
   private:
     /// Pointer to the IthacaPODParameters class for singleton pattern use
-    static IthacaPODParameters* instance;  // = nullptr ;
 
     autoPtr<argList> _args;
     autoPtr<Time> runTime0;
@@ -201,7 +201,7 @@ namespace ITHACAPOD {
 
 
 
-    static IthacaPODParameters* getInstance();
+    //static IthacaPODParameters* getInstance();
     ~IthacaPODParameters();
 
     template<typename T>
