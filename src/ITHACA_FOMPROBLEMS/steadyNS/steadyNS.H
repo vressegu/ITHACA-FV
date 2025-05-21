@@ -404,7 +404,8 @@ class steadyNS: public reductionProblem
         ///
         /// @return     reduced matrix in Eigen::MatrixXd format for the diffusion term.
         ///
-        Eigen::MatrixXd diffusive_term_sym(label NUmodes, label NPmodes, label NSUPmodes);
+        Eigen::MatrixXd diffusive_term_sym(label NUmodes, label NPmodes,
+                                           label NSUPmodes);
 
         //--------------------------------------------------------------------------
         /// Gradient of pressure
@@ -502,7 +503,8 @@ class steadyNS: public reductionProblem
         ///
         /// @return     reduced matrix in Eigen::MatrixXd format for the Large Scale Advection
         ///
-        Eigen::MatrixXd divergent_convective_background(label NPmodes, label NUmodes, volVectorField vls);
+        Eigen::MatrixXd divergent_convective_background(label NPmodes, label NUmodes,
+                volVectorField vls);
 
         //--------------------------------------------------------------------------
         /// @brief      Term N° 1 given by the additional boundary condition using a PPE approach
