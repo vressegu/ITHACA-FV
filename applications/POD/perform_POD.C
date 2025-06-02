@@ -63,6 +63,7 @@ SourceFiles
 
 int main(int argc, char *argv[])
 {
+Info << "=============>>>>>     Begin !!! !" << endl;
 
 #include "setRootCase.H"
 #include "createTime.H"
@@ -72,15 +73,20 @@ int main(int argc, char *argv[])
     PtrList<volScalarField> Sfield;
     PtrList<volVectorField> Vmodes;
     PtrList<volScalarField> Smodes;
-
+Info << "=============>>>>>     We are running Perform_POD !" << endl;
     //ITHACAPOD::ITHACAparameters* para = ITHACAPOD::ITHACAparameters::getInstance(mesh,
     //                         runTime);
-    ITHACAparameters* para = ITHACAparameters::getInstance(mesh,
-                             runTime);
+    //ITHACAparameters* para = ITHACAparameters::getInstance(mesh,
+    //                         runTime);
 
+    //CHC : new version for constructor                         
+    ITHACAparameters* para = ITHACAparameters::getInstance(argc, argv, mesh, runTime);//, const word& myfield_name);
+Info << "=============>>>>>     ITHACAparameters OK 1 !" << endl;
     bool pod_exist;
     struct stat sb;
     para->setArguments(argc, argv);
+Info << "=============>>>>>     ITHACAparameters OK 2 !" << endl;
+    
     
 
     if (stat("./ITHACAoutput/POD", &sb) == 0 && S_ISDIR(sb.st_mode))
@@ -231,7 +237,7 @@ int main(int argc, char *argv[])
             //podParams->setArguments(para->argc, para->argv);
             ITHACAPOD::ITHACAPODTemplate<volVectorField>* IPodTemplate = new ITHACAPOD::ITHACAPODTemplate<volVectorField>(para, podParams, mesh, runTime, field_name);
 
-            /* TODO code this launch 
+            /* TODO code this launch ... //  ITHACAPOD::getModes(Vfield, Vmodes, field_name, 0, 0, 0, nmodes);
             IPodTemplate->getModes(PtrList<T>& spatialModes,
                                     Eigen::MatrixXd& temporalModes, Eigen::MatrixXd& temporalModesSimulation,
                                     Eigen::MatrixXd& covMatrix);
@@ -246,7 +252,7 @@ int main(int argc, char *argv[])
             //podParams->setArguments(para->argc, para->argv);
             ITHACAPOD::ITHACAPODTemplate<volScalarField>* IPodTemplate = new ITHACAPOD::ITHACAPODTemplate<volScalarField>(para, podParams, mesh, runTime, field_name);
 
-            /* TODO code this launch 
+            /* TODO code this launch  //ITHACAPOD::getModes(Sfield, Smodes, field_name, 0, 0, 0, nmodes);
             IPodTemplate->getModes(PtrList<T>& spatialModes,
                                     Eigen::MatrixXd& temporalModes, Eigen::MatrixXd& temporalModesSimulation,
                                     Eigen::MatrixXd& covMatrix);
