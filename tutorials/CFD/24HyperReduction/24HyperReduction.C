@@ -600,7 +600,7 @@ int main(int argc, char* argv[])
             Foam::IOobject::MUST_READ
         )
     );
-    ITHACAparameters* para = ITHACAparameters::getInstance(mesh, runTime);
+    ITHACAparameters* para = ITHACAparameters::getInstance(argc, argv, mesh, runTime);
     para->setArguments(argc, argv);
 
     if (args.get("test").match("scalar"))

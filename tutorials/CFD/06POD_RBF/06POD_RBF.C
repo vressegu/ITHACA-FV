@@ -164,7 +164,7 @@ int main(int argc, char* argv[])
     example.inletIndex(0, 1) = 0;
     example.inletIndex(1, 0) = 0;
     example.inletIndex(1, 1) = 1;
-    ITHACAparameters* para = ITHACAparameters::getInstance(example._mesh(),
+    ITHACAparameters* para = ITHACAparameters::getInstance(argc, argv, example._mesh(),
                              example._runTime());
     // Read parameters from ITHACAdict file
     int NmodesU = para->ITHACAdict->lookupOrDefault<int>("NmodesU", 5);

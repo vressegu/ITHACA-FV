@@ -75,7 +75,7 @@ Burgers::Burgers(int argc, char* argv[])
             IOobject::NO_WRITE
         )
     );
-    para = ITHACAparameters::getInstance(mesh, runTime);
+    para = ITHACAparameters::getInstance(argc, argv, mesh, runTime);
     para->setArguments(argc, argv);
     offline = ITHACAutilities::check_off();
     podex = ITHACAutilities::check_pod();

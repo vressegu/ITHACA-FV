@@ -63,7 +63,7 @@ class msr : public usmsrProblem
         volScalarField& SP;
         volScalarField& TXS;
 
-        ITHACAparameters* para = ITHACAparameters::getInstance(_mesh(), _runTime());
+        ITHACAparameters* para = ITHACAparameters::getInstance(argc, argv, _mesh(), _runTime());
         int NUproj = para->ITHACAdict->lookupOrDefault<int>("NUproj", 2);
         int NPproj = para->ITHACAdict->lookupOrDefault<int>("NPproj", 2);
         int NFluxproj = para->ITHACAdict->lookupOrDefault<int>("NFluxproj", 2);

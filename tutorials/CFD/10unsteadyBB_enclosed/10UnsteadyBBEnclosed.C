@@ -185,7 +185,7 @@ int main(int argc, char* argv[])
     word par_online_BC("./par_online_BC");
     Eigen::MatrixXd par_on_BC = ITHACAstream::readMatrix(par_online_BC);
     // Read some parameters from file
-    ITHACAparameters* para = ITHACAparameters::getInstance(example._mesh(),
+    ITHACAparameters* para = ITHACAparameters::getInstance(argc, argv, example._mesh(),
                              example._runTime());
     int NmodesUproj   = para->ITHACAdict->lookupOrDefault<int>("NmodesUproj", 5);
     int NmodesPproj   = para->ITHACAdict->lookupOrDefault<int>("NmodesPproj", 5);

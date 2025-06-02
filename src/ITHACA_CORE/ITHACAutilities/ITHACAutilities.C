@@ -660,3 +660,4 @@ template double norm_L2(const tmp<volTensorField> v);
 template double norm_L2(const tmp<volVectorField> v);
 template double norm_L2(const tmp<volScalarField> v);
 }
+

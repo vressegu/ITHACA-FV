@@ -81,13 +81,17 @@ class tutorial22 : public UnsteadyNSTurb
             UnsteadyNSTurb(argc, argv),
             U(_U()),
             p(_p()),
-            nut(_nut())
+            nut(_nut()),
+            argc(argc),
+            argv(argv)
         {}
 
         // Relevant Fields
         volVectorField& U;
         volScalarField& p;
         volScalarField& nut;
+        int argc;
+        char** argv;
 
         void offlineSolve(std::string offlinepath)
         {
@@ -179,7 +183,7 @@ void supremizer_approach(tutorial22& example)
     example.inletIndex << 0, 0;
     example.inletIndexT.resize(1, 1);
     example.inletIndexT << 1;
-    ITHACAparameters* para = ITHACAparameters::getInstance(example._mesh(),
+    ITHACAparameters* para = ITHACAparameters::getInstance(example.argc, example.argv, example._mesh(),
                              example._runTime());
     int NmodesU = para->ITHACAdict->lookupOrDefault<int>("NmodesU", 5);
     int NmodesP = para->ITHACAdict->lookupOrDefault<int>("NmodesP", 5);
@@ -233,7 +237,7 @@ void poisson_approach(tutorial22& example)
     example.inletIndex << 0, 0;
     example.inletIndexT.resize(1, 1);
     example.inletIndexT << 1;
-    ITHACAparameters* para = ITHACAparameters::getInstance(example._mesh(),
+    ITHACAparameters* para = ITHACAparameters::getInstance(example.argc, example.argv, example._mesh(),
                              example._runTime());
     int NmodesU = para->ITHACAdict->lookupOrDefault<int>("NmodesU", 5);
     int NmodesP = para->ITHACAdict->lookupOrDefault<int>("NmodesP", 5);

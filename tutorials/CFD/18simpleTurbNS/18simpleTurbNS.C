@@ -102,7 +102,7 @@ int main(int argc, char* argv[])
     // Construct the tutorial object
     tutorial18 example(argc, argv);
     // Read some parameters from file
-    ITHACAparameters* para = ITHACAparameters::getInstance(example._mesh(),
+    ITHACAparameters* para = ITHACAparameters::getInstance(argc, argv, example._mesh(),
                              example._runTime());
     // Read the par file where the parameters are stored
     std::ifstream exFileOff("./parsOff_mat.txt");

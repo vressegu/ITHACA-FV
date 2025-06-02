@@ -148,7 +148,7 @@ void usmsrProblem::truthSolve(List<scalar> mu_now)
     volScalarField powerDens = ((1 - decbetaTot) * flux * SP +
                                 (decLam1 * dec1 + decLam2 * dec2 + decLam3 * dec3)).ref();
     powerDens.rename("powerDens");
-    para = ITHACAparameters::getInstance(mesh, runTime);
+    para = ITHACAparameters::getInstance(argc, argv, mesh, runTime);
     para->setArguments(argc, argv);
     startTime = para->ITHACAdict->lookupOrDefault("startTime", 0);
     finalTime = para->ITHACAdict->lookupOrDefault("finalTime", 1);
@@ -414,7 +414,7 @@ void usmsrProblem::truthSolve(List<scalar> mu_now, std::string folder)
                                 (decLam1 * dec1 + decLam2 * dec2 + decLam3 * dec3)).ref();
     powerDens.rename("powerDens");
     dimensionedScalar& tau = _tau();
-    para = ITHACAparameters::getInstance(mesh, runTime);
+    para = ITHACAparameters::getInstance(argc, argv, mesh, runTime);
     para->setArguments(argc, argv);
     startTime = para->ITHACAdict->lookupOrDefault("startTime", 0);
     finalTime = para->ITHACAdict->lookupOrDefault("finalTime", 1);

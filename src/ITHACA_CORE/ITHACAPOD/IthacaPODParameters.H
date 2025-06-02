@@ -20,14 +20,16 @@
 
 #include <unsupported/Eigen/CXX11/Tensor>
 
-namespace ITHACAPOD {
+class Parameters    {public: virtual ~Parameters()    {}}; // only one derivatenamespace ITHACAPOD {
 
+namespace ITHACAPOD {
 
   /**
    *  @brief  Class that containing all parameters of the stochastic POD
    ***********************************************/
-   #pragma message "CCR - Oublier temporairement le parent 'vide' Parameters..."
-  class IthacaPODParameters { // : public Parameters
+   #pragma message "CCR - ajout temporaire du parent 'vide' Parameters..."
+  class IthacaPODParameters  : public Parameters 
+  {
   public:
     enum class PressureResolutionKind{
       FullOrder,
@@ -35,7 +37,6 @@ namespace ITHACAPOD {
       Neglected,
       Undefined
     };
-    //static IthacaPODParameters* instance;  // = nullptr ;
   private:
     /// Pointer to the IthacaPODParameters class for singleton pattern use
 
@@ -217,6 +218,9 @@ namespace ITHACAPOD {
       /// "D" means deterministic SOTA
       /// "S" means stochastic SOTA
     word useSOTA;
+
+
+    autoPtr<Time> get_runTime0(){return runTime0;}
 
     const wordList& get_fieldlist() const { return fieldlist; }
     const HashTable<label,word>& get_nModes() const { return nModes; }

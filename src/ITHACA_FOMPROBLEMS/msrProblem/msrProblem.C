@@ -34,7 +34,7 @@ msrProblem::msrProblem(int argc, char* argv[])
             IOobject::NO_WRITE
         )
     );
-    para = ITHACAparameters::getInstance(mesh, runTime);
+    para = ITHACAparameters::getInstance(argc, argv, mesh, runTime);
     para->setArguments(argc, argv);
     tolerance = ITHACAdict->lookupOrDefault<scalar>("tolerance", 1e-5);
     maxIter = ITHACAdict->lookupOrDefault<scalar>("maxIter", 1000);

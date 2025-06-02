@@ -83,7 +83,7 @@ steadyNS::steadyNS(int argc, char* argv[])
     fluxMethod = ITHACAdict->lookupOrDefault<word>("fluxMethod", "inconsistent");
     M_Assert(fluxMethod == "inconsistent" || bcMethod == "consistent",
              "The flux method must be set to inconsistent or consistent in ITHACAdict");
-    para = ITHACAparameters::getInstance(mesh, runTime);
+    para = ITHACAparameters::getInstance(argc, argv, mesh, runTime);
     para->setArguments(argc, argv);
     offline = ITHACAutilities::check_off();
     podex = ITHACAutilities::check_pod();

@@ -98,7 +98,7 @@ int main(int argc, char* argv[])
     // Construct the tutorial21 object
     tutorial21 example(argc, argv);
     // Read parameters from ITHACAdict file
-    ITHACAparameters* para = ITHACAparameters::getInstance(example._mesh(),
+    ITHACAparameters* para = ITHACAparameters::getInstance(argc, argv, example._mesh(),
                              example._runTime());
     int NmodesU = para->ITHACAdict->lookupOrDefault<int>("NmodesU", 10);
     int NmodesP = para->ITHACAdict->lookupOrDefault<int>("NmodesP", 10);

@@ -68,7 +68,7 @@ int main(int argc, char* argv[])
     example_CG.c = c;
     example_CG.d = d;
     // Reading tests to perform
-    ITHACAparameters* para = ITHACAparameters::getInstance(example_paramBC._mesh(),
+    ITHACAparameters* para = ITHACAparameters::getInstance(argc, argv, example_paramBC._mesh(),
                              example_paramBC._runTime());
     label CGtest = para->ITHACAdict->lookupOrDefault<int>("CGtest", 0);
     label CGnoiseTest = para->ITHACAdict->lookupOrDefault<int>("CGnoiseTest", 0);

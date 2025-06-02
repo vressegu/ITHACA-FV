@@ -50,7 +50,9 @@ class tutorial02: public laplacianProblem
             laplacianProblem(argc, argv),
             T(_T()),
             nu(_nu()),
-            S(_S())
+            S(_S()),
+            argc(argc),
+            argv(argv)
         {}
         //! [tutorial02]
         /// Temperature field
@@ -59,6 +61,9 @@ class tutorial02: public laplacianProblem
         volScalarField& nu;
         /// Source term field
         volScalarField& S;
+
+        int argc;
+        char** argv;
 
         /// It perform an offline Solve
         void offlineSolve(word folder = "./ITHACAoutput/Offline/")
@@ -258,7 +263,7 @@ int main(int argc, char* argv[])
 void offline_stage(tutorial02& example, tutorial02& FOM_test)
 {
     // Read some parameters from file
-    ITHACAparameters* para = ITHACAparameters::getInstance(example._mesh(),
+    ITHACAparameters* para = ITHACAparameters::getInstance(example.argc, example.argv, example._mesh(),
                              example._runTime());
     int NmodesTout = para->ITHACAdict->lookupOrDefault<int>("NmodesTout", 15);
     int NmodesTproj = para->ITHACAdict->lookupOrDefault<int>("NmodesTproj", 10);

@@ -39,7 +39,7 @@ class tutorial03 : public steadyNS
     public:
         /// Constructor
         explicit tutorial03(int argc, char* argv[])
-            : steadyNS(argc, argv), U(_U()), p(_p()), args(_args()) {}
+            : steadyNS(argc, argv), U(_U()), p(_p()), args(_args()),argc(argc),argv(argv) {}
 
         /// Velocity field
         volVectorField& U;
@@ -47,6 +47,8 @@ class tutorial03 : public steadyNS
         volScalarField& p;
         /// Arg List
         argList& args;
+        int argc;
+        char** argv;
 
         /// Perform an Offline solve
         void offlineSolve()
@@ -168,7 +170,7 @@ void offline_stage(tutorial03& example)
 {
     // Read some parameters from file
     ITHACAparameters* para =
-        ITHACAparameters::getInstance(example._mesh(), example._runTime());
+        ITHACAparameters::getInstance(example.argc, example.argv,example._mesh(), example._runTime());
     int NmodesUout = para->ITHACAdict->lookupOrDefault<int>("NmodesUout", 15);
     int NmodesPout = para->ITHACAdict->lookupOrDefault<int>("NmodesPout", 15);
     int NmodesSUPout = para->ITHACAdict->lookupOrDefault<int>("NmodesSUPout", 15);

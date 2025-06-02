@@ -59,7 +59,7 @@ SourceFiles
                         Class reductionProblem Declaration
 \*---------------------------------------------------------------------------*/
 
-/// namespace for the ITHACAPODTemplate class
+/// namespace for the ITHACAPODTemplate class (ITHACAPOD::ITHACAPODTemplate)
 namespace ITHACAPOD
 {
 
@@ -70,7 +70,7 @@ template<typename T>
 class ITHACAPODTemplate
 {
 public:
-    ITHACAparameters* ithacaParameters;
+    ITHACAparameters* ithacaFVParameters;
     IthacaPODParameters* ithacaPODParams;
 
     /// @brief Path where OpenFOAM simulation outputs are
@@ -251,7 +251,8 @@ public:
 
     void diagonalisation(Eigen::MatrixXd& covMatrix, Eigen::VectorXd& eigenValueseig, Eigen::MatrixXd& eigenVectoreig);
 
-    Eigen::MatrixXd buildCovMatrix();
+    
+    virtual Eigen::MatrixXd buildCovMatrix();
 
     void computeMeanField();
 

@@ -195,7 +195,7 @@ int main(int argc, char* argv[])
     Eigen::MatrixXd par_off_BC = ITHACAstream::readMatrix(par_offline_BC);
     Eigen::MatrixXd par_on_BC = ITHACAstream::readMatrix(par_online_BC);
     // Read some parameters from file
-    ITHACAparameters* para = ITHACAparameters::getInstance(example._mesh(),
+    ITHACAparameters* para = ITHACAparameters::getInstance(argc, argv, example._mesh(),
                              example._runTime());
     word stabilization = para->ITHACAdict->lookupOrDefault<word>("Stabilization",
                          "supremizer");

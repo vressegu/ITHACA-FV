@@ -47,7 +47,7 @@ namespace ITHACAPOD
 
 template<typename T>
 ITHACAPODTemplate<T>::ITHACAPODTemplate(ITHACAparameters *parameters, IthacaPODParameters *podParams, fvMesh& mesh, Time& localTime, const word& myfield_name) :
-  ithacaParameters(parameters),
+  ithacaFVParameters(parameters),
   ithacaPODParams(podParams),
 field_name(myfield_name),
   casenameData(ithacaPODParams->get_casenameData()),
