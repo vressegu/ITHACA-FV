@@ -67,8 +67,7 @@ UnsteadyNSExplicit::UnsteadyNSExplicit(int argc, char* argv[])
         )
     );
 #include "createFields.H"
-    para = ITHACAparameters::getInstance(argc, argv, mesh, runTime);
-    para->setArguments(argc, argv);
+    para = ITHACAparameters::getInstance(mesh, runTime);
     bcMethod = ITHACAdict->lookupOrDefault<word>("bcMethod", "none");
     M_Assert(bcMethod == "lift" || bcMethod == "penalty" || bcMethod == "none",
              "The BC method must be set to lift or penalty or none in ITHACAdict");

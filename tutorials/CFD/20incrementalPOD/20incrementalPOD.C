@@ -189,7 +189,7 @@ int main(int argc, char* argv[])
     // Create the example object of the tutorialIPOD type
     tutorialIPOD example(argc, argv);
     // Read some parameters from file
-    ITHACAparameters* para = ITHACAparameters::getInstance(argc, argv, example._mesh(),
+    ITHACAparameters* para = ITHACAparameters::getInstance(example._mesh(),
                              example._runTime());
     int NmodesTout = para->ITHACAdict->lookupOrDefault<int>("NmodesTout", 15);
     int NmodesTproj = para->ITHACAdict->lookupOrDefault<int>("NmodesTproj", 10);

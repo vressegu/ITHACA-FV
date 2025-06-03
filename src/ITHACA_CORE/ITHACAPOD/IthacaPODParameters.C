@@ -1,3 +1,5 @@
+
+#ifdef ___NOT_NOW_REMOVE__
 #include "IthacaPODParameters.H"
 #include "LESModel.H"
 #include "turbulentTransportModel.H"
@@ -44,26 +46,30 @@ namespace ITHACAPOD {
             myfield_name(myfield_name)
 {
     //this->instance = this;
-    _args = autoPtr<argList>
-        (
-          new argList(ithacaLibraryParameters->argc, ithacaLibraryParameters->argv)
-          );
+    //CHC remove _args = autoPtr<argList>
+    //CHC remove     (
+    //CHC remove       new argList(ithacaLibraryParameters->argc, ithacaLibraryParameters->argv)
+    //CHC remove       );
+    //CHC remove 
+    //CHC remove if (!_args->checkRootCase())
+    //CHC remove {
+    //CHC remove   Foam::FatalError.exit();
+    //CHC remove }
+    //CHC remove 
+    //CHC remove argList& args = _args();
 
-    if (!_args->checkRootCase())
-    {
-      Foam::FatalError.exit();
-    }
+    //CHC remove std::cout << "in IthacaPODParameters, arglist, used for initilise runTime0,  is :" << std::endl;
+    //CHC remove for (int i=0; i<ithacaLibraryParameters->argc; i++)
+    //CHC remove {
+    //CHC remove   std::cout << "argv[" << i << "] = " << ithacaLibraryParameters->argv[i] << std::endl;
+    //CHC remove }
 
-    argList& args = _args();
+    //CHC : modify runTime0 creation (already created in IthacaParameters)
+    //runTime0 = autoPtr<Foam::Time>( new Foam::Time( Foam::Time::controlDictName,
+    //                                                args ) );
+    runTime0 = ithacaLibraryParameters->get_runTime0() ;
 
-    std::cout << "in IthacaPODParameters, arglist, used for initilise runTime0,  is :" << std::endl;
-    for (int i=0; i<ithacaLibraryParameters->argc; i++)
-    {
-      std::cout << "argv[" << i << "] = " << ithacaLibraryParameters->argv[i] << std::endl;
-    }
 
-    runTime0 = autoPtr<Foam::Time>( new Foam::Time( Foam::Time::controlDictName,
-                                                    args ) );
     //DEJA FAIT DANS L'AUTOLOAD
     //mesh = (
     //            new fvMesh
@@ -812,3 +818,4 @@ namespace ITHACAPOD {
 
 
 } //end namespace ITHACAPOD
+#endif //#ifdef ___NOT_NOW_REMOVE__

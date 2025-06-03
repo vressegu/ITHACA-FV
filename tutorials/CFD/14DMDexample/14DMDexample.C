@@ -80,7 +80,7 @@ int main(int argc, char* argv[])
     // Construct the tutorial04 object
     tutorial14 example(argc, argv);
     // Read parameters from ITHACAdict file
-    ITHACAparameters* para = ITHACAparameters::getInstance(argc, argv, example._mesh(),
+    ITHACAparameters* para = ITHACAparameters::getInstance(example._mesh(),
                              example._runTime());
     // Read some input parameters for DMD
     double dtDMD = readScalar(para->ITHACAdict->lookup("dtDMD"));

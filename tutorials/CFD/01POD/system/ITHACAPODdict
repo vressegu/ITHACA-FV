@@ -68,6 +68,7 @@ InitialTime 0;
 
 // Set Time when you want to stop taking the Snapshots
 FinalTime 50;
+//FinalTime 49;
 
 // Eventually you could set just InitalTime and Number of Snapshots you want    
 //Nsnapshots 40;

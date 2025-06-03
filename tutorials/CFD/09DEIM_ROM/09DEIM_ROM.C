@@ -263,7 +263,7 @@ int main(int argc, char* argv[])
     // Construct the case
     DEIMLaplacian example(argc, argv);
     // Read some parameters from file
-    ITHACAparameters* para = ITHACAparameters::getInstance(argc, argv, example._mesh(),
+    ITHACAparameters* para = ITHACAparameters::getInstance(example._mesh(),
                              example._runTime());
     // Create the offline parameters for the solve
     example.mu = ITHACAutilities::rand(100, 2, -0.5, 0.5);

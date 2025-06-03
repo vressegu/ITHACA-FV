@@ -1,4 +1,7 @@
 
+#ifdef ___NOT_NOW_REMOVE__
+
+
 #ifndef ITHACA_POD_PARAMETERS_H
 #define ITHACA_POD_PARAMETERS_H
 
@@ -40,7 +43,7 @@ namespace ITHACAPOD {
   private:
     /// Pointer to the IthacaPODParameters class for singleton pattern use
 
-    autoPtr<argList> _args;
+    //CHC remove autoPtr<argList> _args;
     autoPtr<Time> runTime0;
 
     Time* runTimeData;
@@ -487,3 +490,4 @@ namespace ITHACAPOD {
 }
 
 #endif
+#endif //#ifdef ___NOT_NOW_REMOVE__

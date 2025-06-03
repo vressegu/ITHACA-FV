@@ -34,8 +34,7 @@ msrProblem::msrProblem(int argc, char* argv[])
             IOobject::NO_WRITE
         )
     );
-    para = ITHACAparameters::getInstance(argc, argv, mesh, runTime);
-    para->setArguments(argc, argv);
+    para = ITHACAparameters::getInstance(mesh, runTime);
     tolerance = ITHACAdict->lookupOrDefault<scalar>("tolerance", 1e-5);
     maxIter = ITHACAdict->lookupOrDefault<scalar>("maxIter", 1000);
     offline = ITHACAutilities::check_off();

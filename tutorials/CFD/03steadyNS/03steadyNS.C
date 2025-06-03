@@ -170,7 +170,7 @@ void offline_stage(tutorial03& example)
 {
     // Read some parameters from file
     ITHACAparameters* para =
-        ITHACAparameters::getInstance(example.argc, example.argv,example._mesh(), example._runTime());
+        ITHACAparameters::getInstance(example._mesh(), example._runTime());
     int NmodesUout = para->ITHACAdict->lookupOrDefault<int>("NmodesUout", 15);
     int NmodesPout = para->ITHACAdict->lookupOrDefault<int>("NmodesPout", 15);
     int NmodesSUPout = para->ITHACAdict->lookupOrDefault<int>("NmodesSUPout", 15);

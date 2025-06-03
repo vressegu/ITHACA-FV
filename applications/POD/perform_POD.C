@@ -73,6 +73,7 @@ Info << "=============>>>>>     Begin !!! !" << endl;
     PtrList<volScalarField> Sfield;
     PtrList<volVectorField> Vmodes;
     PtrList<volScalarField> Smodes;
+    Info << "=============>>>>>     Vfield, Sfield, Vmodes and Smodes created" << endl;
 Info << "=============>>>>>     We are running Perform_POD !" << endl;
     //ITHACAPOD::ITHACAparameters* para = ITHACAPOD::ITHACAparameters::getInstance(mesh,
     //                         runTime);
@@ -80,11 +81,10 @@ Info << "=============>>>>>     We are running Perform_POD !" << endl;
     //                         runTime);
 
     //CHC : new version for constructor                         
-    ITHACAparameters* para = ITHACAparameters::getInstance(argc, argv, mesh, runTime);//, const word& myfield_name);
+    ITHACAparameters* para = ITHACAparameters::getInstance(mesh, runTime);//, const word& myfield_name);
 Info << "=============>>>>>     ITHACAparameters OK 1 !" << endl;
     bool pod_exist;
     struct stat sb;
-    para->setArguments(argc, argv);
 Info << "=============>>>>>     ITHACAparameters OK 2 !" << endl;
     
     
@@ -234,7 +234,6 @@ Info << "=============>>>>>     ITHACAparameters OK 2 !" << endl;
             //ITHACAPOD::getModes(Vfield, Vmodes, field_name, 0, 0, 0, nmodes);
 
             ITHACAPOD::IthacaPODParameters* podParams = new ITHACAPOD::IthacaPODParameters(para, &mesh, field_name);
-            //podParams->setArguments(para->argc, para->argv);
             ITHACAPOD::ITHACAPODTemplate<volVectorField>* IPodTemplate = new ITHACAPOD::ITHACAPODTemplate<volVectorField>(para, podParams, mesh, runTime, field_name);
 
             /* TODO code this launch ... //  ITHACAPOD::getModes(Vfield, Vmodes, field_name, 0, 0, 0, nmodes);
@@ -249,7 +248,6 @@ Info << "=============>>>>>     ITHACAparameters OK 2 !" << endl;
             //ITHACAPOD::getModes(Sfield, Smodes, field_name, 0, 0, 0, nmodes);
 
             ITHACAPOD::IthacaPODParameters* podParams = new ITHACAPOD::IthacaPODParameters(para, &mesh, field_name);
-            //podParams->setArguments(para->argc, para->argv);
             ITHACAPOD::ITHACAPODTemplate<volScalarField>* IPodTemplate = new ITHACAPOD::ITHACAPODTemplate<volScalarField>(para, podParams, mesh, runTime, field_name);
 
             /* TODO code this launch  //ITHACAPOD::getModes(Sfield, Smodes, field_name, 0, 0, 0, nmodes);

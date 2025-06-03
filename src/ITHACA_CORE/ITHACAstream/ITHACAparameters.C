@@ -17,57 +17,10 @@ struct StrLookup: public std::map<std::string,Enum>{
 
 
 
-//namespace ITHACA {
 ITHACAparameters* ITHACAparameters::instance = nullptr;
-//CHC : remove old constructor...
-/*
-ITHACAparameters::ITHACAparameters(fvMesh& mesh, Time& localTime, const word& myfield_name) :
-            runTime(localTime),
-            mesh(mesh),
-            corTime
-                (
-                    "corTime",
-                    dimensionSet(0,0,1,0,0),
-                    scalar(0)
-                ),
-            myfield_name(myfield_name)
-{
-    ITHACAdict = new IOdictionary
-    (
-        IOobject
-        (
-            "ITHACAdict",
-            runTime.system(),
-            runTime,
-            IOobject::MUST_READ_IF_MODIFIED,
-            IOobject::NO_WRITE,
-            true
-        )
-    );
-    precision = ITHACAdict->lookupOrDefault<label>("OutPrecision", 10);
-    word typeout = ITHACAdict->lookupOrDefault<word>("OutType", "fixed");
 
-    if (typeout == "fixed")
-    {
-        outytpe = std::ios_base::fixed;
-    }
-
-    if (typeout == "scientific")
-    {
-        outytpe = std::ios_base::scientific;
-    }
-
-    eigensolver = ITHACAdict->lookupOrDefault<word>("EigenSolver", "spectra");
-    exportPython = ITHACAdict->lookupOrDefault<bool>("exportPython", 0);
-    exportMatlab = ITHACAdict->lookupOrDefault<bool>("exportMatlab", 0);
-    exportTxt = ITHACAdict->lookupOrDefault<bool>("exportTxt", 0);
-    debug = ITHACAdict->lookupOrDefault<bool>("debug", 0);
-    warnings = ITHACAdict->lookupOrDefault<bool>("warnings", 0);
-}
-//CHC : remove old constructor
-*/
 ///CHC new POD specific constructor 
-ITHACAparameters::ITHACAparameters(int argc, char **argv, Foam::fvMesh& mesh, Time& localTime, const word& myfield_name) :
+ITHACAparameters::ITHACAparameters(Foam::fvMesh& mesh, Time& localTime, const word& myfield_name) :
         runTime(localTime),
         mesh(mesh),
         corTime
@@ -78,6 +31,8 @@ ITHACAparameters::ITHACAparameters(int argc, char **argv, Foam::fvMesh& mesh, Ti
             ),
         myfield_name(myfield_name)
 {
+    Info << "=============>>>>>     ITHACAParameters constructor, step 0 : create dictionary and get init infos" << endl;
+
     //Add constructor code of "standard" ithacaParams
     ITHACAdict = new IOdictionary
     (
@@ -110,74 +65,28 @@ ITHACAparameters::ITHACAparameters(int argc, char **argv, Foam::fvMesh& mesh, Ti
     exportTxt = ITHACAdict->lookupOrDefault<bool>("exportTxt", 0);
     debug = ITHACAdict->lookupOrDefault<bool>("debug", 0);
     warnings = ITHACAdict->lookupOrDefault<bool>("warnings", 0);
-    setArguments(argc, argv);
 
+  //Add to constructor code of "RedLUM" IthacaFVParams
+    Info << "=============>>>>>     ITHACAParameters constructor, step 1 : get runTime0" << endl;
+    runTime0 = autoPtr<Foam::Time>(&runTime) ;
 
-    _args = autoPtr<argList>
-        (
-          new argList(argc, argv)
-          );
-
-    if (!_args->checkRootCase())
-    {
-      Foam::FatalError.exit();
-    }
-
-    argList& args = _args();
-
-    std::cout << "in IthacaPODParameters, arglist, used for initilise runTime0,  is :" << std::endl;
-    for (int i=0; i<argc; i++)
-    {
-      std::cout << "argv[" << i << "] = " << argv[i] << std::endl;
-    }
-
-    runTime0 = autoPtr<Foam::Time>( new Foam::Time( Foam::Time::controlDictName,
-                                                    args ) );
-    #pragma message "CHC : verify if the mesh is  created here or could be created before the constructor call"                                                
-    /*
-    if(mesh==nullptr){
-        mesh = 
-                    new fvMesh
-                    (
-                        Foam::IOobject
-                        (
-                            Foam::fvMesh::defaultRegion,
-                            runTime0->timeName(),
-                            *runTime0,
-                            Foam::IOobject::MUST_READ
-                        )
-                   );
-               
-    }
-    fvMesh *pmesh =  new fvMesh
-                    (
-                        Foam::IOobject
-                        (
-                            Foam::fvMesh::defaultRegion,
-                            runTime0->timeName(),
-                            *runTime0,
-                            Foam::IOobject::MUST_READ
-                        )
-                   );
-    mesh = *pmesh;
-
-    mesh = fvMesh  (
-                        Foam::IOobject
-                        (
-                            Foam::fvMesh::defaultRegion,
-                            runTime0->timeName(),
-                            *runTime0,
-                            Foam::IOobject::MUST_READ
-                        )
-                   );  
-    */             
-
+    Info << "=============>>>>>     ITHACAParameters constructor, step 2 : get nb cells in mesh" << endl;
     nCells = mesh.cells().size();
-            
-    
+    Info << "=============>>>>>     mesh.cells().size() = "<< nCells << endl;  
+
+    Info << "=============>>>>>     ITHACAParameters constructor, step 2.1 : get casenameData in dict" << endl;        
     casenameData = ITHACAdict->lookupOrDefault<fileName>("casename", "./");
+    Info << "=============>>>>>     ITHACAParameters casenameData=" << casenameData << endl;
+
+    Info << "=============>>>>>     ITHACAParameters constructor, step 2.2 : find 'fields' in dictionary" << endl;
+
+//#define _REDLUM_INIT_FOR_PARAM
+#ifdef _REDLUM_INIT_FOR_PARAM
+
     fieldlist = static_cast<List<word>>(ITHACAdict->lookup("fields"));
-         
+
+
+    Info << "=============>>>>>     ITHACAParameters constructor, step 2.3 !" << endl;     
     pressureResolutionKind = StrLookup<PressureResolutionKind>(
           {
             {"FullOrder",PressureResolutionKind::FullOrder},
@@ -203,7 +112,8 @@ ITHACAparameters::ITHACAparameters(int argc, char **argv, Foam::fvMesh& mesh, Ti
            // SOTA can be 0 (no SOTA), D (deterministic version), S (stochastic version)
     useSOTA = ITHACAdict->lookupOrDefault<word>("useSOTA", "None");
     set_useSOTA(useSOTA);
-    
+    Info << "=============>>>>>     ITHACAParameters constructor, step 3 !" << endl;
+
   if (useSOTA != "None")
   {
     Info << "===============================================================" << endl;
@@ -224,7 +134,8 @@ ITHACAparameters::ITHACAparameters(int argc, char **argv, Foam::fvMesh& mesh, Ti
     }
     
   }
-      
+   Info << "=============>>>>>     ITHACAParameters constructor, step 4 !" << endl;
+   
     if ( (!(ROMTemporalScheme == "adams-bashforth"))
          && (!(ROMTemporalScheme == "euler"))
          && (!(ROMTemporalScheme == "euler–maruyama")) )
@@ -243,7 +154,8 @@ ITHACAparameters::ITHACAparameters(int argc, char **argv, Foam::fvMesh& mesh, Ti
       abort();
     }
     
-    
+    Info << "=============>>>>>     ITHACAParameters constructor, step 5 !" << endl;
+
     // Object Time to read OpenFOAM data in the correct folder
     runTimeData = new Foam::Time(Foam::Time::controlDictName, ".", casenameData);
 
@@ -270,6 +182,7 @@ ITHACAparameters::ITHACAparameters(int argc, char **argv, Foam::fvMesh& mesh, Ti
             ),
           mesh
           );
+Info << "=============>>>>>     ITHACAParameters constructor, step 6 !" << endl;
 
     nParticules = ITHACAdict->lookupOrDefault<label>("nParticules", 1);
      
@@ -281,7 +194,8 @@ ITHACAparameters::ITHACAparameters(int argc, char **argv, Foam::fvMesh& mesh, Ti
     // Initialize field_name, field_type and nModes
     field_name.resize(fieldlist.size());
     field_type.resize(fieldlist.size());
-    
+    Info << "=============>>>>>     ITHACAParameters constructor, step 7 !" << endl;
+
     for (label k = 0; k < fieldlist.size(); k++)
     {
       dictionary& subDict = ITHACAdict->subDict(fieldlist[k]);
@@ -303,6 +217,7 @@ ITHACAparameters::ITHACAparameters(int argc, char **argv, Foam::fvMesh& mesh, Ti
 
     // Get times list from the case folder
     instantList Times = runTimeData->times();
+Info << "=============>>>>>     ITHACAParameters constructor, step 8 !" << endl;
 
     // Read Initial and last time from the POD dictionary
     const entry* existnsnap = ITHACAdict->findEntry("Nsnapshots");
@@ -346,6 +261,7 @@ ITHACAparameters::ITHACAparameters(int argc, char **argv, Foam::fvMesh& mesh, Ti
 
     scalar InitialTimeSimulation(FinalTime);
     label startTimeSimulation(Time::findClosestTimeIndex(runTimeData->times(), InitialTimeSimulation));
+Info << "=============>>>>>     ITHACAParameters constructor, step 9 !" << endl;
 
     if ((existnsnapSimulation) && (existLTSimulation))
     {
@@ -371,6 +287,7 @@ ITHACAparameters::ITHACAparameters(int argc, char **argv, Foam::fvMesh& mesh, Ti
       }
       FinalTimeSimulation = std::stof(runTimeData->times()[endTimeSimulation].name());
     }
+Info << "=============>>>>>     ITHACAParameters constructor, step 10 !" << endl;
 
         // Initialize saveTime
     IOdictionary controlDict
@@ -386,6 +303,7 @@ ITHACAparameters::ITHACAparameters(int argc, char **argv, Foam::fvMesh& mesh, Ti
           );
     saveTime = controlDict.lookupOrDefault<double>("writeInterval", 1);
     corTime.value() = saveTime;
+Info << "=============>>>>>     ITHACAParameters constructor, step 11 !" << endl;
 
     IOdictionary transportProperties
         (
@@ -405,6 +323,7 @@ ITHACAparameters::ITHACAparameters(int argc, char **argv, Foam::fvMesh& mesh, Ti
           dimViscosity,
           transportProperties
           );
+Info << "=============>>>>>     ITHACAParameters constructor, step 12 !" << endl;
 
     // if TAG forcing term taken into account, set all TAG related values to their
     //value
@@ -491,6 +410,7 @@ ITHACAparameters::ITHACAparameters(int argc, char **argv, Foam::fvMesh& mesh, Ti
         simu = new dimensionedScalar();
       }
     }
+Info << "=============>>>>>     ITHACAParameters constructor, step 13 !" << endl;
         volume = new volScalarField(
           IOobject(
             "volume",
@@ -514,6 +434,7 @@ ITHACAparameters::ITHACAparameters(int argc, char **argv, Foam::fvMesh& mesh, Ti
 
     string DDESModel;
 
+Info << "=============>>>>>     ITHACAParameters constructor, step 14 !" << endl;
 
     string filename = "constant/turbulenceProperties";
     std::ifstream strm( filename );
@@ -540,6 +461,7 @@ ITHACAparameters::ITHACAparameters(int argc, char **argv, Foam::fvMesh& mesh, Ti
         i++;
       }
     }
+Info << "=============>>>>>     ITHACAParameters constructor, step 15 !" << endl;
 
     line.erase(line.size()-1,1);
     line.erase(0,14);
@@ -695,18 +617,19 @@ ITHACAparameters::ITHACAparameters(int argc, char **argv, Foam::fvMesh& mesh, Ti
     Info << "---------------------------------------------------------" << endl;
     
 
+#endif
 }
 
 
 
-ITHACAparameters* ITHACAparameters::getInstance(int argc, char **argv, fvMesh& mesh,
-        Time& localTime, const word& myfield_name)
+ITHACAparameters* ITHACAparameters::getInstance(fvMesh& mesh, Time& localTime, const word& myfield_name)
 {
     if (instance == nullptr)
     {
-        instance = new ITHACAparameters(argc, argv, mesh, localTime, myfield_name);
+      Info << "=============>>>>>     create new ITHACAParameters !" << endl;
+        instance = new ITHACAparameters(mesh, localTime, myfield_name);
     }
-
+Info << "=============>>>>>     return existing ITHACAParameters instance!" << endl;
     return instance;
 }
 
@@ -718,12 +641,6 @@ ITHACAparameters* ITHACAparameters::getInstance()
     return instance;
 }
 
-int ITHACAparameters::setArguments(int argc, char **argv)
-{
-    this->argc = argc;
-    this->argv = argv;
-    args = autoPtr<argList>( new argList(argc, argv) );
-}
 
 
 void ITHACAparameters::compute_F_mask()

@@ -73,7 +73,7 @@ int main(int argc, char* argv[])
     // Create the train object of the tutorial02 type
     tutorial23 train(argc, argv);
     // Read some parameters from file
-    ITHACAparameters* para = ITHACAparameters::getInstance(argc, argv, train._mesh(),
+    ITHACAparameters* para = ITHACAparameters::getInstance(train._mesh(),
                              train._runTime());
     int NmodesUout = para->ITHACAdict->lookupOrDefault<int>("NmodesUout", 15);
     train.offlineSolve();

@@ -52,7 +52,8 @@ class ITHACAparameters
         
         //CHC : remove old constructor...  ITHACAparameters(fvMesh& mesh, Time& localTime, const word& myfield_name="");//ITHACAparameters(fvMesh& mesh, Time& localTime);
 
-        ITHACAparameters(int argc, char **argv, Foam::fvMesh&  mesh, Time& localTime, const word& myfield_name="");//CHC new POD specific constructor 
+        //CHC remove tempo ITHACAparameters(int argc, char **argv, Foam::fvMesh&  mesh, Time& localTime, const word& myfield_name="");//CHC new POD specific constructor 
+        ITHACAparameters(Foam::fvMesh&  mesh, Time& localTime, const word& myfield_name="");//CHC new POD specific constructor 
         
     public:
         /// type of eigensolver used in the eigenvalue decomposition can be either be eigen or spectra
@@ -80,11 +81,6 @@ class ITHACAparameters
         /// Mesh object defined locally
         fvMesh& mesh;
 
-        /// argument list
-        autoPtr<argList> args;
-        int argc;
-        char **argv;
-
         /// Pointer to the ITHACAparameters singleton instance
         static ITHACAparameters* instance;
     // ----------------------------------------------------------------------
@@ -107,29 +103,13 @@ class ITHACAparameters
     word useSOTA;
 
   private:
-    /// Pointer to the IthacaPODParameters class for singleton pattern use
-
-    autoPtr<argList> _args;
     autoPtr<Time> runTime0;
 
     Time* runTimeData;
-    //CHC : already exists in IthacaParameters, but this is the pointer version...    //fvMesh* mesh;
     fvMesh* submesh;//! ref
     label nCells;
 
-    /// Parameters from ITHACAparameters class from ITHACA-FV library
-    //CHC remove, because it is now this class... //ITHACAparameters* ithacaLibraryParameters;//! ref
-    //CHC : already exists in IthacaParameters    //IOdictionary* ITHACAdict;
     wordList fieldlist;
-
-    
-
-    //CHC : already exists in IthacaParameters    //word eigensolver;
-    //CHC : already exists in IthacaParameters    //int precision;
-    //CHC : already exists in IthacaParameters    //bool exportPython;
-    //CHC : already exists in IthacaParameters    //bool exportMatlab;
-    //CHC : already exists in IthacaParameters    //bool exportTxt;
-    //CHC : already exists in IthacaParameters    //std::_Ios_Fmtflags outytpe;
 
     bool useHypRedSto;
     /// boolean indicating if DEIM is used or not
@@ -276,7 +256,7 @@ class ITHACAparameters
         ///
         /// @return     The instance.
         ///
-        static ITHACAparameters* getInstance(int argc, char **argv, fvMesh& mesh, Time& localTime, const word& myfield_name="");
+        static ITHACAparameters* getInstance(fvMesh& mesh, Time& localTime, const word& myfield_name="");
 
         ///
         /// @brief      Gets an instance of ITHACAparameters, to be used if the instance is already existing.
@@ -289,7 +269,6 @@ class ITHACAparameters
         /// Delete empty constructor
         ~ITHACAparameters() = delete;
 
-        int setArguments(int argc, char **argv);
 
     public:
     // ----------------------------------------------------------------------

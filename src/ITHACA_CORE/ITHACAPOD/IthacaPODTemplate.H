@@ -251,7 +251,8 @@ public:
 
     void diagonalisation(Eigen::MatrixXd& covMatrix, Eigen::VectorXd& eigenValueseig, Eigen::MatrixXd& eigenVectoreig);
 
-    
+    const T& get_mean() const { return (*f_meanField); }
+
     virtual Eigen::MatrixXd buildCovMatrix();
 
     void computeMeanField();
@@ -269,3 +270,4 @@ public:
 
 
 #endif
+
