@@ -1,6 +1,6 @@
 
-#ifdef ___NOT_NOW_REMOVE__
-
+#ifdef ___NOT_NOW_REMOVE__ //CHC remove file
+//CHC remove file
 
 #ifndef ITHACA_POD_PARAMETERS_H
 #define ITHACA_POD_PARAMETERS_H

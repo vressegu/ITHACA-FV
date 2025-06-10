@@ -641,6 +641,45 @@ ITHACAparameters* ITHACAparameters::getInstance()
     return instance;
 }
 
+  template<typename T>
+  void ITHACAparameters::read_snapshot(T& snapshot, const label& i_snap, word path, word name) const
+  {
+
+    if (name == "default_name")
+    {
+      name = snapshot.name();
+    }
+
+    if (path == "default_path")
+    {
+      path = runTimeData->path() + "/" + runTimeData->times()[i_snap].name();
+    }
+
+    if (!ITHACAutilities::check_file(path))
+    {
+      Info << "Error: data not found at :" << endl;
+      Info << path << endl;
+      Info << endl;
+      abort();
+    }
+
+    T snapshot_dummy(
+          IOobject
+          (
+            name,
+            path,
+            mesh,//CHC *mesh,
+            IOobject::MUST_READ
+            ),
+          mesh//CHC *mesh
+          );
+
+    snapshot = snapshot_dummy;
+  }
+  template void ITHACAparameters::read_snapshot(volScalarField& snapshot, const label& i_snap, word path, word name) const;
+  template void ITHACAparameters::read_snapshot(volVectorField& snapshot, const label& i_snap, word path, word name) const;
+  template void ITHACAparameters::read_snapshot(volTensorField& snapshot, const label& i_snap, word path, word name) const;
+
 
 
 void ITHACAparameters::compute_F_mask()
@@ -733,7 +772,8 @@ void ITHACAparameters::compute_F_mask()
     template_F_mask = &result_F_mask;
   }
 
-  const Foam::Vector<double>& ITHACAparameters::get_F_0() const
+  
+  Foam::Vector<double>& ITHACAparameters::get_F_0() //  const Foam::Vector<double>& ITHACAparameters::get_F_0() const
   {
     Foam::Vector<double>& result_F_0 = *(new Foam::Vector<double>
                                          (

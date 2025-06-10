@@ -40,12 +40,14 @@ SourceFiles
 #include <Eigen/Eigen>
 #include <unsupported/Eigen/CXX11/Tensor>
 
+class Parameters    {public: virtual ~Parameters()    {}}; // only one derivatenamespace ITHACAPOD {
 
 
 //namespace ITHACA {
 /// Singleton Class for the definition of some general parameters, the parameters must be defined from the file ITHACAdict inside the
 /// system folder.
-class ITHACAparameters
+#pragma message "CCR - adding temporary empty class  Parameters..."
+class ITHACAparameters : public Parameters 
 {
     private:
 
@@ -267,31 +269,71 @@ class ITHACAparameters
 
 
         /// Delete empty constructor
-        ~ITHACAparameters() = delete;
-
+        //~ITHACAparameters() = delete;
+        #pragma message "recreate the destructor (after heriting Parameter empty class for RedLUM compatibility)"
+        ~ITHACAparameters(){}
 
     public:
     // ----------------------------------------------------------------------
-    // CHC : Adding getters and setters for new POD calculation attributes (from RedLUM )
+      template<typename T>
+    void read_snapshot(T& snapshot, const label& i_snap, word path = "default_path", word name = "default_name") const;
+
+
+
+
+  // CHC : Adding getters and setters for new POD calculation attributes (from RedLUM )
     //
     autoPtr<Time> get_runTime0(){return runTime0;}
+    Foam::Time& get_ref_runTime0(){ return *runTime0;}
 
+    wordList& get_fieldlist() { return fieldlist; }
+    HashTable<label,word>& get_nModes() { return nModes; }
+    HashTable<double,word>& get_resolvedVaryingEnergy() { return resolvedVaryingEnergy; }
+    HashTable<double,word>& get_varyingEnergy() { return varyingEnergy; }
+    HashTable<double,word>& get_meanEnergy() { return meanEnergy; }
+    HashTable<word,word>& get_hilbertSpacePOD() { return hilbertSpacePOD; } //Contains both the field name and Hilbert space
+/* //CHC ORIG 
     const wordList& get_fieldlist() const { return fieldlist; }
     const HashTable<label,word>& get_nModes() const { return nModes; }
     const HashTable<double,word>& get_resolvedVaryingEnergy() const { return resolvedVaryingEnergy; }
     const HashTable<double,word>& get_varyingEnergy() const { return varyingEnergy; }
     const HashTable<double,word>& get_meanEnergy() const { return meanEnergy; }
     const HashTable<word,word>& get_hilbertSpacePOD() const { return hilbertSpacePOD; } //Contains both the field name and Hilbert space
+*/
+
+
+
     word get_pathHilbertSpace(word fieldName);
     word get_pathHilbertSpace_fromHS(word hilbertSp);
+    double& get_weightH1() { return weightH1; }
+    double& get_weightPOD() { return weightBC; }
+    word& get_patchBC() { return patchBC; }
+    double& get_freqBC() { return freqBC_0; }
+    List<word>& get_field_name() { return field_name; }
+    List<word>& get_field_type() { return field_type; }
+/*  //CHC ORIG 
     const double& get_weightH1() const { return weightH1; }
     const double& get_weightPOD() const { return weightBC; }
     const word& get_patchBC() const { return patchBC; }
     const double& get_freqBC() const { return freqBC_0; }
     const List<word>& get_field_name() const { return field_name; }
     const List<word>& get_field_type() const { return field_type; }
+*/
+
+
 
     // const fileName& get_pathData() const { return pathData; }
+    fileName& get_casenameData() { return casenameData; }
+
+    dimensionedScalar* get_pfreqRotActuDisk() { return freqRotActuDisk; }
+    dimensionedVector* get_pcenterActuDisk() { return centerActuDisk; }
+    dimensionedScalar* get_plengthActuDisk() { return lengthActuDisk; }
+    dimensionedScalar* get_pwidthActuDisk() { return widthActuDisk; }
+    dimensionedScalar* get_pinitPhaseActuDisk() { return initPhaseActuDisk; }
+    dimensionedScalar* get_ptimeBeforeRota() { return timeBeforeRota; }
+    dimensionedScalar* get_pmagForcage() { return magForcage; }
+    dimensionedScalar* get_psimu() { return simu; }
+
     const fileName& get_casenameData() const { return casenameData; }
 
     const dimensionedScalar& get_freqRotActuDisk() const { return *freqRotActuDisk; }
@@ -303,6 +345,36 @@ class ITHACAparameters
     const dimensionedScalar& get_magForcage() const { return *magForcage; }
     const dimensionedScalar& get_simu() const { return *simu; }
 
+
+
+
+
+    // getting current F_0 force vector and F_mask
+    Foam::Vector<double>& get_F_0() ;
+    void compute_F_mask();
+    volScalarField& get_F_mask() { return *template_F_mask; }
+    volScalarField* get_pF_mask() { return template_F_mask; }
+
+    ITHACAparameters::PressureResolutionKind& get_pressureResolutionKind(){return pressureResolutionKind;}
+    //PressureResolutionKind* get_ppressureResolutionKind(){return &pressureResolutionKind;}
+
+    label& get_startTime() { return startTime; }
+    label& get_endTime() { return endTime; }
+    label& get_nSnapshots() { return nSnapshots; }
+    word& get_ROMTemporalScheme() { return ROMTemporalScheme; }
+
+    double& get_initialTimeSimulation() {
+      return FinalTime; }
+    double& get_finalTime() {
+      return FinalTime; }
+    double& get_finalTimeSimulation() {
+      return FinalTimeSimulation; }
+
+    label& get_endTimeSimulation() { return endTimeSimulation; }
+    label& get_nSnapshotsSimulation() { return nSnapshotsSimulation; }
+
+    label& get_nBlocks() { return nBlocks; }
+/*  //CHC ORIG 
     // getting current F_0 force vector and F_mask
     const Foam::Vector<double>& get_F_0() const;
     void compute_F_mask();
@@ -326,8 +398,16 @@ class ITHACAparameters
     const label& get_nSnapshotsSimulation() const { return nSnapshotsSimulation; }
 
     const label& get_nBlocks() const { return nBlocks; }
+*/
 
-    const bool& get_centeredOrNot() const { return centeredOrNot; }
+
+
+
+
+
+
+
+const bool& get_centeredOrNot() const { return centeredOrNot; }
     const bool& get_interpFieldCenteredOrNot() const { return interpFieldCenteredOrNot; }
 
     const bool& get_exportPython() const { return exportPython; }
@@ -340,11 +420,13 @@ class ITHACAparameters
     const word& get_useSOTA() const {return useSOTA;}
 
 
-    // const Time* get_runTime() const { return runTimeData; }
+     Time* get_runTime() { return runTimeData; }    //CHC ORIG const Time* get_runTime() const { return runTimeData; }
+     
     // const Time& get_runTime() const { return *runTimeData; }
     
     //CHC : mesh was a pointer in the RedLUM Parameters, but become a reference in Ithaca-FV    const fvMesh& get_mesh() const { return *mesh; }
-    const fvMesh& get_mesh() const { return mesh; }
+    fvMesh& get_mesh() { return mesh; }//const fvMesh& get_mesh() const { return mesh; }
+    fvMesh* get_pmesh() { return &mesh; }         //CHC ORIG const fvMesh* get_pmesh() const { return &mesh; }
 
     const label& get_nCells() const { return nCells; }
 
@@ -353,10 +435,16 @@ class ITHACAparameters
     const volScalarField& get_template_field_nut() const { return *template_field_nut; }
     const volScalarField& get_template_field_omega()   const { return *template_field_omega; }
     const volScalarField& get_template_field_k()   const { return *template_field_k; }
+    volVectorField* get_ptemplate_field_U()       { return template_field_U; }
+    volScalarField* get_ptemplate_field_p()       { return template_field_p; }
+    volScalarField* get_ptemplate_field_nut()     { return template_field_nut; }
+    volScalarField* get_ptemplate_field_omega()   { return template_field_omega; }
+    volScalarField* get_ptemplate_field_k()       { return template_field_k; }
 
     const double& get_saveTime() const { return saveTime; }
 
     const dimensionedScalar& get_nu() const { return *nu; }
+    dimensionedScalar* get_pnu() { return nu; }
 
     const label& get_nSubsample() const { return nSubsample; }
     const dimensionedScalar& get_corTime() const { return corTime; }
@@ -408,19 +496,29 @@ class ITHACAparameters
     const Eigen::MatrixXd& get_projected_K_DEIM() const {return projected_K_DEIM_matrix;}
     const Eigen::MatrixXd& get_projected_MK_DEIM() const {return projected_MK_DEIM_matrix;}
     const volScalarField& get_delta() const {return *delta;}
+    volScalarField* get_pdelta() {return delta;}
     const volScalarField& get_magicDelta() const {return *magicDelta;}
-    const fvMesh& get_submesh() const {return *submesh;}
+    volScalarField* get_pmagicDelta() {return magicDelta;}
+    fvMesh& get_submesh() {return *submesh;}//CHC ORIG const fvMesh& get_submesh() const {return *submesh;}
+    fvMesh* get_psubmesh() {return submesh;}//CHC ORIG const fvMesh& get_submesh() const {return *submesh;}
     const volScalarField& get_volume() const {return *volume;}
+    volScalarField* get_pvolume() {return volume;}
     const double& get_totalVolume() const {return totalVolume;}
     const volVectorField& get_meanU() const {return *meanU;}
+    volVectorField* get_pmeanU() {return meanU;}
     const volVectorField& get_meanVectorDEIM() const { return *meanVectorDEIM; }
     const volScalarField& get_meanScalarDEIM() const { return *meanScalarDEIM; }
+    volVectorField* get_pmeanVectorDEIM() { return meanVectorDEIM; }
+    volScalarField* get_pmeanScalarDEIM() { return meanScalarDEIM; }
     void get_meanDEIM(volVectorField& meanVectorDEIM_in) {meanVectorDEIM_in = *meanVectorDEIM;}
     void get_meanDEIM(volScalarField& meanScalarDEIM_in) {meanScalarDEIM_in = *meanScalarDEIM;}
     const volVectorField& get_meanVectorDEIMMagic() const { return *meanVectorDEIMMagic; }
+    volVectorField* get_pmeanVectorDEIMMagic() { return meanVectorDEIMMagic; }
     const volScalarField& get_meanScalarDEIMMagic() const { return *meanScalarDEIMMagic; }
+    volScalarField* get_pmeanScalarDEIMMagic() { return meanScalarDEIMMagic; }
     // const volScalarField& get_S2inflation()   const { return *S2inflation; }
     const volScalarField& get_S2inflationMg()   const { return *S2inflationMg; }
+    volScalarField* get_pS2inflationMg()    { return S2inflationMg; }
 
     const word& get_DEIMInterpolatedField() const {return DEIMInterpolatedField;}
 
@@ -428,6 +526,7 @@ class ITHACAparameters
     const Eigen::Tensor<double, 3>& get_M_xi_onMagicPts() const {return M_xi_onMagicPts;}
 
     Eigen::VectorXd get_deltaWeight() const {return *deltaWeight;}
+    Eigen::VectorXd* get_pdeltaWeight() {return deltaWeight;}
 
     /// Getter and setter of DEIM matrix K
     const Eigen::MatrixXd& get_K_DEIM() const {return K_DEIM_matrix;}

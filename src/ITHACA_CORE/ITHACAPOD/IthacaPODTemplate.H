@@ -70,8 +70,8 @@ template<typename T>
 class ITHACAPODTemplate
 {
 public:
-    ITHACAparameters* ithacaFVParameters;
-    IthacaPODParameters* ithacaPODParams;
+    ITHACAparameters* parameters;//ithacaFVParameters;
+    //CHC remove, merged    IthacaPODParameters* ithacaPODParams;
 
     /// @brief Path where OpenFOAM simulation outputs are
     word field_name;
@@ -161,7 +161,8 @@ public:
 
 public:
     //IthacaFVPODTemplate(Parameters* myParameters, const word& myfield_name);
-    ITHACAPODTemplate<T>(ITHACAparameters *parameters, IthacaPODParameters *podParams, fvMesh& mesh, Time& localTime, const word& myfield_name);
+    //CHC remove merged...  ITHACAPODTemplate<T>(ITHACAparameters *parameters, IthacaPODParameters *podParams, fvMesh& mesh, Time& localTime, const word& myfield_name);
+    ITHACAPODTemplate<T>(ITHACAparameters *parameters, fvMesh& mesh, Time& localTime, const word& myfield_name);
     virtual ~ITHACAPODTemplate<T>();
  
     //--------------------------------------------------------------------------

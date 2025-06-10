@@ -233,8 +233,8 @@ Info << "=============>>>>>     ITHACAparameters OK 2 !" << endl;
             //CCR - remplacement en cours
             //ITHACAPOD::getModes(Vfield, Vmodes, field_name, 0, 0, 0, nmodes);
 
-            ITHACAPOD::IthacaPODParameters* podParams = new ITHACAPOD::IthacaPODParameters(para, &mesh, field_name);
-            ITHACAPOD::ITHACAPODTemplate<volVectorField>* IPodTemplate = new ITHACAPOD::ITHACAPODTemplate<volVectorField>(para, podParams, mesh, runTime, field_name);
+            //CHC remove   ITHACAPOD::IthacaPODParameters* podParams = new ITHACAPOD::IthacaPODParameters(para, &mesh, field_name);
+            ITHACAPOD::ITHACAPODTemplate<volVectorField>* IPodTemplate = new ITHACAPOD::ITHACAPODTemplate<volVectorField>(para, mesh, runTime, field_name);
 
             /* TODO code this launch ... //  ITHACAPOD::getModes(Vfield, Vmodes, field_name, 0, 0, 0, nmodes);
             IPodTemplate->getModes(PtrList<T>& spatialModes,
@@ -247,8 +247,8 @@ Info << "=============>>>>>     ITHACAparameters OK 2 !" << endl;
             //CCR - remplacement en cours
             //ITHACAPOD::getModes(Sfield, Smodes, field_name, 0, 0, 0, nmodes);
 
-            ITHACAPOD::IthacaPODParameters* podParams = new ITHACAPOD::IthacaPODParameters(para, &mesh, field_name);
-            ITHACAPOD::ITHACAPODTemplate<volScalarField>* IPodTemplate = new ITHACAPOD::ITHACAPODTemplate<volScalarField>(para, podParams, mesh, runTime, field_name);
+            //CHC remove   ITHACAPOD::IthacaPODParameters* podParams = new ITHACAPOD::IthacaPODParameters(para, &mesh, field_name);
+            ITHACAPOD::ITHACAPODTemplate<volScalarField>* IPodTemplate = new ITHACAPOD::ITHACAPODTemplate<volScalarField>(para, mesh, runTime, field_name);
 
             /* TODO code this launch  //ITHACAPOD::getModes(Sfield, Smodes, field_name, 0, 0, 0, nmodes);
             IPodTemplate->getModes(PtrList<T>& spatialModes,

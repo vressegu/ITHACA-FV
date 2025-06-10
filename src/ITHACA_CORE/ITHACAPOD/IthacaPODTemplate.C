@@ -46,38 +46,40 @@ namespace ITHACAPOD
 {
 
 template<typename T>
-ITHACAPODTemplate<T>::ITHACAPODTemplate(ITHACAparameters *parameters, IthacaPODParameters *podParams, fvMesh& mesh, Time& localTime, const word& myfield_name) :
-  ithacaFVParameters(parameters),
-  ithacaPODParams(podParams),
+//CHC IthacaPODparameters merged into IthacaParameters    ITHACAPODTemplate<T>::ITHACAPODTemplate(ITHACAparameters *parameters, IthacaPODParameters *podParams, fvMesh& mesh, Time& localTime, const word& myfield_name) :
+//CHC IthacaPODparameters merged into IthacaParameters      ithacaFVParameters(parameters),
+ITHACAPODTemplate<T>::ITHACAPODTemplate(ITHACAparameters *parameters, fvMesh& mesh, Time& localTime, const word& myfield_name) :
+  parameters(parameters),//ithacaFVParameters(parameters),
+  //CHC ithacaPODParams(podParams),
 field_name(myfield_name),
-  casenameData(ithacaPODParams->get_casenameData()),
-  l_nSnapshot(ithacaPODParams->get_nSnapshots()),
-  l_nBlocks(ithacaPODParams->get_nBlocks()),
-  l_nmodes(ithacaPODParams->get_nModes()[field_name]),
-  l_hilbertSp(ithacaPODParams->get_hilbertSpacePOD()[field_name]),
-  weightH1(ithacaPODParams->get_weightH1()),
-  weightBC(ithacaPODParams->get_weightPOD()),
-  patchBC(ithacaPODParams->get_patchBC()),
-  l_startTime(ithacaPODParams->get_startTime()),
-  l_endTime(ithacaPODParams->get_endTime()),
-  l_nSnapshotSimulation(ithacaPODParams->get_nSnapshotsSimulation()),
-  l_endTimeSimulation(ithacaPODParams->get_endTimeSimulation()),
-  b_centeredOrNot(ithacaPODParams->get_centeredOrNot()),
+  casenameData(parameters->get_casenameData()),//CHC ithacaPODParams
+  l_nSnapshot(parameters->get_nSnapshots()),//CHC ithacaPODParams
+  l_nBlocks(parameters->get_nBlocks()),//CHC ithacaPODParams
+  l_nmodes(parameters->get_nModes()[field_name]),//CHC ithacaPODParams
+  l_hilbertSp(parameters->get_hilbertSpacePOD()[field_name]),//CHC ithacaPODParams
+  weightH1(parameters->get_weightH1()),//CHC ithacaPODParams
+  weightBC(parameters->get_weightPOD()),//CHC ithacaPODParams
+  patchBC(parameters->get_patchBC()),//CHC ithacaPODParams
+  l_startTime(parameters->get_startTime()),//CHC ithacaPODParams
+  l_endTime(parameters->get_endTime()),//CHC ithacaPODParams
+  l_nSnapshotSimulation(parameters->get_nSnapshotsSimulation()),//CHC ithacaPODParams
+  l_endTimeSimulation(parameters->get_endTimeSimulation()),//CHC ithacaPODParams
+  b_centeredOrNot(parameters->get_centeredOrNot()),//CHC ithacaPODParams
   lambda(Eigen::VectorXd::Zero(l_nmodes)),
-  w_eigensolver(ithacaPODParams->get_eigensolver()),
-  i_precision(ithacaPODParams->get_precision()),
-  ios_outytpe(ithacaPODParams->get_outytpe()),
-  runTime2(Foam::Time::controlDictName, ".", ithacaPODParams->get_casenameData())
+  w_eigensolver(parameters->get_eigensolver()),//CHC ithacaPODParams
+  i_precision(parameters->get_precision()),//CHC ithacaPODParams
+  ios_outytpe(parameters->get_outytpe()),//CHC ithacaPODParams
+  runTime2(Foam::Time::controlDictName, ".", parameters->get_casenameData())//CHC ithacaPODParams
 {
   f_field = new T(
     IOobject
     (
       field_name,
       runTime2.path() + runTime2.times()[1].name(),
-      ithacaPODParams->get_mesh(),
+      parameters->get_mesh(),         //CHC ithacaPODParams
       IOobject::MUST_READ
     ),
-    ithacaPODParams->get_mesh()
+    parameters->get_mesh()            //CHC ithacaPODParams
   );
   f_meanField = new T(f_field->name(),*f_field);
 
@@ -488,9 +490,9 @@ PtrList<T> ITHACAPODTemplate<T>::computeSpatialModes(Eigen::VectorXd& eigenValue
     for (label j = 0; j < l_nSnapshot; j++)
     {
       T snapshotj = *f_field;
-      ithacaPODParams->read_snapshot(snapshotj, l_startTime+j);
-      if (ithacaPODParams->get_DEIMInterpolatedField() == "nut" && l_hilbertSp == "dL2"){
-        ITHACAutilities::multField(snapshotj, ithacaPODParams->get_deltaWeight()); 
+      parameters->read_snapshot(snapshotj, l_startTime+j);//CHC ithacaPODParams
+      if (parameters->get_DEIMInterpolatedField() == "nut" && l_hilbertSp == "dL2"){//CHC ithacaPODParams
+        ITHACAutilities::multField(snapshotj, parameters->get_deltaWeight()); //CHC ithacaPODParams
       }
 
       lift(snapshotj);
@@ -654,11 +656,11 @@ void ITHACAPODTemplate<T>::diagonalisation(Eigen::MatrixXd& covMatrix, Eigen::Ve
   double resolvedVaryingEnergy = eigenValueseig.sum()/l_nSnapshot;
   if (l_hilbertSp == "L2")
   {
-    ithacaPODParams->set_resolvedVaryingEnergy( f_field->name(), resolvedVaryingEnergy);
+    parameters->set_resolvedVaryingEnergy( f_field->name(), resolvedVaryingEnergy);//CHC ithacaPODParams
   }
   else
   {
-    ithacaPODParams->set_resolvedVaryingEnergy( f_field->name() + "_" + l_hilbertSp, resolvedVaryingEnergy);
+    parameters->set_resolvedVaryingEnergy( f_field->name() + "_" + l_hilbertSp, resolvedVaryingEnergy);//CHC ithacaPODParams
   }
   Info << "% of varying " << l_hilbertSp << " energy captures by the modes for " << field_name 
        << " : " << 100.0*eigenValueseig.sum()/covMatrix.trace() << "%" << endl;
@@ -849,7 +851,7 @@ Eigen::MatrixXd ITHACAPODTemplate<T>::buildCovMatrix()
   double varyingEnergy = covMatrix.trace()/l_nSnapshot;
   if (l_hilbertSp == "L2" || l_hilbertSp == "dL2")
   {
-    ithacaPODParams->set_varyingEnergy( f_field->name(), varyingEnergy);
+    parameters->set_varyingEnergy( f_field->name(), varyingEnergy);//CHC ithacaPODParams
   }
   Info << "Total varying " << l_hilbertSp << " energy for " << field_name << " : " << varyingEnergy << endl;
   Info << endl;
@@ -872,10 +874,10 @@ void ITHACAPODTemplate<T>::computeMeanField()
           (
             f_field->name() +"lift" + std::to_string(k),
             runTime2.path() + runTime2.times()[1].name(),
-            ithacaPODParams->get_mesh(),
+            parameters->get_mesh(),//CHC ithacaPODParams
             IOobject::MUST_READ
           ),
-          ithacaPODParams->get_mesh()
+          parameters->get_mesh()//CHC ithacaPODParams
         );
         liftfield.set(k, f_lift );
     }
@@ -892,7 +894,7 @@ void ITHACAPODTemplate<T>::computeMeanField()
       for (label j = 0; j < l_nSnapshot; j++)
       {
         // Read the j-th field
-        ithacaPODParams->read_snapshot(snapshotj, l_startTime+j);
+        parameters->read_snapshot(snapshotj, l_startTime+j);//CHC ithacaPODParams
         lift(snapshotj);
         // add j-th field to meanfield
         ITHACAutilities::addFields(*f_meanField,snapshotj);
@@ -914,8 +916,8 @@ void ITHACAPODTemplate<T>::computeMeanField()
     }
     double energyMean = ITHACAutilities::dot_product_L2(*f_meanField,*f_meanField);
     double energyHilbertMean = ITHACAutilities::dot_product_POD(*f_meanField,*f_meanField,l_hilbertSp);
-    ithacaPODParams->set_meanEnergy( f_meanField->name(), energyMean);
-    ithacaPODParams->set_meanEnergy( f_meanField->name() + "_" + l_hilbertSp, energyHilbertMean);
+    parameters->set_meanEnergy( f_meanField->name(), energyMean);//CHC ithacaPODParams
+    parameters->set_meanEnergy( f_meanField->name() + "_" + l_hilbertSp, energyHilbertMean);//CHC ithacaPODParams
   }
   else
   {
@@ -940,9 +942,9 @@ Eigen::MatrixXd ITHACAPODTemplate<T>::computeSimulationTemporalModes(PtrList<T>&
     {
 
       T snapshotj = *f_field;
-      ithacaPODParams->read_snapshot(snapshotj, l_startTimeSimulation + j);
-      if (ithacaPODParams->get_DEIMInterpolatedField() == "nut" && l_hilbertSp == "dL2"){
-        ITHACAutilities::multField(snapshotj, ithacaPODParams->get_deltaWeight()); 
+      parameters->read_snapshot(snapshotj, l_startTimeSimulation + j);//CHC ithacaPODParams
+      if (parameters->get_DEIMInterpolatedField() == "nut" && l_hilbertSp == "dL2"){//CHC ithacaPODParams
+        ITHACAutilities::multField(snapshotj, parameters->get_deltaWeight()); //CHC ithacaPODParams
       }
       lift(snapshotj);
 
@@ -1003,15 +1005,15 @@ void ITHACAPODTemplate<T>::getModes(PtrList<T>& spatialModes,
 
   if (field_name == "U")
   {
-      ithacaPODParams->set_eigenValues_U(eigenValueseig);
-      ithacaPODParams->set_lambda(lambda);
+      parameters->set_eigenValues_U(eigenValueseig);//CHC ithacaPODParams
+      parameters->set_lambda(lambda);//CHC ithacaPODParams
   }
 
   Info << "-------------------------------------------------------------------------------------------" << endl;
 }
 
 // Specialisation
-template ITHACAPODTemplate<volTensorField>::ITHACAPODTemplate(ITHACAparameters *parameters, IthacaPODParameters *podParams, fvMesh& mesh, Time& localTime, const word& myfield_name);//template ITHACAPODTemplate<volTensorField>::ITHACAPODTemplate(Parameters* myParameters, const word& myfield_name);
+template ITHACAPODTemplate<volTensorField>::ITHACAPODTemplate(ITHACAparameters *parameters, fvMesh& mesh, Time& localTime, const word& myfield_name);//template ITHACAPODTemplate<volTensorField>::ITHACAPODTemplate(Parameters* myParameters, const word& myfield_name);
 template ITHACAPODTemplate<volTensorField>::~ITHACAPODTemplate();
 template void ITHACAPODTemplate<volTensorField>::define_paths();
 template void ITHACAPODTemplate<volTensorField>::computeMeanField();
@@ -1028,7 +1030,7 @@ template void ITHACAPODTemplate<volTensorField>::getModes(PtrList<volTensorField
 template Eigen::MatrixXd ITHACAPODTemplate<volTensorField>::computeSimulationTemporalModes(PtrList<volTensorField>& spatialModes);
 
 // Specialisation
-template ITHACAPODTemplate<volVectorField>::ITHACAPODTemplate(ITHACAparameters *parameters, IthacaPODParameters *podParams, fvMesh& mesh, Time& localTime, const word& myfield_name);//template ITHACAPODTemplate<volVectorField>::ITHACAPODTemplate(Parameters* myParameters, const word& myfield_name);
+template ITHACAPODTemplate<volVectorField>::ITHACAPODTemplate(ITHACAparameters *parameters, fvMesh& mesh, Time& localTime, const word& myfield_name);//template ITHACAPODTemplate<volVectorField>::ITHACAPODTemplate(Parameters* myParameters, const word& myfield_name);
 template ITHACAPODTemplate<volVectorField>::~ITHACAPODTemplate();
 template void ITHACAPODTemplate<volVectorField>::define_paths();
 template void ITHACAPODTemplate<volVectorField>::computeMeanField();
@@ -1042,7 +1044,7 @@ template void ITHACAPODTemplate<volVectorField>::getModes(PtrList<volVectorField
 template Eigen::MatrixXd ITHACAPODTemplate<volVectorField>::computeSimulationTemporalModes(PtrList<volVectorField>& spatialModes);
 
 // Specialisation
-template ITHACAPODTemplate<volScalarField>::ITHACAPODTemplate(ITHACAparameters *parameters, IthacaPODParameters *podParams, fvMesh& mesh, Time& localTime, const word& myfield_name);//template ITHACAPODTemplate<volScalarField>::ITHACAPODTemplate(Parameters* myParameters, const word& myfield_name);
+template ITHACAPODTemplate<volScalarField>::ITHACAPODTemplate(ITHACAparameters *parameters, fvMesh& mesh, Time& localTime, const word& myfield_name);//template ITHACAPODTemplate<volScalarField>::ITHACAPODTemplate(Parameters* myParameters, const word& myfield_name);
 template ITHACAPODTemplate<volScalarField>::~ITHACAPODTemplate();
 template void ITHACAPODTemplate<volScalarField>::define_paths();
 template void ITHACAPODTemplate<volScalarField>::computeMeanField();
