@@ -160,8 +160,8 @@ public:
     PtrList<T> liftfield;
 
 public:
-    //IthacaFVPODTemplate(Parameters* myParameters, const word& myfield_name);
-    //CHC remove merged...  ITHACAPODTemplate<T>(ITHACAparameters *parameters, IthacaPODParameters *podParams, fvMesh& mesh, Time& localTime, const word& myfield_name);
+    //CHC IthacaFVPODTemplate(Parameters* myParameters, const word& myfield_name);
+    
     ITHACAPODTemplate<T>(ITHACAparameters *parameters, fvMesh& mesh, Time& localTime, const word& myfield_name);
     virtual ~ITHACAPODTemplate<T>();
  

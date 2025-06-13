@@ -50,11 +50,6 @@ class Parameters    {public: virtual ~Parameters()    {}}; // only one derivaten
 class ITHACAparameters : public Parameters 
 {
     private:
-
-        
-        //CHC : remove old constructor...  ITHACAparameters(fvMesh& mesh, Time& localTime, const word& myfield_name="");//ITHACAparameters(fvMesh& mesh, Time& localTime);
-
-        //CHC remove tempo ITHACAparameters(int argc, char **argv, Foam::fvMesh&  mesh, Time& localTime, const word& myfield_name="");//CHC new POD specific constructor 
         ITHACAparameters(Foam::fvMesh&  mesh, Time& localTime, const word& myfield_name="");//CHC new POD specific constructor 
         
     public:

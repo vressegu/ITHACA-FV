@@ -1,6 +1,5 @@
-
-#ifdef ___NOT_NOW_REMOVE__ //CHC remove file
-//CHC remove file
+//CHC remove when finished
+#ifdef ___NOT_NOW_REMOVE__ 
 
 #ifndef ITHACA_POD_PARAMETERS_H
 #define ITHACA_POD_PARAMETERS_H
@@ -23,7 +22,7 @@
 
 #include <unsupported/Eigen/CXX11/Tensor>
 
-class Parameters    {public: virtual ~Parameters()    {}}; // only one derivatenamespace ITHACAPOD {
+//CHC remove class Parameters    {public: virtual ~Parameters()    {}}; // only one derivatenamespace ITHACAPOD {
 
 namespace ITHACAPOD {
 
@@ -41,9 +40,6 @@ namespace ITHACAPOD {
       Undefined
     };
   private:
-    /// Pointer to the IthacaPODParameters class for singleton pattern use
-
-    //CHC remove autoPtr<argList> _args;
     autoPtr<Time> runTime0;
 
     Time* runTimeData;

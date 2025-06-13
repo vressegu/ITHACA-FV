@@ -34,11 +34,12 @@ ITHACAparameters::ITHACAparameters(Foam::fvMesh& mesh, Time& localTime, const wo
     Info << "=============>>>>>     ITHACAParameters constructor, step 0 : create dictionary and get init infos" << endl;
 
     //Add constructor code of "standard" ithacaParams
+#pragma message "CHC : changing dictionnary to test..."
     ITHACAdict = new IOdictionary
     (
         IOobject
         (
-            "ITHACAdict",
+            "ITHACAPODdict",//  "ITHACAdict",
             runTime.system(),
             runTime,
             IOobject::MUST_READ_IF_MODIFIED,
@@ -67,6 +68,9 @@ ITHACAparameters::ITHACAparameters(Foam::fvMesh& mesh, Time& localTime, const wo
     warnings = ITHACAdict->lookupOrDefault<bool>("warnings", 0);
 
   //Add to constructor code of "RedLUM" IthacaFVParams
+    Info << "=============>>>>>     @ITHACAdict=" <<ITHACAdict<< endl;
+
+
     Info << "=============>>>>>     ITHACAParameters constructor, step 1 : get runTime0" << endl;
     runTime0 = autoPtr<Foam::Time>(&runTime) ;
 
@@ -79,9 +83,6 @@ ITHACAparameters::ITHACAparameters(Foam::fvMesh& mesh, Time& localTime, const wo
     Info << "=============>>>>>     ITHACAParameters casenameData=" << casenameData << endl;
 
     Info << "=============>>>>>     ITHACAParameters constructor, step 2.2 : find 'fields' in dictionary" << endl;
-
-//#define _REDLUM_INIT_FOR_PARAM
-#ifdef _REDLUM_INIT_FOR_PARAM
 
     fieldlist = static_cast<List<word>>(ITHACAdict->lookup("fields"));
 
@@ -436,9 +437,10 @@ Info << "=============>>>>>     ITHACAParameters constructor, step 13 !" << endl
 
 Info << "=============>>>>>     ITHACAParameters constructor, step 14 !" << endl;
 
+
+    #pragma message "What to do if the file doesn't exist ????????"
     string filename = "constant/turbulenceProperties";
     std::ifstream strm( filename );
-
     string line;
     getline( strm, line );
 
@@ -616,8 +618,6 @@ Info << "=============>>>>>     ITHACAParameters constructor, step 15 !" << endl
 
     Info << "---------------------------------------------------------" << endl;
     
-
-#endif
 }
 
 

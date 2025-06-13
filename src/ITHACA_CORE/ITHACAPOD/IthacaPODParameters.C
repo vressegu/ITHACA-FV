@@ -45,49 +45,11 @@ namespace ITHACAPOD {
             ),
             myfield_name(myfield_name)
 {
-    //this->instance = this;
-    //CHC remove _args = autoPtr<argList>
-    //CHC remove     (
-    //CHC remove       new argList(ithacaLibraryParameters->argc, ithacaLibraryParameters->argv)
-    //CHC remove       );
-    //CHC remove 
-    //CHC remove if (!_args->checkRootCase())
-    //CHC remove {
-    //CHC remove   Foam::FatalError.exit();
-    //CHC remove }
-    //CHC remove 
-    //CHC remove argList& args = _args();
 
-    //CHC remove std::cout << "in IthacaPODParameters, arglist, used for initilise runTime0,  is :" << std::endl;
-    //CHC remove for (int i=0; i<ithacaLibraryParameters->argc; i++)
-    //CHC remove {
-    //CHC remove   std::cout << "argv[" << i << "] = " << ithacaLibraryParameters->argv[i] << std::endl;
-    //CHC remove }
-
-    //CHC : modify runTime0 creation (already created in IthacaParameters)
-    //runTime0 = autoPtr<Foam::Time>( new Foam::Time( Foam::Time::controlDictName,
-    //                                                args ) );
     runTime0 = ithacaLibraryParameters->get_runTime0() ;
-
-
-    //DEJA FAIT DANS L'AUTOLOAD
-    //mesh = (
-    //            new fvMesh
-    //            (
-    //              Foam::IOobject
-    //              (
-    //                Foam::fvMesh::defaultRegion,
-    //                runTime0->timeName(),
-    //                *runTime0,
-    //                Foam::IOobject::MUST_READ
-    //             )
-    //            )
-    //        );
-
 
             nCells = mesh->cells().size();
             
-    //DEJA FAIT DANS L'AUTOLOAD     ithacaLibraryParameters = ITHACAparameters::getInstance(*mesh,*runTime0);
     ITHACAdict = ithacaLibraryParameters->ITHACAdict;
     casenameData = ITHACAdict->lookupOrDefault<fileName>("casename", "./");
     fieldlist = static_cast<List<word>>(ITHACAdict->lookup("fields"));

@@ -63,7 +63,6 @@ SourceFiles
 
 int main(int argc, char *argv[])
 {
-Info << "=============>>>>>     Begin !!! !" << endl;
 
 #include "setRootCase.H"
 #include "createTime.H"
@@ -73,19 +72,11 @@ Info << "=============>>>>>     Begin !!! !" << endl;
     PtrList<volScalarField> Sfield;
     PtrList<volVectorField> Vmodes;
     PtrList<volScalarField> Smodes;
-    Info << "=============>>>>>     Vfield, Sfield, Vmodes and Smodes created" << endl;
-Info << "=============>>>>>     We are running Perform_POD !" << endl;
-    //ITHACAPOD::ITHACAparameters* para = ITHACAPOD::ITHACAparameters::getInstance(mesh,
-    //                         runTime);
-    //ITHACAparameters* para = ITHACAparameters::getInstance(mesh,
-    //                         runTime);
 
-    //CHC : new version for constructor                         
-    ITHACAparameters* para = ITHACAparameters::getInstance(mesh, runTime);//, const word& myfield_name);
-Info << "=============>>>>>     ITHACAparameters OK 1 !" << endl;
+    ITHACAparameters* para = ITHACAparameters::getInstance(mesh, runTime);
+Info << "=============>>>>>     ITHACAparameters OK !" << endl;
     bool pod_exist;
     struct stat sb;
-Info << "=============>>>>>     ITHACAparameters OK 2 !" << endl;
     
     
 
@@ -230,13 +221,11 @@ Info << "=============>>>>>     ITHACAparameters OK 2 !" << endl;
 
         if (field_type == "vector")
         {
-            //CCR - remplacement en cours
-            //ITHACAPOD::getModes(Vfield, Vmodes, field_name, 0, 0, 0, nmodes);
+            ITHACAPOD::getModes(Vfield, Vmodes, field_name, 0, 0, 0, nmodes);
 
-            //CHC remove   ITHACAPOD::IthacaPODParameters* podParams = new ITHACAPOD::IthacaPODParameters(para, &mesh, field_name);
             ITHACAPOD::ITHACAPODTemplate<volVectorField>* IPodTemplate = new ITHACAPOD::ITHACAPODTemplate<volVectorField>(para, mesh, runTime, field_name);
 
-            /* TODO code this launch ... //  ITHACAPOD::getModes(Vfield, Vmodes, field_name, 0, 0, 0, nmodes);
+            /* // TODO code this launch ...
             IPodTemplate->getModes(PtrList<T>& spatialModes,
                                     Eigen::MatrixXd& temporalModes, Eigen::MatrixXd& temporalModesSimulation,
                                     Eigen::MatrixXd& covMatrix);
@@ -244,13 +233,11 @@ Info << "=============>>>>>     ITHACAparameters OK 2 !" << endl;
         }
         if (field_type == "scalar")
         {
-            //CCR - remplacement en cours
-            //ITHACAPOD::getModes(Sfield, Smodes, field_name, 0, 0, 0, nmodes);
+            ITHACAPOD::getModes(Sfield, Smodes, field_name, 0, 0, 0, nmodes);
 
-            //CHC remove   ITHACAPOD::IthacaPODParameters* podParams = new ITHACAPOD::IthacaPODParameters(para, &mesh, field_name);
             ITHACAPOD::ITHACAPODTemplate<volScalarField>* IPodTemplate = new ITHACAPOD::ITHACAPODTemplate<volScalarField>(para, mesh, runTime, field_name);
 
-            /* TODO code this launch  //ITHACAPOD::getModes(Sfield, Smodes, field_name, 0, 0, 0, nmodes);
+            /* TODO code this launch  
             IPodTemplate->getModes(PtrList<T>& spatialModes,
                                     Eigen::MatrixXd& temporalModes, Eigen::MatrixXd& temporalModesSimulation,
                                     Eigen::MatrixXd& covMatrix);
