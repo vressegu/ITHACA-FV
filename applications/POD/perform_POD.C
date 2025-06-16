@@ -57,7 +57,7 @@ SourceFiles
 #include "ITHACAPOD.H"
 #include "ITHACAparameters.H"<
 
-#include "IthacaPODParameters.H"
+//CHC remove #include "IthacaPODParameters.H"
 #include "IthacaPODTemplate.H"
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
 

@@ -53,7 +53,7 @@ SourceFiles
 #pragma GCC diagnostic pop
 */
 
-#include "IthacaPODParameters.H"
+//CHC remove #include "IthacaPODParameters.H"
 
 /*---------------------------------------------------------------------------*\
                         Class reductionProblem Declaration
