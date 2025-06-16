@@ -33,19 +33,35 @@ ITHACAparameters::ITHACAparameters(Foam::fvMesh& mesh, Time& localTime, const wo
 {
 
     //Add constructor code of "standard" ithacaParams
-#pragma message "CHC : changing dictionnary to test..."
-    ITHACAdict = new IOdictionary
-    (
-        IOobject
-        (
-            "ITHACAPODdict",//  "ITHACAdict",
-            runTime.system(),
-            runTime,
-            IOobject::MUST_READ_IF_MODIFIED,
-            IOobject::NO_WRITE,
-            true
-        )
-    );
+    if(myfield_name==""){//(if NULL, it should be a normal ITHACAParameter and not a ITHACAPODParameter)
+      ITHACAdict = new IOdictionary
+      (
+          IOobject
+          (
+              "ITHACAdict",
+              runTime.system(),
+              runTime,
+              IOobject::MUST_READ_IF_MODIFIED,
+              IOobject::NO_WRITE,
+              true
+          )
+      );
+    }else{
+  #pragma message "CHC : changing dictionnary"
+      ITHACAdict = new IOdictionary
+      (
+          IOobject
+          (
+              "ITHACAPODdict",// before adding RedLUM parameters, there was "ITHACAdict" here
+              runTime.system(),
+              runTime,
+              IOobject::MUST_READ_IF_MODIFIED,
+              IOobject::NO_WRITE,
+              true
+          )
+      );
+
+    }//end of test myfield_name=="" (if NULL, it should be a normal ITHACAParameter and not a ITHACAPODParameter)
     precision = ITHACAdict->lookupOrDefault<label>("OutPrecision", 10);
     word typeout = ITHACAdict->lookupOrDefault<word>("OutType", "fixed");
 
@@ -65,7 +81,12 @@ ITHACAparameters::ITHACAparameters(Foam::fvMesh& mesh, Time& localTime, const wo
     exportTxt = ITHACAdict->lookupOrDefault<bool>("exportTxt", 0);
     debug = ITHACAdict->lookupOrDefault<bool>("debug", 0);
     warnings = ITHACAdict->lookupOrDefault<bool>("warnings", 0);
+    
+    if(myfield_name=="")//if NULL, it should be a normal ITHACAParameter and not a ITHACAPODParameter)
+      return;
 
+
+    //Adding RedLUM parameters
     runTime0 = autoPtr<Foam::Time>(&runTime) ;
     nCells = mesh.cells().size();
     casenameData = ITHACAdict->lookupOrDefault<fileName>("casename", "./");
