@@ -104,6 +104,8 @@ void getModes(
     Info << "Performing POD for " << fieldName << " using the " << PODnorm <<
          " norm" << endl;
 
+    word POD_path{"./ITHACAoutput/POD/"};
+
     if ((podex == 0 && sup == 0) || (supex == 0 && sup == 1))
     {
         if (para->eigensolver == "spectra" )
@@ -275,7 +277,6 @@ void getModes(
 
         Info << "####### Saving the POD bases for " << snapshots[0].name() <<
              " #######" << endl;
-
         if (sup)
         {
             ITHACAstream::exportFields(modes, "./ITHACAoutput/supremizer/",
@@ -283,15 +284,11 @@ void getModes(
         }
         else
         {
-            ITHACAstream::exportFields(modes, "./ITHACAoutput/POD/", snapshots[0].name());
+            ITHACAstream::exportFields(modes, POD_path, snapshots[0].name());
         }
 
-        Eigen::saveMarketVector(eigenValueseig,
-                                "./ITHACAoutput/POD/Eigenvalues_" + snapshots[0].name(), para->precision,
-                                para->outytpe);
-        Eigen::saveMarketVector(cumEigenValues,
-                                "./ITHACAoutput/POD/CumEigenvalues_" + snapshots[0].name(), para->precision,
-                                para->outytpe);
+        ITHACAstream::exportToFile(eigenValueseig,  word("Eigenvalues_") + snapshots[0].name(), "cnpy", POD_path);
+        ITHACAstream::exportToFile(cumEigenValues,  word("CumEigenvalues_") + snapshots[0].name(),"cnpy", POD_path);
     }
     else
     {
@@ -304,7 +301,7 @@ void getModes(
         }
         else
         {
-            ITHACAstream::read_fields(modes, fieldName, "./ITHACAoutput/POD/");
+            ITHACAstream::read_fields(modes, fieldName, POD_path);
         }
     }
 }
@@ -349,6 +346,7 @@ void getModesMemoryEfficient(
     Info << "Performing memory efficient POD for " << fieldName 
          << " using the " << PODnorm << " norm" << endl;
 
+    word POD_path{"./ITHACAoutput/POD/"};
     if ((podex == 0 && sup == 0) || (supex == 0 && sup == 1))
     {
         // Count number of snapshots in directory (excluding 0/ and constant/)
@@ -572,7 +570,6 @@ void getModesMemoryEfficient(
             modes.set(i, modeI.clone());
             Info << "Constructed mode " << i + 1 << " of " << nmodes << endl;
         }
-
         // Save modes to appropriate directory
         if (sup)
         {
@@ -580,7 +577,7 @@ void getModesMemoryEfficient(
         }
         else
         {
-            ITHACAstream::exportFields(modes, "./ITHACAoutput/POD/", fieldName);
+            ITHACAstream::exportFields(modes, POD_path, fieldName);
         }
 
         // Calculate and save eigenvalue data
@@ -592,10 +589,8 @@ void getModesMemoryEfficient(
         }
 
         // Export eigenvalues
-        Eigen::saveMarketVector(eigenValues,
-            "./ITHACAoutput/POD/Eigenvalues_" + fieldName, para->precision, para->outytpe);
-        Eigen::saveMarketVector(cumEigenValues,
-            "./ITHACAoutput/POD/CumEigenvalues_" + fieldName, para->precision, para->outytpe);
+        ITHACAstream::exportToFile(eigenValues,  word("Eigenvalues_") + fieldName, "cnpy", POD_path);
+        ITHACAstream::exportToFile(cumEigenValues,  word("CumEigenvalues_") + fieldName,"cnpy", POD_path);
     }
     else
     {
@@ -607,7 +602,7 @@ void getModesMemoryEfficient(
         }
         else
         {
-            ITHACAstream::read_fields(modes, fieldName, "./ITHACAoutput/POD/");
+            ITHACAstream::read_fields(modes, fieldName, POD_path);
         }
     }
 }
@@ -703,6 +698,7 @@ void getWeightedModes(
     bool correctBC)
 {
     ITHACAparameters* para(ITHACAparameters::getInstance());
+    word POD_path{"./ITHACAoutput/POD/"};
 
     if (nmodes == 0)
     {
@@ -711,6 +707,7 @@ void getWeightedModes(
 
     M_Assert(nmodes <= snapshots.size() - 2,
              "The number of requested modes cannot be bigger than the number of Snapshots - 2");
+
 
     if ((podex == 0 && sup == 0) || (supex == 0 && sup == 1))
     {
@@ -793,7 +790,6 @@ void getWeightedModes(
 
         Info << "####### Saving the POD bases for " << snapshots[0].name() <<
              " #######" << endl;
-
         //exportBases(modes, snapshots, sup);
         if (sup)
         {
@@ -802,15 +798,11 @@ void getWeightedModes(
         }
         else
         {
-            ITHACAstream::exportFields(modes, "./ITHACAoutput/POD/", snapshots[0].name());
+            ITHACAstream::exportFields(modes, POD_path, snapshots[0].name());
         }
 
-        Eigen::saveMarketVector(eigenValueseig,
-                                "./ITHACAoutput/POD/Eigenvalues_" + snapshots[0].name(), para->precision,
-                                para->outytpe);
-        Eigen::saveMarketVector(cumEigenValues,
-                                "./ITHACAoutput/POD/CumEigenvalues_" + snapshots[0].name(), para->precision,
-                                para->outytpe);
+        ITHACAstream::exportToFile(eigenValueseig,  word("Eigenvalues_") + snapshots[0].name(), "cnpy", POD_path);
+        ITHACAstream::exportToFile(cumEigenValues,  word("CumEigenvalues_") + snapshots[0].name(),"cnpy", POD_path);
     }
     else
     {
@@ -823,7 +815,7 @@ void getWeightedModes(
         }
         else
         {
-            ITHACAstream::read_fields(modes, fieldName, "./ITHACAoutput/POD/");
+            ITHACAstream::read_fields(modes, fieldName, POD_path);
         }
     }
 }
@@ -846,6 +838,7 @@ void getModesSVD(
     bool correctBC)
 {
     ITHACAparameters* para(ITHACAparameters::getInstance());
+    word POD_path{"./ITHACAoutput/POD/"};
 
     if ((podex == 0 && sup == 0) || (supex == 0 && sup == 1))
     {
@@ -897,16 +890,13 @@ void getModesSVD(
         }
         else
         {
-            ITHACAstream::exportFields(modes, "./ITHACAoutput/POD/", snapshots[0].name());
+            ITHACAstream::exportFields(modes, POD_path, snapshots[0].name());
         }
 
         //exportBases(modes, snapshots, sup);
-        Eigen::saveMarketVector(eigenValueseig,
-                                "./ITHACAoutput/POD/Eigenvalues_" + snapshots[0].name(), para->precision,
-                                para->outytpe);
-        Eigen::saveMarketVector(cumEigenValues,
-                                "./ITHACAoutput/POD/CumEigenvalues_" + snapshots[0].name(), para->precision,
-                                para->outytpe);
+        ITHACAstream::exportToFile(eigenValueseig,  word("Eigenvalues_") + snapshots[0].name(), "cnpy", POD_path );
+        ITHACAstream::exportToFile(cumEigenValues,  word("CumEigenvalues_") + snapshots[0].name(),"cnpy", POD_path );
+        
     }
     else
     {
@@ -919,7 +909,7 @@ void getModesSVD(
         }
         else
         {
-            ITHACAstream::read_fields(modes, fieldName, "./ITHACAoutput/POD/");
+            ITHACAstream::read_fields(modes, fieldName, POD_path);
         }
     }
 }
@@ -1160,7 +1150,8 @@ DEIMmodes(List<Eigen::SparseMatrix<double>> & A,
     List<Eigen::SparseMatrix<double>> ModesA(nmodesA);
     List<Eigen::VectorXd> ModesB(nmodesB);
 
-    if (!ITHACAutilities::check_folder("./ITHACAoutput/DEIM/" + MatrixName))
+    word DEIM_path = DEIM_path = "./ITHACAoutput/DEIM/";
+    if (!ITHACAutilities::check_folder(DEIM_path + MatrixName))
     {
         if (nmodesA > A.size() - 2 || nmodesB > A.size() - 2 )
         {
@@ -1310,23 +1301,23 @@ DEIMmodes(List<Eigen::SparseMatrix<double>> & A,
         }
 
         ITHACAstream::exportList(eigenValuesA,
-                                 "./ITHACAoutput/DEIM/" + MatrixName + "/", "eigenValuesA_" + MatrixName);
+                                 DEIM_path + MatrixName + "/", "eigenValuesA_" + MatrixName);
         ITHACAstream::exportList(cumEigenValuesA,
-                                 "./ITHACAoutput/DEIM/" + MatrixName + "/", "cumEigenValuesA_" + MatrixName);
+                                 DEIM_path + MatrixName + "/", "cumEigenValuesA_" + MatrixName);
         ITHACAstream::exportList(eigenValuesB,
-                                 "./ITHACAoutput/DEIM/" + MatrixName + "/", "eigenValuesB_" + MatrixName);
+                                 DEIM_path + MatrixName + "/", "eigenValuesB_" + MatrixName);
         ITHACAstream::exportList(cumEigenValuesB,
-                                 "./ITHACAoutput/DEIM/" + MatrixName + "/", "cumEigenValuesB_" + MatrixName);
+                                 DEIM_path + MatrixName + "/", "cumEigenValuesB_" + MatrixName);
 
         for (label i = 0; i < ModesA.size(); i++)
         {
             ITHACAstream::SaveSparseMatrix(ModesA[i],
-                                           "./ITHACAoutput/DEIM/" + MatrixName + "/", "A_" + MatrixName + name(i));
+                                           DEIM_path + MatrixName + "/", "A_" + MatrixName + name(i));
         }
 
         for (label i = 0; i < ModesB.size(); i++)
         {
-            ITHACAstream::exportToFile(ModesB[i],"B_" + MatrixName + name(i),"cnpy","./ITHACAoutput/DEIM/" + MatrixName);
+            ITHACAstream::exportToFile(ModesB[i],"B_" + MatrixName + name(i),"cnpy",DEIM_path + MatrixName);
         }
     }
     else
@@ -1334,12 +1325,12 @@ DEIMmodes(List<Eigen::SparseMatrix<double>> & A,
         for (label i = 0; i < nmodesA; i++)
         {
             ITHACAstream::ReadSparseMatrix(ModesA[i],
-                                           "./ITHACAoutput/DEIM/" + MatrixName + "/", "A_" + MatrixName + name(i));
+                                           DEIM_path + MatrixName + "/", "A_" + MatrixName + name(i));
         }
 
         for (label i = 0; i < nmodesB; i++)
         {
-            ITHACAstream::importNpy(ModesB[i],"B_" + MatrixName + name(i),  "./ITHACAoutput/DEIM/" + MatrixName);
+            ITHACAstream::importNpy(ModesB[i],"B_" + MatrixName + name(i),  DEIM_path + MatrixName);
         }
     }
 
@@ -1499,12 +1490,9 @@ void getModes(
         Info << "####### Saving the POD bases for " << snapshots[0].name() << " #######"
              << endl;
         exportBases(modes, snapshots, fieldName, sup);
-        Eigen::saveMarketVector(eigenValueseig,
-                                "./ITHACAoutput/POD/Eigenvalues_" + snapshots[0].name(), para->precision,
-                                para->outytpe);
-        Eigen::saveMarketVector(cumEigenValues,
-                                "./ITHACAoutput/POD/CumEigenvalues_" + snapshots[0].name(), para->precision,
-                                para->outytpe);
+        
+        ITHACAstream::exportToFile(eigenValueseig,  word("Eigenvalues_") + snapshots[0].name(), "cnpy", word("ITHACAoutput/POD"));
+        ITHACAstream::exportToFile(cumEigenValues,  word("CumEigenvalues_") + snapshots[0].name(),"cnpy", word("ITHACAoutput/POD"));
     }
     else
     {
@@ -1539,8 +1527,8 @@ DEIMmodes(PtrList<type_matrix> & MatrixList, label nmodesA, label nmodesB,
     ITHACAparameters* para(ITHACAparameters::getInstance());
     List<Eigen::SparseMatrix<double>> ModesA(nmodesA);
     List<Eigen::VectorXd> ModesB(nmodesB);
-
-    if (!ITHACAutilities::check_folder("./ITHACAoutput/DEIM/" + MatrixName))
+    word DEIM_path{"./ITHACAoutput/DEIM/"};
+    if (!ITHACAutilities::check_folder( DEIM_path + MatrixName))
     {
         M_Assert(nmodesA <= MatrixList.size() - 2
                  && nmodesB <= MatrixList.size() - 2,
@@ -1663,38 +1651,30 @@ DEIMmodes(PtrList<type_matrix> & MatrixList, label nmodesA, label nmodesB,
         for (label i = 0; i < ModesA.size(); i++)
         {
             ITHACAstream::SaveSparseMatrix(ModesA[i],
-                                           "./ITHACAoutput/DEIM/" + MatrixName + "/", "A_" + MatrixName + name(i));
+                                           DEIM_path + MatrixName + "/", "A_" + MatrixName + name(i));
         }
 
         for (label i = 0; i < ModesB.size(); i++)
         {
-            ITHACAstream::exportToFile(ModesB[i],"B_" + MatrixName + name(i), "cnpy", "./ITHACAoutput/DEIM/" + MatrixName);
+            ITHACAstream::exportToFile(ModesB[i],"B_" + MatrixName + name(i), "cnpy", DEIM_path + MatrixName);
         }
 
-        Eigen::saveMarketVector(eigenValueseigA,
-                                "./ITHACAoutput/DEIM/" + MatrixName + "/eigenValuesA", para->precision,
-                                para->outytpe);
-        Eigen::saveMarketVector(eigenValueseigB,
-                                "./ITHACAoutput/DEIM/" + MatrixName + "/eigenValuesB", para->precision,
-                                para->outytpe);
-        Eigen::saveMarketVector(cumEigenValuesA,
-                                "./ITHACAoutput/DEIM/" + MatrixName + "/cumEigenValuesA", para->precision,
-                                para->outytpe);
-        Eigen::saveMarketVector(cumEigenValuesB,
-                                "./ITHACAoutput/DEIM/" + MatrixName + "/cumEigenValuesB", para->precision,
-                                para->outytpe);
+        ITHACAstream::exportToFile(eigenValueseigA,  word("eigenValuesA"), "cnpy", word(DEIM_path) + MatrixName);
+        ITHACAstream::exportToFile(eigenValueseigA,  word("eigenValuesB"), "cnpy", word(DEIM_path) + MatrixName);
+        ITHACAstream::exportToFile(cumEigenValuesA,  word("cumEigenValuesA"), "cnpy", word(DEIM_path) + MatrixName);
+        ITHACAstream::exportToFile(cumEigenValuesA,  word("cumEigenValuesB"), "cnpy", word(DEIM_path) + MatrixName);
     }
     else
     {
         for (label i = 0; i < nmodesA; i++)
         {
             ITHACAstream::ReadSparseMatrix(ModesA[i],
-                                           "./ITHACAoutput/DEIM/" + MatrixName + "/", "A_" + MatrixName + name(i));
+                                           DEIM_path + MatrixName + "/", "A_" + MatrixName + name(i));
         }
 
         for (label i = 0; i < nmodesB; i++)
         {
-            ITHACAstream::importNpy(ModesB[i],"B_" + MatrixName + name(i), "./ITHACAoutput/DEIM/" + MatrixName);
+            ITHACAstream::importNpy(ModesB[i],"B_" + MatrixName + name(i), DEIM_path + MatrixName);
         }
     }
 
@@ -1744,7 +1724,8 @@ PtrList<GeometricField<Type, PatchField, GeoMesh>>DEIMmodes(
                  "The number of requested modes cannot be bigger than the number of Snapshots - 2");
     }
 
-    if (!ITHACAutilities::check_folder("./ITHACAoutput/DEIM/" + FunctionName))
+    word DEIM_path = DEIM_path = "./ITHACAoutput/DEIM/";
+    if (!ITHACAutilities::check_folder(DEIM_path + FunctionName))
     {
         Eigen::MatrixXd SnapMatrix = Foam2Eigen::PtrList2Eigen(snapshots);
         List<Eigen::MatrixXd> SnapMatrixBC = Foam2Eigen::PtrList2EigenBC(snapshots);
@@ -1897,17 +1878,13 @@ PtrList<GeometricField<Type, PatchField, GeoMesh>>DEIMmodes(
                                          fieldName);
         }
 
-        Eigen::saveMarketVector(eigenValueseig,
-                                "./ITHACAoutput/DEIM/eigenValues_" + fieldName, para->precision,
-                                para->outytpe);
-        Eigen::saveMarketVector(cumEigenValues,
-                                "./ITHACAoutput/DEIM/cumEigenValues_" + fieldName, para->precision,
-                                para->outytpe);
+        ITHACAstream::exportToFile(eigenValueseig,  word("eigenvalues_") + fieldName, "cnpy", DEIM_path);
+        ITHACAstream::exportToFile(cumEigenValues,  word("cumEigenvalues_") + fieldName,"cnpy", DEIM_path);
     }
     else
     {
         Info << "Reading the existing modes" << endl;
-        ITHACAstream::read_fields(modes, fieldName, "./ITHACAoutput/DEIM/");
+        ITHACAstream::read_fields(modes, fieldName, DEIM_path);
     }
 
     return modes;
@@ -1920,6 +1897,7 @@ void getModes(
     bool sup, label nmodes, bool correctBC)
 {
     ITHACAparameters* para(ITHACAparameters::getInstance());
+    word POD_path{"./ITHACAoutput/POD/"};
 
     if ((podex == 0 && sup == 0) || (supex == 0 && sup == 1))
     {
@@ -2027,15 +2005,11 @@ void getModes(
         }
         else
         {
-            ITHACAstream::exportFields(modes, "./ITHACAoutput/POD/", snapshots[0].name());
+                ITHACAstream::exportFields(modes, POD_path, snapshots[0].name());
         }
 
-        Eigen::saveMarketVector(eigenValueseig,
-                                "./ITHACAoutput/POD/Eigenvalues_" + snapshots[0].name(), para->precision,
-                                para->outytpe);
-        Eigen::saveMarketVector(cumEigenValues,
-                                "./ITHACAoutput/POD/CumEigenvalues_" + snapshots[0].name(), para->precision,
-                                para->outytpe);
+        ITHACAstream::exportToFile(eigenValueseig,  word("Eigenvalues_") + snapshots[0].name(), "cnpy", POD_path);
+        ITHACAstream::exportToFile(cumEigenValues,  word("CumEigenvalues_") + snapshots[0].name(),"cnpy", POD_path);
     }
     else
     {
@@ -2047,7 +2021,7 @@ void getModes(
         }
         else
         {
-            ITHACAstream::read_fields(modes, fieldName, "./ITHACAoutput/POD/");
+            ITHACAstream::read_fields(modes, fieldName, POD_path);
         }
     }
 }
