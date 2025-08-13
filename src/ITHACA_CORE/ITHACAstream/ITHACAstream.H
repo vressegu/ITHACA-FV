@@ -527,16 +527,16 @@ void load(List<Eigen::SparseMatrix<T>> & MatrixList, word folder,
 /// Export To File 
 ///
 /// @param[in]  Matrix, Vector, Tensor Matrix, vector, or tensor to export
-/// @param[in]  matrixRoad File name with path
+/// @param[in]  matrixPath File name with path
 /// @param[in]  type optional export type cnpy, python, matlab, text, default cnpy
 /// @param[in]  folder optional file path
 ///
 template<typename T, int dim>
-    void exportToFile(Eigen::Matrix < T, -1, dim > & matrix,word matrixRoad,word type = "cnpy", word folder = defaultFolder);
-void exportToFile(Eigen::VectorXd& Vector,word matrixRoad, word type = "cnpy", word folder = defaultFolder);
-void exportToFile(Eigen::VectorXi& Vector,word matrixRoad, word type = "cnpy", word folder = defaultFolder);
+    void exportToFile(Eigen::Matrix < T, -1, dim > & matrix,word matrixPath,word type = "cnpy", word folder = defaultFolder);
+void exportToFile(Eigen::VectorXd& Vector,word matrixPath, word type = "cnpy", word folder = defaultFolder);
+void exportToFile(Eigen::VectorXi& Vector,word matrixPath, word type = "cnpy", word folder = defaultFolder);
 void exportToFile(Eigen::Tensor<double,3>& Tensor,word tensorRoad, word type = "cnpy", word folder = defaultFolder);
-void exportToFile(List <Eigen::MatrixXd>& Matrix,word matrixRoad,word type = "cnpy", word folder = defaultFolder);
+void exportToFile(List <Eigen::MatrixXd>& Matrix,word matrixPath,word type = "cnpy", word folder = defaultFolder);
 void exportToFile(Eigen::SparseMatrix<double>& Matrix, word name, word folder = defaultFolder);
 
 //--------------------------------------------------------------------------

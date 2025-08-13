@@ -1175,7 +1175,7 @@ template void load(List<Eigen::SparseMatrix<double>> & MatrixList, word folder,
                    word MatrixName);
 
 template<typename T, int dim>
-void exportToFile(Eigen::Matrix < T, -1, dim > & Matrix,word matrixRoad, word type, word folder)
+void exportToFile(Eigen::Matrix < T, -1, dim > & Matrix,word matrixPath, word type, word folder)
 {
     //creates the folder if it doesn't exist, exportMatrix will create the subfolder
     mkDir(folder);
@@ -1183,20 +1183,20 @@ void exportToFile(Eigen::Matrix < T, -1, dim > & Matrix,word matrixRoad, word ty
     if (folder.back()!='/') folder += "/";
     //adds subfolder and calls proper export function
     if (type == "python"){
-        exportMatrix(Matrix, matrixRoad, "python", folder + "Python");
+        exportMatrix(Matrix, matrixPath, "python", folder + "Python");
     }
     else if (type == "matlab"){
-        exportMatrix(Matrix, matrixRoad, "matlab", folder + "Matlab");
+        exportMatrix(Matrix, matrixPath, "matlab", folder + "Matlab");
     }
     else if (type == "eigen"){
-        exportMatrix(Matrix, matrixRoad, "eigen", folder + "Txt");
+        exportMatrix(Matrix, matrixPath, "eigen", folder + "Txt");
     }
     else if (type == "cnpy"){
-        exportMatrix(Matrix, matrixRoad, "cnpy", folder + "Npy");
+        exportMatrix(Matrix, matrixPath, "cnpy", folder + "Npy");
     }
     else 
     {
-        Info << "Unknow type for export: " << type << "path " << matrixRoad << endl;
+        Info << "Unknow type for export: " << type << "path " << matrixPath << endl;
     }
 }
 
@@ -1205,16 +1205,16 @@ template void exportToFile(Eigen::Matrix<double, -1, -1> & Matrix,word, word, wo
 template void exportToFile(Eigen::Matrix<std::complex<double>, -1, -1> & Matrix,word, word, word);
 
 
-void exportToFile(Eigen::VectorXd& Vector,word matrixRoad,word type,word folder)
+void exportToFile(Eigen::VectorXd& Vector,word matrixPath,word type,word folder)
 {
     Eigen::MatrixXd matrix = Vector;
-    exportToFile(matrix, matrixRoad, type, folder);
+    exportToFile(matrix, matrixPath, type, folder);
 }
 
-void exportToFile(Eigen::VectorXi& Vector,word matrixRoad,word type,word folder)
+void exportToFile(Eigen::VectorXi& Vector,word matrixPath,word type,word folder)
 {
     Eigen::MatrixXi matrix = Vector;
-    exportToFile(matrix, matrixRoad, type, folder);
+    exportToFile(matrix, matrixPath, type, folder);
 }
 
 
@@ -1243,7 +1243,7 @@ void exportToFile(Eigen::Tensor<double,3>& Tensor,word tensorRoad,word type,word
     }
 }
 
-void exportToFile(List <Eigen::MatrixXd>& Matrix,word matrixRoad, word type, word folder)
+void exportToFile(List <Eigen::MatrixXd>& Matrix,word matrixPath, word type, word folder)
 {
     //creates the folder if it doesn't exist, exportMatrix will create the subfolder
     mkDir(folder);
@@ -1251,20 +1251,20 @@ void exportToFile(List <Eigen::MatrixXd>& Matrix,word matrixRoad, word type, wor
     if (folder.back()!='/') folder += "/";
     //adds subfolder and call proper export function
     if (type == "python"){
-        exportMatrix(Matrix, matrixRoad, "python", folder + "Python");
+        exportMatrix(Matrix, matrixPath, "python", folder + "Python");
     }
     else if (type == "matlab"){
-        exportMatrix(Matrix, matrixRoad, "matlab", folder + "Matlab");
+        exportMatrix(Matrix, matrixPath, "matlab", folder + "Matlab");
     }
     else if (type == "eigen"){
-        exportMatrix(Matrix, matrixRoad, "eigen", folder + "Txt");
+        exportMatrix(Matrix, matrixPath, "eigen", folder + "Txt");
     }
     else if (type == "cnpy"){
-        exportMatrix(Matrix, matrixRoad, "cnpy", folder + "Npy");
+        exportMatrix(Matrix, matrixPath, "cnpy", folder + "Npy");
     }
     else 
     {
-        Info << "Unknow type for export: " << type << "path " << matrixRoad << endl;
+        Info << "Unknow type for export: " << type << "path " << matrixPath << endl;
     }
 }
 
