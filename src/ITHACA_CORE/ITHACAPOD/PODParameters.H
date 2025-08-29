@@ -5,6 +5,7 @@
 #include <FieldField.H>
 
 #include "fvMesh.H"
+#include "ITHACAparameters.H"
 
 #pragma GCC diagnostic push
 #pragma GCC diagnostic ignored "-Wold-style-cast"
@@ -37,22 +38,22 @@ class PODParameters : public Parameters
     };
 
   private:
-    autoPtr<argList> _args;
+    Foam::autoPtr<Foam::argList> _args;
     // Dossier dans lequel on a le 0 cst system
     // utile pour ITHACA-FV ? un runtime est déjà utilisé pour lire ITHACAdict
     // pour l’instant on le garde ici
     // objet openfoam
-    autoPtr<Time> runTime0;
+    Foam::autoPtr<Foam::Time> runTime0;
 
     // ITHACA-FV, pour la DEIM
     // il est probablement déjà instancié quelque part dans ITHACA-FV
-    fvMesh* submesh;//! ref
+    Foam::fvMesh* submesh;//! ref
  
     /// Parameters from ITHACAparameters class from ITHACA-FV library
 
     ITHACAparameters* ithacaLibraryParameters;//! ref
-    IOdictionary* ITHACAdict;
-    wordList fieldlist;
+    Foam::IOdictionary* ITHACAdict;
+    Foam::wordList fieldlist;
 
     // Provient déjà d’ITHACA-FV
     bool exportPython;
@@ -78,7 +79,7 @@ class PODParameters : public Parameters
 
     /// string indicating what temporal scheme to used
     // Les deux (ITHACA-FV & RedLUM)
-    word ROMTemporalScheme;
+    Foam::word ROMTemporalScheme;
 
     // ITHACA-FV
     bool interpFieldCenteredOrNot;
@@ -90,7 +91,7 @@ class PODParameters : public Parameters
     bool symDiff;
 
     // rapport entre le pas de temps de la simu et celui utilisé pour la résolution du ROM 
-    label nSimu;
+    Foam::label nSimu;
 
 
     // ITHACA-FV
@@ -98,7 +99,7 @@ class PODParameters : public Parameters
     double FinalTimeSimulation;
 
     // ITHACA-FV
-    dimensionedScalar* nu;
+    Foam::dimensionedScalar* nu;
 
     // ITHACA-FV
     PressureResolutionKind pressureResolutionKind;
@@ -112,16 +113,16 @@ class PODParameters : public Parameters
 
     // ITHACA-FV
     /// Number of magic points for build_DEIM_U
-    label nMagicPoints;
+    Foam::label nMagicPoints;
 
     // ITHACA-FV
     /// DEIM parameters
-    PtrList<volTensorField> deformationTensorOfModesOnMagicPoints;
-    PtrList<volTensorField> deformationTensorOfModesOnMagicNeighborhoods;
-    PtrList<volVectorField> tracerGradOfModesOnMagicPoints;
-    PtrList<volVectorField> tracerGradOfModesOnMagicNeighborhoods;
-    List<label> magicPoints;
-    List<label> localMagicPoints;
+    Foam::PtrList<volTensorField> deformationTensorOfModesOnMagicPoints;
+    Foam::PtrList<volTensorField> deformationTensorOfModesOnMagicNeighborhoods;
+    Foam::PtrList<volVectorField> tracerGradOfModesOnMagicPoints;
+    Foam::PtrList<volVectorField> tracerGradOfModesOnMagicNeighborhoods;
+    Foam::List<label> magicPoints;
+    Foam::List<label> localMagicPoints;
 
     // ITHACA-FV
     /// DEIM matrix (high dimensioned)
@@ -131,17 +132,17 @@ class PODParameters : public Parameters
 
     // ITHACA-FV
     /// Geometric Information
-    volScalarField* volume;
+    Foam::volScalarField* volume;
     double totalVolume;
-    volScalarField* delta;
-    volScalarField* magicDelta;
+    Foam::volScalarField* delta;
+    Foam::volScalarField* magicDelta;
 
     // ITHACA-FV
-    volVectorField* meanU;
-    volVectorField* meanVectorDEIM;
-    volScalarField* meanScalarDEIM;
-    volVectorField* meanVectorDEIMMagic;
-    volScalarField* meanScalarDEIMMagic;
+    Foam::volVectorField* meanU;
+    Foam::volVectorField* meanVectorDEIM;
+    Foam::volScalarField* meanScalarDEIM;
+    Foam::volVectorField* meanVectorDEIMMagic;
+    Foam::volScalarField* meanScalarDEIMMagic;
 
     // ITHACA-FV
     word folder_DEIM;
