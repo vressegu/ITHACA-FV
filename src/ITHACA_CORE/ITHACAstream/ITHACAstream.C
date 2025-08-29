@@ -982,17 +982,42 @@ template<typename T>
 void ITHACAstream::read_snapshot(T& snapshot, const Foam::label& i_snap,
                                   Foam::word path, Foam::word name)
 {
-    // ITHACAparameters* para(ITHACAparameters::getInstance());
+    ITHACAparameters* para(ITHACAparameters::getInstance());
     const fvMesh& mesh = snapshot.mesh();
+    // Foam::word casenameData = para->casename;
+    Foam::fileName casenameData = para->ITHACAdict->lookupOrDefault<Foam::fileName>("casename",".");
+    Foam::word timename;
 
-    Foam::Time runTimeData(Foam::Time::controlDictName,
+    // runTime does not have any default constructor but its value is not the
+    // in the case of a sequential or parallel run
+    // So a null pointer is defined here and the value of this pointer will be
+    // defined in the if / else just below
+    Foam::Time* runTimeDataPtr = nullptr;
+
+    if (Pstream::parRun())
+    {
+        Foam::Time* runTimeParallel = new Foam::Time(Foam::Time::controlDictName,
         mesh.time().rootPath(),
         mesh.time().caseName());
 
-    word timename(mesh.time().rootPath() + "/" +
-                  mesh.time().caseName());
+        runTimeDataPtr = runTimeParallel;
+    
+
+    timename = mesh.time().rootPath() + "/" + mesh.time().caseName();
     timename = timename.substr(0, timename.find_last_of("\\/"));
     timename = timename + "/" + "processor" + std::to_string(Pstream::myProcNo()) + "/";
+
+    }
+    else
+    {
+    Foam::Time* runTimeSequential = new Foam::Time(
+        ".",
+        casenameData);
+    runTimeDataPtr = runTimeSequential;
+
+
+    timename = mesh.time().rootPath() + "/" + mesh.time().caseName();
+    }
 
     if (name == "default_name")
     {
@@ -1003,11 +1028,11 @@ void ITHACAstream::read_snapshot(T& snapshot, const Foam::label& i_snap,
     {
         if (Pstream::parRun())
         {
-            path = timename + runTimeData.times()[i_snap].name();
+            path = timename + runTimeDataPtr->times()[i_snap].name();
         }
         else
         {
-            path = runTimeData.times()[i_snap].name();
+            path = timename + "/" + casenameData + "/" + runTimeDataPtr->times()[i_snap].name();
         }
     }
 
@@ -1032,6 +1057,7 @@ void ITHACAstream::read_snapshot(T& snapshot, const Foam::label& i_snap,
         mesh);
 
     snapshot = snapshot_dummy;
+    delete runTimeDataPtr;
 }
 
 
