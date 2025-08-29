@@ -38,12 +38,12 @@ class PODParameters : public Parameters
     };
 
   private:
-    std::unique_ptr<Foam::argList> _args;
+    Foam::autoPtr<Foam::argList> _args;
     // Dossier dans lequel on a le 0 cst system
     // utile pour ITHACA-FV ? un runtime est déjà utilisé pour lire ITHACAdict
     // pour l’instant on le garde ici
     // objet openfoam
-    std::unique_ptr<Foam::Time> runTime0;
+    Foam::autoPtr<Foam::Time> runTime0;
 
     // ITHACA-FV, pour la DEIM
     // il est probablement déjà instancié quelque part dans ITHACA-FV
