@@ -72,7 +72,9 @@ LIB_LIBS = \
     -lITHACA_ROMPROBLEMS \
     -lITHACA_FOMPROBLEMS \
     -lITHACA_THIRD_PARTY \
+    -lITHACA_INTERPOLATOR \
     -lITHACA_CORE \
+    -lsixDoFRigidBodyMotion \
     -L$(FOAM_USER_LIBBIN) \
     -L/usr/lib \
     -lcrypt \

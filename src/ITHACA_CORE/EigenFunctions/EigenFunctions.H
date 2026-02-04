@@ -120,7 +120,7 @@ void sortEigenvalues(Eigen::VectorXd& eigenvalues,
 ///
 template <typename T>
 Eigen::Matrix<T, Eigen::Dynamic, Eigen::Dynamic> innerProduct(
-    List <Eigen::SparseMatrix<T >> & A, List <Eigen::SparseMatrix<T >>& B);
+    List <Eigen::SparseMatrix<T >>& A, List <Eigen::SparseMatrix<T >>& B);
 
 //--------------------------------------------------------------------------
 /// @brief      Perform Frobenius inner Product between a list of sparse matrices A and a sparse matrix B
@@ -136,7 +136,7 @@ Eigen::Matrix<T, Eigen::Dynamic, Eigen::Dynamic> innerProduct(
 ///
 template <typename T>
 Eigen::Matrix<T, Eigen::Dynamic, Eigen::Dynamic> innerProduct(
-    List <Eigen::SparseMatrix<T >> & A, Eigen::SparseMatrix<T>& B);
+    List <Eigen::SparseMatrix<T >>& A, Eigen::SparseMatrix<T>& B);
 
 //--------------------------------------------------------------------------
 /// @brief      Perform Frobenius inner Product between two sparse matrices A and B
@@ -169,7 +169,7 @@ T innerProduct(Eigen::SparseMatrix<T>& A, Eigen::SparseMatrix<T>& B);
 /// @return     out Sparse Matrix containing the sum of all the matrices multiplied by the vector coefficients
 ///
 template <typename T>
-Eigen::SparseMatrix<T> MVproduct(List<Eigen::SparseMatrix<T >> & A,
+Eigen::SparseMatrix<T> MVproduct(List<Eigen::SparseMatrix<T >>& A,
                                  Eigen::DenseBase<Eigen::Matrix<T, Eigen::Dynamic, Eigen::Dynamic >>& C);
 
 //--------------------------------------------------------------------------
@@ -188,7 +188,7 @@ Eigen::SparseMatrix<T> MVproduct(List<Eigen::SparseMatrix<T >> & A,
 ///
 template <typename T>
 Eigen::Matrix<T, Eigen::Dynamic, Eigen::Dynamic> MVproduct(
-    const std::vector< Eigen::Matrix<T, Eigen::Dynamic, Eigen::Dynamic >> & A,
+    const std::vector< Eigen::Matrix<T, Eigen::Dynamic, Eigen::Dynamic >>& A,
     Eigen::DenseBase<Eigen::Matrix<T, Eigen::Dynamic, Eigen::Dynamic >>& C);
 
 //--------------------------------------------------------------------------
@@ -207,7 +207,7 @@ Eigen::Matrix<T, Eigen::Dynamic, Eigen::Dynamic> MVproduct(
 ///
 template <typename T>
 List<Eigen::SparseMatrix<T >> MMproduct(List<Eigen::SparseMatrix<T >>& A,
-                                        Eigen::DenseBase<Eigen::Matrix<T, Eigen::Dynamic, Eigen::Dynamic >> & C);
+                                        Eigen::DenseBase<Eigen::Matrix<T, Eigen::Dynamic, Eigen::Dynamic >>& C);
 
 //--------------------------------------------------------------------------
 /// @brief      Conditioning number of a dense matrix
@@ -248,6 +248,29 @@ Eigen::Matrix<T, Eigen::Dynamic, Eigen::Dynamic> vectorTensorProduct(
     const Eigen::Matrix<T, Eigen::Dynamic, 1>& g,
     const Eigen::Tensor<T, 3 >& c,
     const Eigen::Matrix<T, Eigen::Dynamic, 1>& a);
+
+
+//------------------------------------------------------------------------------
+/// @brief      Repeat each element n times after themselves
+///
+/// @details    Example: input = (a, b); n = 3
+///                      output = (a, a, a, b, b, b)
+///
+/// @param      input Eigen::VectorXd
+/// @param      n int 
+Eigen::VectorXd repeatElements(Eigen::VectorXd input, int n);
+
+//------------------------------------------------------------------------------
+/// @brief      Changes the order of the vector's elements given a dimension
+///
+/// @details    Example: input = (a_1, b_1, a_2, b_2, a_3, b_3); dim = 3
+///                      output = (a_1, a_2, a_3, b_1, b_2, b_3)
+///             Typically switch from a component then coordinate order to the opposite
+///             as did the change in the Foam2Eigen mapping 
+///
+/// @param      input Eigen::VectorXd
+/// @param      dim int 
+Eigen::VectorXd reorderVectorFromDim(Eigen::VectorXd input, int dim);
 
 };
 
@@ -323,7 +346,7 @@ T EigenFunctions::min(Eigen::SparseMatrix<T>& mat, label& ind_row,
 
 template <typename T>
 Eigen::Matrix<T, Eigen::Dynamic, Eigen::Dynamic> EigenFunctions::innerProduct(
-    List <Eigen::SparseMatrix<T >> & A, List <Eigen::SparseMatrix<T >>& B)
+    List <Eigen::SparseMatrix<T >>& A, List <Eigen::SparseMatrix<T >>& B)
 {
     label rows = A.size();
     label cols = B.size();
@@ -343,7 +366,7 @@ Eigen::Matrix<T, Eigen::Dynamic, Eigen::Dynamic> EigenFunctions::innerProduct(
 
 template <typename T>
 Eigen::Matrix<T, Eigen::Dynamic, Eigen::Dynamic> EigenFunctions::innerProduct(
-    List<Eigen::SparseMatrix<T >> & A, Eigen::SparseMatrix<T>& B)
+    List<Eigen::SparseMatrix<T >>& A, Eigen::SparseMatrix<T>& B)
 {
     label rows = A.size();
     label cols = 1;
@@ -373,7 +396,7 @@ T EigenFunctions::innerProduct(Eigen::SparseMatrix<T>& A,
 }
 
 template <typename T>
-Eigen::SparseMatrix<T> EigenFunctions::MVproduct(List<Eigen::SparseMatrix<T >> &
+Eigen::SparseMatrix<T> EigenFunctions::MVproduct(List<Eigen::SparseMatrix<T >>&
         A
         , Eigen::DenseBase<Eigen::Matrix<T, Eigen::Dynamic, Eigen::Dynamic >>& C)
 {
@@ -390,7 +413,7 @@ Eigen::SparseMatrix<T> EigenFunctions::MVproduct(List<Eigen::SparseMatrix<T >> &
 
 template <typename T>
 Eigen::Matrix<T, Eigen::Dynamic, Eigen::Dynamic> EigenFunctions::MVproduct(
-    const std::vector< Eigen::Matrix<T, Eigen::Dynamic, Eigen::Dynamic >> & A,
+    const std::vector< Eigen::Matrix<T, Eigen::Dynamic, Eigen::Dynamic >>& A,
     Eigen::DenseBase<Eigen::Matrix<T, Eigen::Dynamic, Eigen::Dynamic >>& C)
 {
     Eigen::Matrix<T, Eigen::Dynamic, Eigen::Dynamic> out;
@@ -409,7 +432,7 @@ Eigen::Matrix<T, Eigen::Dynamic, Eigen::Dynamic> EigenFunctions::MVproduct(
 template <typename T>
 List<Eigen::SparseMatrix<T >> EigenFunctions::MMproduct(
     List<Eigen::SparseMatrix<T >>& A,
-    Eigen::DenseBase<Eigen::Matrix<T, Eigen::Dynamic, Eigen::Dynamic >> & C)
+    Eigen::DenseBase<Eigen::Matrix<T, Eigen::Dynamic, Eigen::Dynamic >>& C)
 {
     List<Eigen::SparseMatrix<T >> out;
     out.resize(C.cols());
@@ -420,6 +443,7 @@ List<Eigen::SparseMatrix<T >> EigenFunctions::MMproduct(
         col = C.col(i);
         out[i] = MVproduct(A, col);
     }
+
     return out;
 }
 
@@ -462,12 +486,14 @@ bool saveMarketVector (const VectorType & vec, const std::string & filename,
     {
         out << "%%MatrixMarket matrix array real general\n";
     }
+
     out << vec.size() << " " << 1 << "\n";
 
     for (label i = 0; i < vec.size(); i++)
     {
         internal::putDenseElt(vec(i), out);
     }
+
     out.close();
     return true;
 }
