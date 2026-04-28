@@ -274,7 +274,7 @@ public:
     bool get_symDiff() const { return SimulationFlags_->symDiff(); }
 
     /// on line velocity Reconstruction getter
-    bool get_onLineReconstruct() const { return SimulationFlags_->onLineReconstruct(); }
+    label get_onLineReconstruct() const { return SimulationFlags_->onLineReconstruct(); }
 
     /// DDES getter
     bool get_useDDES() const { return SimulationFlags_->useDDES(); }

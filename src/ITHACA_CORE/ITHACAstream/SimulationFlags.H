@@ -11,7 +11,7 @@ class SimulationFlags
 public:
     SimulationFlags():
         m_exportPython(false), m_exportMatlab(false), m_exportTxt(false),
-        m_useDDES(false), m_useDNS(false), m_onLineReconstruct(false),
+        m_useDDES(false), m_useDNS(false), m_onLineReconstruct(0),
         m_forcing(false), m_symDiff(false), m_useDEIM(false) { }
 
     const bool& exportPython() const { return m_exportPython; }
@@ -19,7 +19,7 @@ public:
     const bool& exportTxt() const { return m_exportTxt; }
     const bool& useDDES() const { return m_useDDES; }
     const bool& useDNS() const { return m_useDNS; }
-    const bool& onLineReconstruct() const { return m_onLineReconstruct; }
+    const label& onLineReconstruct() const { return m_onLineReconstruct; }
     const bool& forcing() const { return m_forcing; }
     const bool& symDiff() const { return m_symDiff; }
     const bool& useDEIM() const { return m_useDEIM; }
@@ -29,7 +29,7 @@ public:
     void set_exportTxt(const bool& b) { m_exportTxt = b; }
     void set_useDDES(const bool& b) { m_useDDES = b; }
     void set_useDNS(const bool& b) { m_useDNS = b; }
-    void set_onLineReconstruct(const bool& b) { m_onLineReconstruct = b; }
+    void set_onLineReconstruct(const label& b) { m_onLineReconstruct = b; }
     void set_forcingOrNot(const bool& b) { m_forcing = b; }
     void set_symDiff(const bool& b) { m_symDiff = b; }
     void set_useDEIM(const bool& b) { m_useDEIM = b; }
@@ -41,7 +41,7 @@ private:
     bool m_exportTxt;
     bool m_useDDES;
     bool m_useDNS;
-    bool m_onLineReconstruct;
+    label m_onLineReconstruct;
     bool m_forcing;
     bool m_symDiff;
     bool m_useDEIM;

@@ -85,7 +85,7 @@ StoredParameters::StoredParameters(int argc, char* argv[]):
     HyperreductionConfiguration_->setHRMethod(ITHACAdict->lookupOrDefault<word>("HyperReduction", "DEIM"));
     HyperreductionConfiguration_->setHRInterpolatedField(ITHACAdict->lookupOrDefault<word>("DEIMInterpolatedField", "fullStressFunction"));
     HyperreductionConfiguration_->setECPAlgo(ITHACAdict->lookupOrDefault<word>("ECPAlgo", "Global"));
-    SimulationFlags_->set_onLineReconstruct(ITHACAdict->lookupOrDefault<bool>("onLineReconstruct", 0));
+    SimulationFlags_->set_onLineReconstruct(ITHACAdict->lookupOrDefault<label>("onLineReconstruct", 0));
     SimulationFlags_->set_forcingOrNot(ITHACAdict->lookupOrDefault<bool>("forcingOrNot", 0));
     SimulationFlags_->set_symDiff(ITHACAdict->lookupOrDefault<bool>("symDiff", 0));
     ROMExecutionConfig_->setROMTemporalScheme(ITHACAdict->lookupOrDefault<word>("ROMTemporalScheme", "euler"));
