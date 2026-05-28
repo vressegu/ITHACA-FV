@@ -14,6 +14,7 @@ ITHACAutilities/ITHACAcoeffsMass.C
 ITHACAutilities/ITHACAnorm.C
 ITHACAutilities/ITHACAfieldsOperations.C
 ITHACAutilities/ITHACAstring.C
+ITHACAutilities/ITHACAlerayProj.C
 ITHACAparallel/ITHACAparallel.C
 ITHACAutilities/ITHACAforces.C
 ITHACAutilities/ITHACAsurfacetools.C
