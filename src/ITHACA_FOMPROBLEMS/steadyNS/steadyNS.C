@@ -1019,7 +1019,7 @@ Eigen::Tensor<double, 3> steadyNS::convective_term_tens(label NUmodes,
     
     if (useLerayProj)
     {
-        Info << "Computing leray proj of C tensor" << endl;
+        Info << "Computing leray proj of the convective term tensor" << endl;
         if (!projector) // trigger allocation only if it doesn't exist yet
         {
             projector = std::make_unique<ITHACAutilities::ITHACAlerayProj>(const_cast<fvMesh&>(L_U_SUPmodes[0].mesh()));
@@ -1037,7 +1037,7 @@ Eigen::Tensor<double, 3> steadyNS::convective_term_tens(label NUmodes,
             // 2. Capture the divergence as a tmp and get a reference to it
             tmp<volVectorField> tDivTerm = fvc::div(phi_j, L_U_SUPmodes[k]);
             volVectorField& div_term = tDivTerm.ref();
-            Info << "In steadyNS" << useLerayProj << endl;
+
             if (useLerayProj)
             {
 
@@ -1047,11 +1047,9 @@ Eigen::Tensor<double, 3> steadyNS::convective_term_tens(label NUmodes,
             
             for (label i = 0; i < Csize; i++)
             {
-                // 3. This is now safe because div_term is pinned by tDivTerm
                 C_tensor(i, j, k) = fvc::domainIntegrate(L_U_SUPmodes[i] & div_term).value();
             }
             
-            // tDivTerm is automatically cleared here at the end of the k-loop
         }
     }
 
