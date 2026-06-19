@@ -45,6 +45,9 @@ SourceFiles
 #include "reductionProblem.H"
 #include "ITHACAstream.H"
 #include "ITHACAparameters.H"
+#include "ITHACAnorm.H"
+#include "ITHACAutilities.H"
+#include "ITHACAlerayProj.H"
 #if OPENFOAM >= 1812
 #include "ITHACAforces18.H"
 #else
@@ -69,14 +72,16 @@ of the reduction problem class */
 class steadyNS: public reductionProblem
 {
 
+    private:
+        bool useLerayProj; // whether or not to compute the leray projection
 
     public:
         // Constructors
         /// Null constructor
-        steadyNS();
+        steadyNS(bool lerayProj = false);
 
         /// Construct with argc and argv
-        steadyNS(int argc, char* argv[]);
+        steadyNS(int argc, char* argv[], bool lerayProj = false);
         ~steadyNS() {};
 
         ITHACAparameters* para;
@@ -327,6 +332,13 @@ class steadyNS: public reductionProblem
 
         /// Flux Method
         word fluxMethod;
+        
+        // Leray projector
+        std::unique_ptr<ITHACAutilities::ITHACAlerayProj> projector;
+
+         // Explicitly delete copy operations as they contain non-copyable members
+        steadyNS(const steadyNS&) = delete;
+        steadyNS& operator=(const steadyNS&) = delete;
 
         // Functions
 
