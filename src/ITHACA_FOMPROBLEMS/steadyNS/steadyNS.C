@@ -37,9 +37,19 @@
 
 // * * * * * * * * * * * * * * * Constructors * * * * * * * * * * * * * * * * //
 // Constructor
-steadyNS::steadyNS() {}
+steadyNS::steadyNS(bool lerayProj):
+useLerayProj(lerayProj),
+projector(nullptr) // Explicitly empty for lazy setup
+{
+    if (useLerayProj)
+    {
+        Info << "steadyNS initialized with leray projection" << endl;
+    }
+    
+}
 
-steadyNS::steadyNS(int argc, char* argv[])
+steadyNS::steadyNS(int argc, char* argv[], bool lerayProj ):
+useLerayProj(lerayProj)
 {
     _args = autoPtr<argList>
             (
@@ -88,6 +98,10 @@ steadyNS::steadyNS(int argc, char* argv[])
     offline = ITHACAutilities::check_off();
     podex = ITHACAutilities::check_pod();
     supex = ITHACAutilities::check_sup();
+    if (lerayProj)
+    {
+        Info << "steadyNS initialized with leray projection" << endl;
+    }
 }
 
 
@@ -1001,26 +1015,41 @@ Eigen::Tensor<double, 3> steadyNS::convective_term_tens(label NUmodes,
     label Csize = NUmodes + NSUPmodes + liftfield.size();
     Eigen::Tensor<double, 3> C_tensor;
     C_tensor.resize(Csize, Csize, Csize);
-
-    for (label i = 0; i < Csize; i++)
+    
+    
+    if (useLerayProj)
     {
-        for (label j = 0; j < Csize; j++)
+        Info << "Computing leray proj of the convective term tensor" << endl;
+        if (!projector) // trigger allocation only if it doesn't exist yet
         {
-            for (label k = 0; k < Csize; k++)
+            projector = std::make_unique<ITHACAutilities::ITHACAlerayProj>(const_cast<fvMesh&>(L_U_SUPmodes[0].mesh()));
+        }
+    }
+
+
+    for (label j = 0; j < Csize; j++)
+    {
+        // Compute product with scalarField
+        surfaceScalarField phi_j = fvc::interpolate(L_U_SUPmodes[j]) & L_U_SUPmodes[j].mesh().Sf();
+        
+        for (label k = 0; k < Csize; k++)
+        {
+            // 2. Capture the divergence as a tmp and get a reference to it
+            tmp<volVectorField> tDivTerm = fvc::div(phi_j, L_U_SUPmodes[k]);
+            volVectorField& div_term = tDivTerm.ref();
+
+            if (useLerayProj)
             {
-                if (fluxMethod == "consistent")
-                {
-                    C_tensor(i, j, k) = fvc::domainIntegrate(L_U_SUPmodes[i] & fvc::div(
-                                            L_PHImodes[j],
-                                            L_U_SUPmodes[k])).value();
-                }
-                else
-                {
-                    C_tensor(i, j, k) = fvc::domainIntegrate(L_U_SUPmodes[i] & fvc::div(
-                                            linearInterpolate(L_U_SUPmodes[j]) & L_U_SUPmodes[j].mesh().Sf(),
-                                            L_U_SUPmodes[k])).value();
-                }
+
+                div_term= projector->freeDivergenceProjection(div_term);
+
             }
+            
+            for (label i = 0; i < Csize; i++)
+            {
+                C_tensor(i, j, k) = fvc::domainIntegrate(L_U_SUPmodes[i] & div_term).value();
+            }
+            
         }
     }
 
@@ -1259,13 +1288,27 @@ Eigen::MatrixXd steadyNS::convective_background(label NUmodes,
     label Lsize = NUmodes + liftfield.size();
     Eigen::MatrixXd L_matrix(Lsize, Lsize);
 
+    if (useLerayProj)
+    {
+        if (!projector) // trigger allocation only if it doesn't exist yet
+        {
+            projector = std::make_unique<ITHACAutilities::ITHACAlerayProj>(const_cast<fvMesh&>(L_U_SUPmodes[0].mesh()));
+        }
+    }
+
+
     for (label i = 0; i < Lsize; i++)
     {
         for (label j = 0; j < Lsize; j++)
         {
-            L_matrix(i, j) = - fvc::domainIntegrate(L_U_SUPmodes[i] & fvc::div(
-                    fvc::interpolate(vls) & vls.mesh().Sf(),
-                    L_U_SUPmodes[j])).value();
+            tmp<volVectorField> tDivTerm = fvc::div( fvc::interpolate(vls) & vls.mesh().Sf(), L_U_SUPmodes[j]);
+            volVectorField& div_term = tDivTerm.ref();
+                if (useLerayProj)
+                    {
+                        div_term= projector->freeDivergenceProjection(div_term);
+
+                    }
+            L_matrix(i, j) = - fvc::domainIntegrate(L_U_SUPmodes[i] & div_term ).value();
         }
     }
 
