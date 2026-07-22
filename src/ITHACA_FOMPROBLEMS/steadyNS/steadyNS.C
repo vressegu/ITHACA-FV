@@ -1055,9 +1055,16 @@ Eigen::Tensor<double, 3> steadyNS::convective_term_tens(label NUmodes,
 
     if (Pstream::master())
     {
+        word PFD{""};
+
+        if (useLerayProj)
+        {
+            PFD = "PFD_";
+        }
+
         // Export the tensor
         ITHACAstream::SaveDenseTensor(C_tensor, "./ITHACAoutput/Matrices/",
-                                      "C_" + name(liftfield.size()) + "_" + name(NUmodes) + "_" + name(
+                                      "C_" + PFD + name(liftfield.size()) + "_" + name(NUmodes) + "_" + name(
                                           NSUPmodes) + "_t");
     }
 
