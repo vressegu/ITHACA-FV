@@ -289,6 +289,23 @@ template void normalizeFields(
 template void normalizeFields(
     PtrList<GeometricField<vector, fvPatchField, volMesh >>& fields);
 
+template<typename T, typename gradT>
+void computeGrad(const PtrList<T>& fields, PtrList<gradT>& gradOfFields)
+{
+    int nFields = fields.size();
+    gradOfFields.resize(nFields);
+
+    for (int c = 0; c < nFields; c++)
+    {
+        gradOfFields.set(c, new gradT(fvc::grad(fields[c])));
+    }
+}
+
+template void computeGrad(
+    const PtrList<volScalarField>& fields, PtrList<volVectorField>& gradOfFields);
+template void computeGrad(
+    const PtrList<volVectorField>& fields, PtrList<volTensorField>& gradOfFields);
+
 
 template<typename Type>
 Eigen::MatrixXd getValues(GeometricField<Type, fvPatchField,

@@ -185,6 +185,18 @@ void normalizeFields(
     PtrList<GeometricField<Type, fvPatchField, volMesh >>& fields);
 
 
+//--------------------------------------------------------------------------
+/// @brief      Compute the gradients of a list of Geometric fields
+///
+/// @param      fields  The fields to compute the gradient on
+///
+/// @tparam     T  type of the fields can be Scalar or Vector
+/// @tparam     gradT  type of the gradient of the fields, can be Vector or Tensor
+///
+template<typename T, typename gradT>
+void computeGrad(const PtrList<T>& fields, PtrList<gradT>& gradOfFields);
+
+
 //------------------------------------------------------------------------------
 /// @brief      /// @brief      Gets the values from a list of indices
 ///
