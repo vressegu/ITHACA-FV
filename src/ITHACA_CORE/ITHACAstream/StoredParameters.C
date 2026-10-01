@@ -89,6 +89,7 @@ StoredParameters::StoredParameters(int argc, char* argv[]):
     SimulationFlags_->set_forcingOrNot(ITHACAdict->lookupOrDefault<bool>("forcingOrNot", 0));
     SimulationFlags_->set_symDiff(ITHACAdict->lookupOrDefault<bool>("symDiff", 0));
     ROMExecutionConfig_->setROMTemporalScheme(ITHACAdict->lookupOrDefault<word>("ROMTemporalScheme", "euler"));
+    ROMExecutionConfig_->setUseExtraViscosity(ITHACAdict->lookupOrDefault<bool>("useExtraViscosity", 0));
     // SOTA can be 0 (no SOTA), D (deterministic version), S (stochastic version)
     ROMExecutionConfig_->setUseSOTA(ITHACAdict->lookupOrDefault<word>("useSOTA", "None"));
 
@@ -100,7 +101,10 @@ StoredParameters::StoredParameters(int argc, char* argv[]):
         Info << "===============================================================" << endl;
     }
 
-    if ((!(ROMExecutionConfig_->ROMTemporalScheme() == "adams-bashforth")) && (!(ROMExecutionConfig_->ROMTemporalScheme() == "euler")) && (!(ROMExecutionConfig_->ROMTemporalScheme() == "euler–maruyama")))
+    if ((!(ROMExecutionConfig_->ROMTemporalScheme() == "adams-bashforth")) 
+        && (!(ROMExecutionConfig_->ROMTemporalScheme() == "euler"))
+        && (!(ROMExecutionConfig_->ROMTemporalScheme() == "euler-maruyama"))
+        && (!(ROMExecutionConfig_->ROMTemporalScheme() == "runge-kutta-4")))
     {
         Info << "This temporal scheme is not implemented." << endl;
         abort();

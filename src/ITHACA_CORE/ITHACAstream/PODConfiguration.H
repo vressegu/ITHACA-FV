@@ -33,6 +33,10 @@ public:
 
     void set_fieldlist(const Foam::wordList& fl) { m_fieldlist = fl; }
     void insert_nModes(const Foam::word& field_name, const Foam::label& n) { m_nModes.insert(field_name, n); }
+    void set_nModes(const Foam::word& field_name, const Foam::label& n)
+    {
+        m_nModes.set(field_name, n);
+    }
     void insert_hilbertSpacePOD(const Foam::word& field_name, const Foam::word& hilbertSp)
     {
         m_hilbertSpacePOD.insert(field_name, hilbertSp);
