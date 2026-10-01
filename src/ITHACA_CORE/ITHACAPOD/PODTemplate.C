@@ -42,7 +42,7 @@ PODTemplate<T>::PODTemplate(Parameters* myParameters,
     }
     timeFolders = runTime2.findTimes(snapshotsPath + pathProcessor);
 
-    l_startTime = Time::findClosestTimeIndex(timeFolders,std::stoi(runTime2.times()[l_startTime].name()));
+    l_startTime = Time::findClosestTimeIndex(timeFolders,std::stod(runTime2.times()[l_startTime].name()));
     l_endTime = l_startTime + l_nSnapshot - 1;
 
     f_field = new T(
