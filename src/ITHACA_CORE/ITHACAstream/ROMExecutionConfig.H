@@ -45,7 +45,10 @@ public:
     // SOTA method
     const Foam::word& useSOTA() const { return m_useSOTA; }
     void setUseSOTA(const Foam::word& sota) { m_useSOTA = sota; }
-
+    
+    // Extra viscosity
+    const bool useExtraViscosity() const { return m_useExtraViscosity; }
+    void setUseExtraViscosity(const bool use) { m_useExtraViscosity = use; }
 
 private:
     Foam::word m_ROMTemporalScheme;
@@ -55,6 +58,8 @@ private:
     Foam::volVectorField* m_meanU;
 
     Foam::word m_useSOTA;
+
+    bool m_useExtraViscosity;
 
 };
 

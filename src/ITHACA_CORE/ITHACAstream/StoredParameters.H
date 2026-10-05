@@ -202,6 +202,10 @@ public:
     {
         PODConfiguration_->insert_nModes(field_name, n);
     }
+    void change_nModes(const Foam::word& field_name, const Foam::label& n)
+    {
+        PODConfiguration_->set_nModes(field_name, n);;
+    }
     void set_resolvedVaryingEnergy(const Foam::word& field_name, const double& n)
     {
         PODConfiguration_->set_resolvedVaryingEnergy(field_name, n);
@@ -260,6 +264,8 @@ public:
     bool get_exportPython() const { return SimulationFlags_->exportPython(); }
     bool get_exportMatlab() const { return SimulationFlags_->exportMatlab(); }
     bool get_exportTxt() const { return SimulationFlags_->exportTxt(); }
+
+    bool get_useExtraViscosity() { return ROMExecutionConfig_->useExtraViscosity(); }
 
     const word& get_useSOTA() const { return ROMExecutionConfig_->useSOTA(); }
 
